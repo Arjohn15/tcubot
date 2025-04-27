@@ -1,0 +1,223 @@
+import { Request, Response } from "express";
+import { dbConfig } from "../config/dbConfig";
+import nodemailer, { Transporter } from "nodemailer";
+import mysql from "mysql2/promise";
+
+export const admin_dashboard = async (req: Request, resp: Response) => {
+  try {
+    const admin_id = (req as any).user.id;
+
+    const query_registrants =
+      "SELECT first_name, last_name, birthday, email, phone_number, role, year, course, school_assigned_number, id FROM registrants";
+    const query_admin =
+      "SELECT first_name, last_name, role FROM admins WHERE id = ?";
+
+    const [registrants]: any = await dbConfig.execute(query_registrants);
+    const [admin]: any = await dbConfig.execute(query_admin, [admin_id]);
+
+    resp.status(200).json({ registrants, admin });
+  } catch (err: any) {
+    console.error(err);
+    resp.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const send_email_reject = async (
+  req: Request,
+  resp: Response
+): Promise<any> => {
+  const { email, id, message, name } = req.body;
+
+  const isMessageEmpty = message === "";
+  const formatted_message = `
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCUbot - Rejection Email</title>
+</head>
+<body style="font-family: sans-serif; background-color: #f7fafc; padding: 5px; color: #2d3748;">
+
+  <div style="background-color: #ffffff; padding: 5px 20px 5px 20px ; max-width: 600px; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    
+    <!-- Logo at the top, centered -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <img src="https://i.ibb.co/jvfXTFX5/tcubot-main-logo.png" alt="TCUbot Logo" style="width: 300px; height: auto; margin: 0 auto;">
+    </div>
+
+    <h1 style="font-size: 24px; color: #e53e3e; font-weight: 600; margin-bottom: 24px; text-align: left;">
+      We're sorry, but your registration was rejected
+    </h1>
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+      Dear <span style="font-weight: 600;">${name}</span>,
+    </p>
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+    ${
+      isMessageEmpty
+        ? "We regret to inform you that your registration with TCUbot has been rejected for some reason."
+        : "We regret to inform you that your registration with TCUbot has been rejected due to the following reason:"
+    }
+    </p>
+
+    ${
+      isMessageEmpty
+        ? ""
+        : `<p style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">${message}</p>`
+    }
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+      If you believe this was a mistake or if you would like to discuss this matter further, please contact our support team at
+      <a href="mailto:tcuva23@gmail.com" style="color: #3182ce;">tcuva23@gmail.com</a>.
+    </p>
+
+    <p style="font-size: 18px; margin-bottom: 24px;">Thank you for your understanding.</p>
+
+    <p style="font-size: 18px; margin-bottom: 24px;">Sincerely,</p>
+
+    <p style="font-size: 18px; font-weight: 600;">The TCUbot Team</p>
+
+    <div style="margin-top: 24px; text-align: center; font-size: 14px; color: #a0aec0;">
+      <p>
+        If you did not make this request, please disregard this email.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+  try {
+    const transporter: Transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `TCUbot Admin Team: <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Message from TCUbot`,
+      html: formatted_message,
+    };
+
+    await dbConfig.execute<mysql.ResultSetHeader>(
+      "DELETE FROM registrants WHERE id = ?",
+      [id]
+    );
+
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log(
+      `Email sent: ${info.response}. Registrant successfully deleted.`
+    );
+
+    return resp
+      .status(200)
+      .json({ message: "Email sent and registrant deleted!" });
+  } catch (err: any) {
+    console.error("Failed to send email or registrant was not deleted:", err);
+    return resp.status(404).json({ message: "Registrant not found" });
+  }
+};
+
+export const send_email_accept = async (
+  req: Request,
+  resp: Response
+): Promise<any> => {
+  const { email, id, name } = req.body;
+
+  const formatted_message = `
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TCUbot - Registration Approved</title>
+</head>
+<body style="font-family: sans-serif; background-color: #f7fafc; padding: 5px; color: #2d3748;">
+
+  <div style="background-color: #ffffff; padding: 5px 20px 5px 20px ; max-width: 600px; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    
+    <!-- Logo at the top, centered -->
+    <div style="text-align: center; margin-bottom: 24px;">
+      <img src="https://i.ibb.co/jvfXTFX5/tcubot-main-logo.png" alt="TCUbot Logo" style="width: 300px; height: auto; margin: 0 auto;">
+    </div>
+
+    <h1 style="font-size: 24px; color: #38a169; font-weight: 600; margin-bottom: 24px; text-align: left;">
+      Congratulations! Your registration has been approved 🎉
+    </h1>
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+      Dear <span style="font-weight: 600;">${name}</span>,
+    </p>
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+      We're excited to let you know that your registration with TCUbot has been successfully approved.
+    </p>
+
+    <p style="font-size: 18px; margin-bottom: 16px;">
+      You can now sign in to your account using the credentials you provided during registration. If you have any questions or need assistance, feel free to reach out to our support team at
+      <a href="mailto:tcuva23@gmail.com" style="color: #3182ce;">tcuva23@gmail.com</a>.
+    </p>
+
+    <p style="font-size: 18px; margin-bottom: 24px;">Welcome aboard, and thank you for joining us!</p>
+
+    <p style="font-size: 18px; margin-bottom: 24px;">Warm regards,</p>
+
+    <p style="font-size: 18px; font-weight: 600;">The TCUbot Team</p>
+
+    <div style="margin-top: 24px; text-align: center; font-size: 14px; color: #a0aec0;">
+      <p>
+        If you did not initiate this registration, please disregard this email.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  try {
+    const transporter: Transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `TCUbot Admin Team: <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Message from TCUbot`,
+      html: formatted_message,
+    };
+
+    await dbConfig.execute<mysql.ResultSetHeader>(
+      "INSERT INTO users SELECT * FROM registrants WHERE id = ?",
+      [id]
+    );
+    await dbConfig.execute<mysql.ResultSetHeader>(
+      "DELETE FROM registrants WHERE id = ?",
+      [id]
+    );
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(
+      `Email sent: ${info.response}. Registrant successfully added as a user of TCUbot.`
+    );
+
+    return resp.status(201).json({
+      message: "Registrant approved and approval email sent successfully.",
+    });
+  } catch (err: any) {
+    console.error(
+      "Failed to send email or registrant was not added as a user of TCUbot:",
+      err
+    );
+    return resp.status(409).json({ message: "Registrant already approved." });
+  }
+};

@@ -1,0 +1,7 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src", // The directory containing TypeScript source files.
+    "outDir": "dist" // The directory where compiled JavaScript files will be output.
+  }
+}
