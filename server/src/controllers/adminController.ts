@@ -1,21 +1,39 @@
 import { Request, Response } from "express";
-import { dbConfig } from "../config/dbConfig";
 import nodemailer, { Transporter } from "nodemailer";
-import mysql from "mysql2/promise";
+import { db } from "../config/db";
+import { ObjectId } from "mongodb";
+
+const registrants = db.collection("registrants");
+const admins = db.collection("admins");
+const users = db.collection("users");
 
 export const admin_dashboard = async (req: Request, resp: Response) => {
   try {
     const admin_id = (req as any).user.id;
 
-    const query_registrants =
-      "SELECT first_name, last_name, birthday, email, phone_number, role, year, course, school_assigned_number, id FROM registrants";
-    const query_admin =
-      "SELECT first_name, last_name, role FROM admins WHERE id = ?";
+    const allRegistrants = await registrants
+      .find(
+        {},
+        {
+          projection: {
+            hashedPassword: 0,
+          },
+        }
+      )
+      .toArray();
 
-    const [registrants]: any = await dbConfig.execute(query_registrants);
-    const [admin]: any = await dbConfig.execute(query_admin, [admin_id]);
+    const selectedAdmin = await admins.findOne(
+      { _id: new ObjectId(`${admin_id}`) },
+      {
+        projection: {
+          hashedPassword: 0,
+        },
+      }
+    );
 
-    resp.status(200).json({ registrants, admin });
+    resp
+      .status(200)
+      .json({ registrants: allRegistrants, admin: selectedAdmin });
   } catch (err: any) {
     console.error(err);
     resp.status(500).json({ error: "Something went wrong" });
@@ -104,10 +122,11 @@ export const send_email_reject = async (
       html: formatted_message,
     };
 
-    await dbConfig.execute<mysql.ResultSetHeader>(
-      "DELETE FROM registrants WHERE id = ?",
-      [id]
-    );
+    const result = await registrants.deleteOne({ _id: new ObjectId(`${id}`) });
+
+    if (result.deletedCount === 0) {
+      return resp.status(404).json({ message: "User not found" });
+    }
 
     const info = await transporter.sendMail(mailOptions);
 
@@ -127,7 +146,7 @@ export const send_email_reject = async (
 export const send_email_accept = async (
   req: Request,
   resp: Response
-): Promise<any> => {
+): Promise<void> => {
   const { email, id, name } = req.body;
 
   const formatted_message = `
@@ -196,21 +215,30 @@ export const send_email_accept = async (
       html: formatted_message,
     };
 
-    await dbConfig.execute<mysql.ResultSetHeader>(
-      "INSERT INTO users SELECT * FROM registrants WHERE id = ?",
-      [id]
+    const registrant = await registrants.findOne(
+      { _id: new ObjectId(`${id}`) },
+      {
+        projection: {
+          _id: 0,
+        },
+      }
     );
-    await dbConfig.execute<mysql.ResultSetHeader>(
-      "DELETE FROM registrants WHERE id = ?",
-      [id]
-    );
+
+    if (!registrant) {
+      resp.status(404).json({ message: "Registrant not found." });
+      return;
+    }
+
+    await users.insertOne(registrant);
+
+    await registrants.deleteOne({ _id: new ObjectId(`${id}`) });
 
     const info = await transporter.sendMail(mailOptions);
     console.log(
       `Email sent: ${info.response}. Registrant successfully added as a user of TCUbot.`
     );
 
-    return resp.status(201).json({
+    resp.status(201).json({
       message: "Registrant approved and approval email sent successfully.",
     });
   } catch (err: any) {
@@ -218,6 +246,37 @@ export const send_email_accept = async (
       "Failed to send email or registrant was not added as a user of TCUbot:",
       err
     );
-    return resp.status(409).json({ message: "Registrant already approved." });
+    if (err.errorResponse.code === 11000) {
+      resp.status(409).json({
+        message:
+          "The registrant's email or school number has already been used.",
+      });
+      return;
+    }
+
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const allUsers = async (req: Request, resp: Response) => {
+  try {
+    const allUsers = await users
+      .find(
+        {},
+        {
+          projection: {
+            hashedPassword: 0,
+          },
+        }
+      )
+      .toArray();
+
+    resp.status(200).json({ users: allUsers });
+  } catch (err) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };

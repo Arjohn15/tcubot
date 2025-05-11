@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dbConfig = void 0;
-const promise_1 = __importDefault(require("mysql2/promise"));
+exports.db = void 0;
+exports.connectToDB = connectToDB;
+const mongodb_1 = require("mongodb");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-exports.dbConfig = promise_1.default.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-});
+const client = new mongodb_1.MongoClient(process.env.MONGODB_URI);
+exports.db = client.db(process.env.MONGODB_DB);
+async function connectToDB() {
+    await client.connect();
+}

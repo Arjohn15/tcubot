@@ -3,17 +3,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.send_email_accept = exports.send_email_reject = exports.admin_dashboard = void 0;
-const dbConfig_1 = require("../config/dbConfig");
+exports.allUsers = exports.send_email_accept = exports.send_email_reject = exports.admin_dashboard = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
+const db_1 = require("../config/db");
+const mongodb_1 = require("mongodb");
+const registrants = db_1.db.collection("registrants");
+const admins = db_1.db.collection("admins");
+const users = db_1.db.collection("users");
 const admin_dashboard = async (req, resp) => {
     try {
         const admin_id = req.user.id;
-        const query_registrants = "SELECT first_name, last_name, birthday, email, phone_number, role, year, course, school_assigned_number, id FROM registrants";
-        const query_admin = "SELECT first_name, last_name, role FROM admins WHERE id = ?";
-        const [registrants] = await dbConfig_1.dbConfig.execute(query_registrants);
-        const [admin] = await dbConfig_1.dbConfig.execute(query_admin, [admin_id]);
-        resp.status(200).json({ registrants, admin });
+        const allRegistrants = await registrants
+            .find({}, {
+            projection: {
+                hashedPassword: 0,
+            },
+        })
+            .toArray();
+        const selectedAdmin = await admins.findOne({ _id: new mongodb_1.ObjectId(`${admin_id}`) }, {
+            projection: {
+                hashedPassword: 0,
+            },
+        });
+        resp
+            .status(200)
+            .json({ registrants: allRegistrants, admin: selectedAdmin });
     }
     catch (err) {
         console.error(err);
@@ -93,7 +107,10 @@ const send_email_reject = async (req, resp) => {
             subject: `Message from TCUbot`,
             html: formatted_message,
         };
-        await dbConfig_1.dbConfig.execute("DELETE FROM registrants WHERE id = ?", [id]);
+        const result = await registrants.deleteOne({ _id: new mongodb_1.ObjectId(`${id}`) });
+        if (result.deletedCount === 0) {
+            return resp.status(404).json({ message: "User not found" });
+        }
         const info = await transporter.sendMail(mailOptions);
         console.log(`Email sent: ${info.response}. Registrant successfully deleted.`);
         return resp
@@ -171,17 +188,52 @@ const send_email_accept = async (req, resp) => {
             subject: `Message from TCUbot`,
             html: formatted_message,
         };
-        await dbConfig_1.dbConfig.execute("INSERT INTO users SELECT * FROM registrants WHERE id = ?", [id]);
-        await dbConfig_1.dbConfig.execute("DELETE FROM registrants WHERE id = ?", [id]);
+        const registrant = await registrants.findOne({ _id: new mongodb_1.ObjectId(`${id}`) }, {
+            projection: {
+                _id: 0,
+            },
+        });
+        if (!registrant) {
+            resp.status(404).json({ message: "Registrant not found." });
+            return;
+        }
+        await users.insertOne(registrant);
+        await registrants.deleteOne({ _id: new mongodb_1.ObjectId(`${id}`) });
         const info = await transporter.sendMail(mailOptions);
         console.log(`Email sent: ${info.response}. Registrant successfully added as a user of TCUbot.`);
-        return resp.status(201).json({
+        resp.status(201).json({
             message: "Registrant approved and approval email sent successfully.",
         });
     }
     catch (err) {
         console.error("Failed to send email or registrant was not added as a user of TCUbot:", err);
-        return resp.status(409).json({ message: "Registrant already approved." });
+        if (err.errorResponse.code === 11000) {
+            resp.status(409).json({
+                message: "The registrant's email or school number has already been used.",
+            });
+            return;
+        }
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
     }
 };
 exports.send_email_accept = send_email_accept;
+const allUsers = async (req, resp) => {
+    try {
+        const allUsers = await users
+            .find({}, {
+            projection: {
+                hashedPassword: 0,
+            },
+        })
+            .toArray();
+        resp.status(200).json({ users: allUsers });
+    }
+    catch (err) {
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.allUsers = allUsers;
