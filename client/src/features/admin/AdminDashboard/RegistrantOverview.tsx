@@ -30,10 +30,10 @@ const RegistrantOverview: FC<RegistrantOverviewProps> = ({ registrant }) => {
   }
 
   return (
-    <div className="grow-1 border-2 border-gray rounded-lg ml-[8rem] w-[200px] relative pb-[1rem]">
+    <div className="grow-1 border-2 border-gray rounded-lg ml-0 mt-[2rem] lg:mt-0 lg:ml-[5rem] w-100% lg:w-[200px] relative pb-[1rem]">
       <h2 className="text-center text-lg font-bold py-[2rem]">Registrant</h2>
 
-      <div className="px-[2rem]">
+      <div className="px-[2rem] py-[2rem] lg:py-0">
         {registrant ? (
           <>
             <ul className="text-base grid gap-y-5">

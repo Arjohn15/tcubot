@@ -73,12 +73,12 @@ const UserLogIn = () => {
       <div className="grow-1 flex flex-col items-center justify-center">
         <div className="mb-[0.5rem]">
           <img
-            src="/images/logos/tcubot-main-logo.png"
+            src="/images/logos/tcubot-main-logo(2).png"
             alt="TCUbot main logo"
             width={250}
           />
         </div>
-        <div className="w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 mb-[5rem]">
+        <div className="w-[75vw] sm:w-[50vw] md:w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 mb-[5rem]">
           <div className="mt-[1rem]">
             <TextField
               id="user-schoolNumber"

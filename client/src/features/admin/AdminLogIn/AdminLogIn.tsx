@@ -60,7 +60,7 @@ const AdminLogIn = () => {
     <>
       <AdminHeader />
       <div className="grow-1 flex items-center justify-center">
-        <div className="w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5">
+        <div className="w-[75vw] sm:w-[50vw] md:w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5">
           <div>
             <TextField
               id="admin-username"

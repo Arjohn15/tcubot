@@ -86,13 +86,13 @@ const AdminDashboard = () => {
         <div>
           <a href="/">
             <img
-              src="/images/logos/tcubot-main-logo.png"
+              src="/images/logos/tcubot-main-logo(2).png"
               alt="TCUbot main logo"
               width={120}
             />
           </a>
         </div>
-        <h1 className="text-red text-xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-red text-base whitespace-nowrap sm:text-2x1 font-bold">Admin Dashboard</h1>
         <AdminAvatar
           first_name={admin.first_name}
           last_name={admin.last_name}
@@ -101,8 +101,8 @@ const AdminDashboard = () => {
 
       <div className="mx-[10rem] m-[1rem] flex flex-col h-[100vh] pb-[2rem]">
         <h2 className="heading-two">New register requests</h2>
-        <div className="grow-1 flex">
-          <div className="w-[40%]">
+        <div className="grow-1 flex flex-col lg:flex-row lg:justify-center">
+          <div className="w-[100%] lg:w-[40%]">
             <div className="h-[550px] max-h-[550px] overflow-y-auto py-[1rem] border-2 border-gray rounded-lg">
               {loading ? (
                 <>
