@@ -9,6 +9,7 @@ import {
   userUpdate,
   userUpdateByAdmin,
   userUpdatePassword,
+  userVisit,
 } from "../controllers/userController/userController";
 import { formRegisterSchema } from "../schema/formRegisterSchema";
 import { validateRegistrants } from "../middleware/validateRegistrants";
@@ -27,6 +28,8 @@ userRouter.get(
   authorize_user,
   userChatHistory
 );
+
+userRouter.get("/user/chat/visit/:id", authenticate, authorize_user, userVisit);
 
 userRouter.post(
   "/register",

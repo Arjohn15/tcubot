@@ -280,3 +280,36 @@ export const userProfessorSchedule = async (req: Request, resp: Response) => {
   try {
   } catch (err: any) {}
 };
+
+export const userVisit = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const userID = req.params.id;
+
+  console.log(userID);
+
+  try {
+    const userInfo = await users.findOne(
+      { _id: new ObjectId(`${userID}`) },
+      {
+        projection: {
+          hashedPassword: 0,
+        },
+      }
+    );
+
+    console.log(userInfo);
+
+    if (!userInfo) {
+      resp.status(404).json({ message: "User not found." });
+      return;
+    }
+
+    resp.status(200).json({ userInfo });
+  } catch (err: any) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};

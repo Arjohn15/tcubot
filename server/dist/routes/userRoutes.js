@@ -8,6 +8,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const userRouter = (0, express_1.Router)();
 userRouter.get("/user", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.user_data);
 userRouter.get("/user/chat/history", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userChatHistory);
+userRouter.get("/user/chat/visit/:id", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userVisit);
 userRouter.post("/register", (0, validateRegistrants_1.validateRegistrants)(formRegisterSchema_1.formRegisterSchema), userController_1.user_register);
 userRouter.post("/user/chat/ai", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userChatAI);
 userRouter.post("/user/professor/schedule", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userProfessorSchedule);

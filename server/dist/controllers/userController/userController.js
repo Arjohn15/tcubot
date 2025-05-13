@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
+exports.userVisit = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const passwordUpdateSchema_1 = require("../../schema/passwordUpdateSchema");
@@ -219,3 +219,26 @@ const userProfessorSchedule = async (req, resp) => {
     catch (err) { }
 };
 exports.userProfessorSchedule = userProfessorSchedule;
+const userVisit = async (req, resp) => {
+    const userID = req.params.id;
+    console.log(userID);
+    try {
+        const userInfo = await users.findOne({ _id: new mongodb_1.ObjectId(`${userID}`) }, {
+            projection: {
+                hashedPassword: 0,
+            },
+        });
+        console.log(userInfo);
+        if (!userInfo) {
+            resp.status(404).json({ message: "User not found." });
+            return;
+        }
+        resp.status(200).json({ userInfo });
+    }
+    catch (err) {
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.userVisit = userVisit;

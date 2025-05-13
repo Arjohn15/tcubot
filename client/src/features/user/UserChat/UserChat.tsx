@@ -120,7 +120,10 @@ const UserChat: FC = () => {
       });
 
       setConvo(resp.data.chatHistory);
-      scrollDownConvoOverview(false);
+
+      setTimeout(() => {
+        scrollDownConvoOverview(false);
+      }, 100);
     } catch (err: any) {
       setErrMessage(
         err.response.data.message ||

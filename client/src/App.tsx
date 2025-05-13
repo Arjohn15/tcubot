@@ -13,6 +13,7 @@ import {
   snackbarClosed,
 } from "./features/store/shared/snackbarSlice";
 import SnackbarAuto from "./shared/components/SnackbarAuto";
+import UserVisit from "./features/user/UserVisit/UserVisit";
 function App() {
   const { isSnackbar, message, severity } = useAppSelector(selectSnackbar);
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/user" element={<UserPage />}>
             <Route path="/user/chat" element={<UserChat />} />
             <Route path="/user/profile" element={<UserProfile />} />
+            <Route path="/user/visit/:id" element={<UserVisit />} />
           </Route>
 
           <Route path="/admin" element={<AdminPage />}>
