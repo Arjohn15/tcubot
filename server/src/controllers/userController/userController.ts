@@ -3,12 +3,13 @@ import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
 import { passwordUpdateSchema } from "../../schema/passwordUpdateSchema";
 import z from "zod";
-import userStudent from "./userStudent/userStudent";
+import userWithAI from "./userWithAI";
 import { db } from "../../config/db";
 import { ObjectId } from "mongodb";
 
 const registrants = db.collection("registrants");
 const users = db.collection("users");
+const messages = db.collection("messages");
 
 export const user_data = async (
   req: Request,
@@ -34,6 +35,7 @@ export const user_data = async (
 };
 
 export const user_register = async (req: Request, resp: Response) => {
+  console.log(req.body);
   try {
     const {
       first_name,
@@ -46,12 +48,12 @@ export const user_register = async (req: Request, resp: Response) => {
       course,
       school_assigned_number,
       password,
+      section,
     } = req.body;
 
     const formattedBirthday = dayjs(birthday).format("YYYY-MM-DD");
     const hashedPassword = await bcrypt.hash(password, 10);
-    const addedYear = role === "student" ? year : null;
-    const addedCourse = role === "student" ? course : null;
+    const isStudent = role === "student";
 
     await registrants.insertOne({
       first_name,
@@ -60,8 +62,9 @@ export const user_register = async (req: Request, resp: Response) => {
       phone_number,
       formattedBirthday,
       role,
-      year: addedYear,
-      course: addedCourse,
+      year: isStudent ? year : null,
+      course: isStudent ? course : null,
+      section: isStudent ? section : null,
       school_assigned_number,
       hashedPassword,
       show_birthday: 1,
@@ -211,6 +214,7 @@ export const userUpdateByAdmin = async (
       "course",
       "school_assigned_number",
       "role",
+      "section",
     ];
 
     for (const [key, value] of Object.entries(req.body)) {
@@ -253,153 +257,26 @@ export const userChatAI = async (
   req: Request,
   resp: Response
 ): Promise<void> => {
-  const userID = (req as any).user.id;
-  const { subject, message } = req.body;
+  const { message } = req.body;
 
-  switch (subject) {
-    case "student": {
-      userStudent(req, resp, message);
-      break;
-    }
-    case "professor": {
-      break;
-    }
-    case "personnel": {
-      break;
-    }
-    default: {
-    }
+  userWithAI(req, resp, message);
+};
+
+export const userChatHistory = async (req: Request, resp: Response) => {
+  const userID = (req as any).user.id;
+
+  try {
+    const chatHistory = await messages.find({ user_id: userID }).toArray();
+
+    resp.status(200).json({ chatHistory });
+  } catch (err: any) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
   }
 };
 
-// const userID = (req as any).user.id;
-// const { subject, message } = req.body;
-
-// let prompt;
-// try {
-//   switch (subject) {
-//     case "student": {
-//       const [userMessage]: [ResultSetHeader, any] = await dbConfig.query(
-//         "INSERT INTO messages (id, user_id, sender, message) VALUES (?, ?, ?, ?)",
-//         [uuidv4(), userID, "user", message]
-//       );
-
-//       if (!userMessage || userMessage.affectedRows === 0) {
-//         throw new Error(
-//           "An error occured. User message was not successfully inserted 1."
-//         );
-//       }
-
-//       const initPrompt = `You have a MySQL table (users) with columns (first_name, last_name, email, phone_number, role, year, course, school_assigned_number, id).
-//       The user is inquiring about a student: ${message}. Make a MySQL query based on this. Answer only no explanation. If user's message is not a question or just a general statement, don't create a query and just response back and say "nonquery"`;
-
-//       const initAIQuery = await sendToOpenChat(initPrompt);
-
-//       if (initAIQuery.status !== 200) {
-//         resp.status(initAIQuery.status).json({ error: initAIQuery.message });
-//         return;
-//       }
-
-//       if (initAIQuery.message === "nonquery") {
-//         const scopeMessage =
-//           "Oops! That’s not something we’re built for, but we’re happy to help with anything that’s within our scope.";
-
-//         const [aiMessage]: [ResultSetHeader, any] = await dbConfig.query(
-//           "INSERT INTO messages (id, user_id, sender, message) VALUES (?, ?, ?, ?)",
-//           [uuidv4(), userID, "ai", scopeMessage]
-//         );
-
-//         if (!aiMessage || aiMessage.affectedRows === 0) {
-//           throw new Error(
-//             "An error occured. AI message was not successfully inserted."
-//           );
-//         }
-
-//         resp.status(200).json({ aiResponse: scopeMessage });
-//         return;
-//       }
-//       console.log(initAIQuery.message, initPrompt);
-
-//       const [initAIQueryResult]: any[] = await dbConfig.execute(
-//         initAIQuery.message
-//       );
-
-//       if (!initAIQueryResult || initAIQueryResult.length === 0) {
-//         const notFoundResponse = await sendToOpenChat(
-//           "The query didn't find any result from the database. Make a statement informing user about it."
-//         );
-
-//         if (notFoundResponse.status !== 200) {
-//           resp
-//             .status(notFoundResponse.status)
-//             .json({ error: notFoundResponse.message });
-//           return;
-//         }
-
-//         resp.status(200).json({
-//           aiResponse: notFoundResponse.message,
-//         });
-//         return;
-//       }
-
-//       const [messages]: any[] = await dbConfig.execute(
-//         "SELECT * FROM messages WHERE user_id = ? ORDER BY created_at ASC",
-//         [userID]
-//       );
-
-//       if (!messages || messages.length === 0) {
-//         resp.status(404).json({
-//           message: "Chat history was not retrieved. User can't be found.",
-//         });
-//         return;
-//       }
-
-//       prompt = `
-//       “You are directly talking right now to a user of the app. These are your context for answering user's message:
-
-//      Chat history: ${JSON.stringify(messages)}.)
-//      Student Retrieved Data: ${JSON.stringify(initAIQueryResult)}
-
-//       Here are the rules you need to follow:
-
-//       1.) Always include this statement in addition to the answer you are providing to the user: View more details about [first or last name of the pinpointed data depending on what the user is referring to that data] by clicking  <a href=”/user/visit/:[the id of pinpointed data]”>HERE</a>.
-//       2.) Just answer directly the question and provide the necessary information (Don't give user extra information just a direct answer only.).
-
-//       Here's the user message: ${message}
-//       `;
-
-//       const aiResponse = await sendToOpenChat(prompt);
-
-//       if (aiResponse.status !== 200) {
-//         resp.status(aiResponse.status).json({ error: aiResponse.message });
-//         return;
-//       }
-
-//       const [aiMessage]: [ResultSetHeader, any] = await dbConfig.query(
-//         "INSERT INTO messages (id, user_id, sender, message) VALUES (?, ?, ?, ?)",
-//         [uuidv4(), userID, "ai", aiResponse.message]
-//       );
-
-//       if (!aiMessage || aiMessage.affectedRows === 0) {
-//         throw new Error(
-//           "An error occured. AI message was not successfully inserted."
-//         );
-//       }
-
-//       resp.status(200).json({ aiResponse: aiResponse.message });
-
-//       break;
-//     }
-//     case "professor": {
-//     }
-//     case "personnel": {
-//     }
-//     default: {
-//       resp.status(400).json({ message: "Subject matter is invalid." });
-//       return;
-//     }
-//   }
-// } catch (err: any) {
-//   console.error("Server error:", err);
-//   resp.status(500).json({ message: "Internal server error" });
-// }
+export const userProfessorSchedule = async (req: Request, resp: Response) => {
+  try {
+  } catch (err: any) {}
+};

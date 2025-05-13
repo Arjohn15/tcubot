@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-const sendToOpenChat_1 = require("../../../utils/sendToOpenChat");
+const sendToOpenChat_1 = require("../../utils/sendToOpenChat");
 const path_1 = __importDefault(require("path"));
-const db_1 = require("../../../config/db");
-const checkUserGreet_1 = __importDefault(require("../../../utils/checkUserGreet"));
+const db_1 = require("../../config/db");
+const checkUserGreet_1 = __importDefault(require("../../utils/checkUserGreet"));
 const messages = db_1.db.collection("messages");
 const users = db_1.db.collection("users");
-const userStudent = async (req, resp, userMessage) => {
+const userWithAI = async (req, resp, userMessage) => {
     const userID = req.user.id;
     try {
         const insertedMessage = await messages.insertOne({
@@ -21,9 +21,9 @@ const userStudent = async (req, resp, userMessage) => {
         if (!insertedMessage.acknowledged) {
             throw new Error("An error occured. User message was not successfully inserted.");
         }
-        const intentPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "userStudent", "intentPrompt.txt");
-        const queryPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "userStudent", "queryPrompt.txt");
-        const finalPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "userStudent", "finalPrompt.txt");
+        const intentPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "intentPrompt.txt");
+        const queryPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "queryPrompt.txt");
+        const finalPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "finalPrompt.txt");
         const intentPrompt = fs_1.default
             .readFileSync(intentPromptPath, "utf-8")
             .replace("{{message}}", userMessage);
@@ -53,6 +53,14 @@ const userStudent = async (req, resp, userMessage) => {
                 if (queryFailedResponse.status !== 200) {
                     throw new Error(queryFailedResponse.message);
                 }
+                const insertedAIMessage = await messages.insertOne({
+                    user_id: userID,
+                    sender: "ai",
+                    message: queryFailedResponse.message,
+                });
+                if (!insertedAIMessage.acknowledged) {
+                    throw new Error("An error occured. AI message was not successfully inserted.");
+                }
                 resp.status(200).json({ aiResponse: queryFailedResponse.message });
                 return;
             }
@@ -80,7 +88,7 @@ const userStudent = async (req, resp, userMessage) => {
             resp.status(200).json({ aiResponse: finalResponse.message });
         }
         if (intentResponse.message.trim() === "general_question") {
-            const timelinePromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "userStudent", "timelinePrompt.txt");
+            const timelinePromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "timelinePrompt.txt");
             const timelinePrompt = fs_1.default
                 .readFileSync(timelinePromptPath, "utf-8")
                 .replace("[[message]]", userMessage);
@@ -90,7 +98,7 @@ const userStudent = async (req, resp, userMessage) => {
                 throw new Error(intentResponse.message);
             }
             if (timelineResponseMessage === "nonFollow_up") {
-                const nonFollowUpPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "userStudent", "nonFollowUpPrompt.txt");
+                const nonFollowUpPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "nonFollowUpPrompt.txt");
                 const nonFollowUpPrompt = fs_1.default
                     .readFileSync(nonFollowUpPromptPath, "utf-8")
                     .replace("[[message]]", userMessage);
@@ -121,4 +129,4 @@ const userStudent = async (req, resp, userMessage) => {
         });
     }
 };
-exports.default = userStudent;
+exports.default = userWithAI;

@@ -5,12 +5,12 @@ USER'S QUESTION:
 
 [[greet]]
 
-RETRIEVED DATA (List of individuals):
-[[student]]
+RETRIEVED DATA (Could be a list of individuals):
+[[user]]
 
 INSTRUCTIONS (APPLY THIS TO THE RETRIEVED DATA):
-* If [[student]] is empty, inform the user we found no records for his/her inquiry. Inform them about using the right keywords for clarification such as the full name
-*  If there are two or more data in array of objects, ask user for student number or more details.
+* If [[user]] is empty, inform the user we found no records for his/her inquiry. Inform them about using the right keywords for clarification such as the full name
+*  If there are two or more data in array of objects, ask user for school number or more details.
 * If data is available:
    - Provide a direct and relevant answer to the user's question.
    - Do NOT add unrelated info, even if it’s in the retrieved data.

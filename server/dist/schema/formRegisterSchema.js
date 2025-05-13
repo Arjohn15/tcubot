@@ -39,6 +39,7 @@ exports.formRegisterSchema = zod_1.z
     role: zod_1.z.string().min(1, "Role is required"),
     year: zod_1.z.string().min(1, "Year is required"),
     course: zod_1.z.string().min(1, "Course is required"),
+    section: zod_1.z.string().min(1, "Section is required"),
     school_assigned_number: zod_1.z
         .string()
         .min(1, "School number is required")

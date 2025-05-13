@@ -1,17 +1,14 @@
 import { Request, Response } from "express";
 import fs from "fs";
-import { sendToOpenChat } from "../../../utils/sendToOpenChat";
-// import { dbConfig } from "../../../config/dbConfig";
+import { sendToOpenChat } from "../../utils/sendToOpenChat";
 import path from "path";
-// import checkUserGreet from "../../../utils/checkUserGreet";
-import { db } from "../../../config/db";
-import checkUserGreet from "../../../utils/checkUserGreet";
-import { json } from "stream/consumers";
+import { db } from "../../config/db";
+import checkUserGreet from "../../utils/checkUserGreet";
 
 const messages = db.collection("messages");
 const users = db.collection("users");
 
-const userStudent = async (
+const userWithAI = async (
   req: Request,
   resp: Response,
   userMessage: string
@@ -36,7 +33,7 @@ const userStudent = async (
       "src",
       "controllers",
       "userController",
-      "userStudent",
+      "prompts",
       "intentPrompt.txt"
     );
 
@@ -45,7 +42,7 @@ const userStudent = async (
       "src",
       "controllers",
       "userController",
-      "userStudent",
+      "prompts",
       "queryPrompt.txt"
     );
 
@@ -54,7 +51,7 @@ const userStudent = async (
       "src",
       "controllers",
       "userController",
-      "userStudent",
+      "prompts",
       "finalPrompt.txt"
     );
 
@@ -97,6 +94,18 @@ const userStudent = async (
           throw new Error(queryFailedResponse.message);
         }
 
+        const insertedAIMessage = await messages.insertOne({
+          user_id: userID,
+          sender: "ai",
+          message: queryFailedResponse.message,
+        });
+
+        if (!insertedAIMessage.acknowledged) {
+          throw new Error(
+            "An error occured. AI message was not successfully inserted."
+          );
+        }
+
         resp.status(200).json({ aiResponse: queryFailedResponse.message });
         return;
       }
@@ -116,7 +125,7 @@ const userStudent = async (
             : "Introduce yourself (but don't ask 'how can I assist you' or anything similar) then answer the question directly."
         )
         .replace("[[message]]", userMessage)
-        .replace("[[student]]", JSON.stringify(queryFormattedResult));
+        .replace("[[user]]", JSON.stringify(queryFormattedResult));
 
       const finalResponse = await sendToOpenChat(finalPrompt);
 
@@ -124,18 +133,17 @@ const userStudent = async (
         throw new Error(finalResponse.message);
       }
 
-      // console.log(JSON.parse(queryResponse.message));
+      const insertedAIMessage = await messages.insertOne({
+        user_id: userID,
+        sender: "ai",
+        message: finalResponse.message,
+      });
 
-      // const [aiInsertedMessage]: [ResultSetHeader, any] = await dbConfig.query(
-      //   "INSERT INTO messages (id, user_id, sender, message) VALUES (?, ?, ?, ?)",
-      //   [uuidv4(), userID, "ai", finalResponse.message]
-      // );
-
-      // if (!aiInsertedMessage || aiInsertedMessage.affectedRows === 0) {
-      //   throw new Error(
-      //     "An error occured. AI message was not successfully inserted."
-      //   );
-      // }
+      if (!insertedAIMessage.acknowledged) {
+        throw new Error(
+          "An error occured. AI message was not successfully inserted."
+        );
+      }
 
       resp.status(200).json({ aiResponse: finalResponse.message });
     }
@@ -146,7 +154,7 @@ const userStudent = async (
         "src",
         "controllers",
         "userController",
-        "userStudent",
+        "prompts",
         "timelinePrompt.txt"
       );
       const timelinePrompt = fs
@@ -167,7 +175,7 @@ const userStudent = async (
           "src",
           "controllers",
           "userController",
-          "userStudent",
+          "prompts",
           "nonFollowUpPrompt.txt"
         );
 
@@ -179,6 +187,18 @@ const userStudent = async (
 
         if (nonFollowUpResponse.status !== 200) {
           throw new Error(nonFollowUpResponse.message);
+        }
+
+        const insertedAIMessage = await messages.insertOne({
+          user_id: userID,
+          sender: "ai",
+          message: nonFollowUpResponse.message,
+        });
+
+        if (!insertedAIMessage.acknowledged) {
+          throw new Error(
+            "An error occured. AI message was not successfully inserted."
+          );
         }
 
         resp.status(200).json({ aiResponse: nonFollowUpResponse.message });
@@ -197,4 +217,4 @@ const userStudent = async (
   }
 };
 
-export default userStudent;
+export default userWithAI;

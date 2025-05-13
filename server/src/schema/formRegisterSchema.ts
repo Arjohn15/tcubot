@@ -53,6 +53,8 @@ export const formRegisterSchema = z
 
     course: z.string().min(1, "Course is required"),
 
+    section: z.string().min(1, "Section is required"),
+
     school_assigned_number: z
       .string()
       .min(1, "School number is required")

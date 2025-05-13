@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
-const sendToOpenChat_1 = require("../../../utils/sendToOpenChat");
+const sendToOpenChat_1 = require("../../utils/sendToOpenChat");
 const path_1 = __importDefault(require("path"));
-const db_1 = require("../../../config/db");
-const checkUserGreet_1 = __importDefault(require("../../../utils/checkUserGreet"));
+const db_1 = require("../../config/db");
+const checkUserGreet_1 = __importDefault(require("../../utils/checkUserGreet"));
 const messages = db_1.db.collection("messages");
 const users = db_1.db.collection("users");
 const userStudent = async (req, resp, userMessage) => {

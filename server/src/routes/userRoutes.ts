@@ -3,7 +3,9 @@ import {
   user_data,
   user_register,
   userChatAI,
+  userChatHistory,
   userDelete,
+  userProfessorSchedule,
   userUpdate,
   userUpdateByAdmin,
   userUpdatePassword,
@@ -15,18 +17,29 @@ import {
   authorize_admin,
   authorize_user,
 } from "../middleware/authMiddleware";
-import { Request, Response } from "express";
+
 const userRouter = Router();
 
 userRouter.get("/user", authenticate, authorize_user, user_data);
+userRouter.get(
+  "/user/chat/history",
+  authenticate,
+  authorize_user,
+  userChatHistory
+);
 
 userRouter.post(
   "/register",
   validateRegistrants(formRegisterSchema),
   user_register
 );
-
 userRouter.post("/user/chat/ai", authenticate, authorize_user, userChatAI);
+userRouter.post(
+  "/user/professor/schedule",
+  authenticate,
+  authorize_user,
+  userProfessorSchedule
+);
 
 userRouter.put("/user-update", authenticate, authorize_user, userUpdate);
 userRouter.put(
