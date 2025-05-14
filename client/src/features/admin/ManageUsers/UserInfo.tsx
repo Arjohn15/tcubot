@@ -75,7 +75,9 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
       console.error(err);
       dispatch(
         snackbarOpened({
-          message: err.response.data.message,
+          message:
+            err.response.data.message ||
+            "Unknown error. Please try again later.",
           severity: "error",
           isSnackbar: true,
         })

@@ -10,6 +10,7 @@ import { ObjectId } from "mongodb";
 const registrants = db.collection("registrants");
 const users = db.collection("users");
 const messages = db.collection("messages");
+const schedules = db.collection("schedules");
 
 export const user_data = async (
   req: Request,
@@ -277,8 +278,150 @@ export const userChatHistory = async (req: Request, resp: Response) => {
 };
 
 export const userProfessorSchedule = async (req: Request, resp: Response) => {
+  delete req.body.timeRange;
+
+  const userID = (req as any).user.id;
+
   try {
-  } catch (err: any) {}
+    const values: any[][] = [];
+
+    const allowedFields = [
+      "time_start",
+      "time_end",
+      "room",
+      "subject",
+      "assigned_section",
+      "code",
+      "day",
+    ];
+
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== undefined) {
+        const column = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+
+        if (allowedFields.includes(column)) {
+          values.push([column, value]);
+        } else {
+          resp.status(400).json({ message: `Invalid field: ${key}` });
+          return;
+        }
+      }
+    }
+
+    const formattedValues = Object.fromEntries(values);
+
+    await schedules.insertOne({ ...formattedValues, professor_id: userID });
+
+    resp.status(200).json({ message: "New schedule successfully created" });
+  } catch (err: any) {
+    console.error(err);
+
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const userProfessorAllSchedule = async (
+  req: Request,
+  resp: Response
+) => {
+  const { day } = req.body;
+  const userID = (req as any).user.id;
+
+  try {
+    const allSchedules = await schedules
+      .find({ professor_id: userID, day }, { projection: { professor_id: 0 } })
+      .toArray();
+
+    resp.status(200).json({ schedules: allSchedules });
+  } catch (err: any) {
+    console.error(err);
+
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const userProfessorEditSchedule = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const userID = req.params.id;
+
+  try {
+    const values: any[][] = [];
+
+    const allowedFields = [
+      "time_start",
+      "time_end",
+      "room",
+      "subject",
+      "assigned_section",
+      "code",
+      "day",
+    ];
+
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== undefined) {
+        const column = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+
+        if (allowedFields.includes(column)) {
+          values.push([column, value]);
+        } else {
+          resp.status(400).json({ message: `Invalid field: ${key}` });
+          return;
+        }
+      }
+    }
+
+    if (values.length === 0) {
+      resp.status(400).json({ message: "No valid fields to update." });
+      return;
+    }
+
+    const formattedValues = Object.fromEntries(values);
+
+    await schedules.updateOne(
+      { _id: new ObjectId(`${userID}`) },
+      { $set: formattedValues }
+    );
+
+    resp.status(200).json({ message: "Schedule updated successfully!" });
+  } catch (err) {
+    console.error(err);
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const userProfessorDeleteSchedule = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const id = req.params.id;
+
+  try {
+    const deletedSchedule = await schedules.deleteOne({
+      _id: new ObjectId(`${id}`),
+    });
+
+    if (!deletedSchedule.acknowledged) {
+      resp.status(404).json({
+        message: "Schedule delete not successful. Schedule not found",
+      });
+      return;
+    }
+    resp.status(200).json({ message: "Schedule successfully deleted!" });
+  } catch (err: any) {
+    console.error(err);
+
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
 };
 
 export const userVisit = async (
@@ -286,8 +429,6 @@ export const userVisit = async (
   resp: Response
 ): Promise<void> => {
   const userID = req.params.id;
-
-  console.log(userID);
 
   try {
     const userInfo = await users.findOne(
@@ -298,8 +439,6 @@ export const userVisit = async (
         },
       }
     );
-
-    console.log(userInfo);
 
     if (!userInfo) {
       resp.status(404).json({ message: "User not found." });

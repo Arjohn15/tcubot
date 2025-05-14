@@ -5,6 +5,9 @@ import {
   userChatAI,
   userChatHistory,
   userDelete,
+  userProfessorAllSchedule,
+  userProfessorDeleteSchedule,
+  userProfessorEditSchedule,
   userProfessorSchedule,
   userUpdate,
   userUpdateByAdmin,
@@ -28,7 +31,6 @@ userRouter.get(
   authorize_user,
   userChatHistory
 );
-
 userRouter.get("/user/chat/visit/:id", authenticate, authorize_user, userVisit);
 
 userRouter.post(
@@ -42,6 +44,12 @@ userRouter.post(
   authenticate,
   authorize_user,
   userProfessorSchedule
+);
+userRouter.post(
+  "/user/professor/schedule-all",
+  authenticate,
+  authorize_user,
+  userProfessorAllSchedule
 );
 
 userRouter.put("/user-update", authenticate, authorize_user, userUpdate);
@@ -57,12 +65,24 @@ userRouter.put(
   authorize_admin,
   userUpdateByAdmin
 );
+userRouter.put(
+  "/user/professor/schedule-update/:id",
+  authenticate,
+  authorize_user,
+  userProfessorEditSchedule
+);
 
 userRouter.delete(
   "/user-delete/:id",
   authenticate,
   authorize_admin,
   userDelete
+);
+userRouter.delete(
+  "/user/professor/schedule-delete/:id",
+  authenticate,
+  authorize_user,
+  userProfessorDeleteSchedule
 );
 
 export default userRouter;

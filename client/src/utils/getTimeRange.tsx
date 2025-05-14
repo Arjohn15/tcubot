@@ -4,7 +4,11 @@ function parseTime(timeStr: string): Date {
   return parse(timeStr.trim(), "HH:mm", new Date());
 }
 
-function isTimeInRange(time: string, start: string, end: string): boolean {
+export function isTimeInRange(
+  time: string,
+  start: string,
+  end: string
+): boolean {
   const checkTime = parseTime(time);
   const startTime = parseTime(start);
   const endTime = parseTime(end);
@@ -12,7 +16,7 @@ function isTimeInRange(time: string, start: string, end: string): boolean {
   return isWithinInterval(checkTime, { start: startTime, end: endTime });
 }
 
-function getTimeDifferenceInHoursAndMinutes(
+export function getTimeDifferenceInHoursAndMinutes(
   start: string,
   end: string
 ): { hours: number; minutes: number } {
@@ -25,9 +29,3 @@ function getTimeDifferenceInHoursAndMinutes(
 
   return { hours, minutes };
 }
-
-const start = "13:12";
-const end = "18:30";
-
-const diff = getTimeDifferenceInHoursAndMinutes(start, end);
-console.log(`${diff.hours} hours and ${diff.minutes} minutes`); // 5 hours and 18 minutes

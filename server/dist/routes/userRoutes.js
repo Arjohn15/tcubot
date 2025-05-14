@@ -12,8 +12,11 @@ userRouter.get("/user/chat/visit/:id", authMiddleware_1.authenticate, authMiddle
 userRouter.post("/register", (0, validateRegistrants_1.validateRegistrants)(formRegisterSchema_1.formRegisterSchema), userController_1.user_register);
 userRouter.post("/user/chat/ai", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userChatAI);
 userRouter.post("/user/professor/schedule", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userProfessorSchedule);
+userRouter.post("/user/professor/schedule-all", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userProfessorAllSchedule);
 userRouter.put("/user-update", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userUpdate);
 userRouter.put("/user-update-password", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userUpdatePassword);
 userRouter.put("/user-update-by-admin/:id", authMiddleware_1.authenticate, authMiddleware_1.authorize_admin, userController_1.userUpdateByAdmin);
+userRouter.put("/user/professor/schedule-update/:id", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userProfessorEditSchedule);
 userRouter.delete("/user-delete/:id", authMiddleware_1.authenticate, authMiddleware_1.authorize_admin, userController_1.userDelete);
+userRouter.delete("/user/professor/schedule-delete/:id", authMiddleware_1.authenticate, authMiddleware_1.authorize_user, userController_1.userProfessorDeleteSchedule);
 exports.default = userRouter;

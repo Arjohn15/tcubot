@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userVisit = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
+exports.userVisit = exports.userProfessorDeleteSchedule = exports.userProfessorEditSchedule = exports.userProfessorAllSchedule = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const passwordUpdateSchema_1 = require("../../schema/passwordUpdateSchema");
@@ -14,6 +14,7 @@ const mongodb_1 = require("mongodb");
 const registrants = db_1.db.collection("registrants");
 const users = db_1.db.collection("users");
 const messages = db_1.db.collection("messages");
+const schedules = db_1.db.collection("schedules");
 const user_data = async (req, resp) => {
     const user_id = req.user.id;
     try {
@@ -214,21 +215,131 @@ const userChatHistory = async (req, resp) => {
 };
 exports.userChatHistory = userChatHistory;
 const userProfessorSchedule = async (req, resp) => {
+    delete req.body.timeRange;
+    const userID = req.user.id;
     try {
+        const values = [];
+        const allowedFields = [
+            "time_start",
+            "time_end",
+            "room",
+            "subject",
+            "assigned_section",
+            "code",
+            "day",
+        ];
+        for (const [key, value] of Object.entries(req.body)) {
+            if (value !== undefined) {
+                const column = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+                if (allowedFields.includes(column)) {
+                    values.push([column, value]);
+                }
+                else {
+                    resp.status(400).json({ message: `Invalid field: ${key}` });
+                    return;
+                }
+            }
+        }
+        const formattedValues = Object.fromEntries(values);
+        await schedules.insertOne({ ...formattedValues, professor_id: userID });
+        resp.status(200).json({ message: "New schedule successfully created" });
     }
-    catch (err) { }
+    catch (err) {
+        console.error(err);
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
 };
 exports.userProfessorSchedule = userProfessorSchedule;
+const userProfessorAllSchedule = async (req, resp) => {
+    const { day } = req.body;
+    const userID = req.user.id;
+    try {
+        const allSchedules = await schedules
+            .find({ professor_id: userID, day }, { projection: { professor_id: 0 } })
+            .toArray();
+        resp.status(200).json({ schedules: allSchedules });
+    }
+    catch (err) {
+        console.error(err);
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.userProfessorAllSchedule = userProfessorAllSchedule;
+const userProfessorEditSchedule = async (req, resp) => {
+    const userID = req.params.id;
+    try {
+        const values = [];
+        const allowedFields = [
+            "time_start",
+            "time_end",
+            "room",
+            "subject",
+            "assigned_section",
+            "code",
+            "day",
+        ];
+        for (const [key, value] of Object.entries(req.body)) {
+            if (value !== undefined) {
+                const column = key.replace(/([A-Z])/g, "_$1").toLowerCase();
+                if (allowedFields.includes(column)) {
+                    values.push([column, value]);
+                }
+                else {
+                    resp.status(400).json({ message: `Invalid field: ${key}` });
+                    return;
+                }
+            }
+        }
+        if (values.length === 0) {
+            resp.status(400).json({ message: "No valid fields to update." });
+            return;
+        }
+        const formattedValues = Object.fromEntries(values);
+        await schedules.updateOne({ _id: new mongodb_1.ObjectId(`${userID}`) }, { $set: formattedValues });
+        resp.status(200).json({ message: "Schedule updated successfully!" });
+    }
+    catch (err) {
+        console.error(err);
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.userProfessorEditSchedule = userProfessorEditSchedule;
+const userProfessorDeleteSchedule = async (req, resp) => {
+    const id = req.params.id;
+    try {
+        const deletedSchedule = await schedules.deleteOne({
+            _id: new mongodb_1.ObjectId(`${id}`),
+        });
+        if (!deletedSchedule.acknowledged) {
+            resp.status(404).json({
+                message: "Schedule delete not successful. Schedule not found",
+            });
+            return;
+        }
+        resp.status(200).json({ message: "Schedule successfully deleted!" });
+    }
+    catch (err) {
+        console.error(err);
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.userProfessorDeleteSchedule = userProfessorDeleteSchedule;
 const userVisit = async (req, resp) => {
     const userID = req.params.id;
-    console.log(userID);
     try {
         const userInfo = await users.findOne({ _id: new mongodb_1.ObjectId(`${userID}`) }, {
             projection: {
                 hashedPassword: 0,
             },
         });
-        console.log(userInfo);
         if (!userInfo) {
             resp.status(404).json({ message: "User not found." });
             return;
