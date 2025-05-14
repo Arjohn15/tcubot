@@ -34,7 +34,7 @@ const UserDetails: FC<{ user: RegistrantType }> = ({ user }) => {
         }
         buttonStyle="rounded-lg border-1 border-gray-half bg-[#efefef11] p-[1rem] normal-case w-full shadow-lg hover:bg-gray-half hover:cursor-pointer duration-300"
         boxContent={
-          <div className="px-[2rem] py-[1rem] relative bg-white rounded-lg w-[100%] min-h-[60vh]">
+          <div className="px-[2rem] py-[1rem] relative bg-white rounded-lg w-[100%] min-h-[100%]">
             <UserInfo user={user} onCloseModal={handleCloseModal} />
           </div>
         }
