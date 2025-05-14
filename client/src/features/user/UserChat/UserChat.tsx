@@ -193,7 +193,7 @@ const UserChat: FC = () => {
             <div className="flex justify-center items-center flex-col opacity-[0.25]">
               <div>
                 <img
-                  src="/images/logos/tcubot-logo-gray.png"
+                  src="/images/logos/tcubot-main-logo(2).png"
                   alt="TCUbot gray logo"
                   width={130}
                 />

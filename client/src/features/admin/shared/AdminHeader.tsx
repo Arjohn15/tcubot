@@ -6,13 +6,13 @@ const AdminHeader = () => {
       <div>
         <a href="/">
           <img
-            src="/images/logos/tcubot-main-logo.png"
+            src="/images/logos/tcubot-main-logo(2).png"
             alt="TCUbot main logo"
             width={120}
           />
         </a>
       </div>
-      <h1 className="text-red text-xl font-bold">Admin Dashboard</h1>
+      <h1 className="text-red text-base whitespace-nowrap font-bold">Admin Dashboard</h1>
       <span>
         <Link to={"/"}>
           <span className="font-bold w-max text-red block hover:cursor-pointer hover:underline">
