@@ -92,14 +92,14 @@ const AdminDashboard = () => {
             />
           </a>
         </div>
-        <h1 className="text-red text-base whitespace-nowrap sm:text-2x1 font-bold">Admin Dashboard</h1>
+        <h1 className="text-red text-base md:text-xl whitespace-nowrap font-bold">Admin Dashboard</h1>
         <AdminAvatar
           first_name={admin.first_name}
           last_name={admin.last_name}
         />
       </header>
 
-      <div className="mx-[10rem] m-[1rem] flex flex-col h-[100vh] pb-[2rem]">
+      <div className="mx-[2rem] md:mx-[10rem]  m-[1rem] flex flex-col pb-[2rem]">
         <h2 className="heading-two">New register requests</h2>
         <div className="grow-1 flex flex-col lg:flex-row lg:justify-center">
           <div className="w-[100%] lg:w-[40%]">
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
           <RegistrantOverview registrant={registrant} />
         </div>
       </div>
-      <div className="mx-[10rem]">
+      <div className="mx-[2rem] md:mx-[10rem]">
         <ManageUsers />
       </div>
     </>

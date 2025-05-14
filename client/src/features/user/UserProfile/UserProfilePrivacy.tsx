@@ -63,7 +63,7 @@ const UserProfilePrivacy: FC<ProfilePrivacyProps> = ({
   }
 
   return (
-    <div className="bg-white p-[1rem] rounded-lg w-[20vw]">
+    <div className="bg-white p-[1rem] rounded-lg w-[60vw] md:w-[20vw]">
       <h3 className="font-bold text-center text-xl pb-[1rem]">{name}</h3>
 
       <div className="flex flex-col gap-y-2">

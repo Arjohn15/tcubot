@@ -85,7 +85,7 @@ const AcceptRegistrant: FC<AcceptRegistrantProps> = ({
               <div className="flex items-center pb-[1rem]">
                 <span className="opacity-[0.5]">
                   <img
-                    src="/images/logos/tcubot-logo-gray.png"
+                    src="/images/logos/tcubot-logo-gray(2).png"
                     alt="TCUbot gray logo"
                     width={50}
                   />
