@@ -6,6 +6,7 @@ import { LuEye } from "react-icons/lu";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import SnackbarAuto from "../../../shared/components/SnackbarAuto";
+import { HOST } from "../../../utils/getHost";
 
 const UserLogIn = () => {
   const [schoolNumber, setSchoolNumber] = useState("");
@@ -19,7 +20,7 @@ const UserLogIn = () => {
 
   async function handleSubmit(): Promise<void> {
     try {
-      const res = await axios.post("http://localhost:5000/auth/login/user", {
+      const res = await axios.post(`http://${HOST}/auth/login/user`, {
         school_assigned_number: schoolNumber,
         password,
       });
@@ -48,14 +49,11 @@ const UserLogIn = () => {
 
       if (token) {
         try {
-          const res = await axios.get(
-            "http://localhost:5000/auth/user-login-auth",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const res = await axios.get(`http://${HOST}/auth/user-login-auth`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           if (res.status === 200) {
             navigate("/user/chat");
           }

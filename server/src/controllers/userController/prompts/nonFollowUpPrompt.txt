@@ -44,8 +44,11 @@ A: I’m sorry you feel that way. If there’s something specific about Taguig C
 
 Now your turn (Answer only):
 
+[[greet]]
+
 Q: [[message]]
 A: (Don't include the A: and Q:)
+
 
 
 

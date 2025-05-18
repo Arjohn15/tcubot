@@ -6,6 +6,7 @@ import { LuEye } from "react-icons/lu";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminHeader from "../shared/AdminHeader";
+import { HOST } from "../../../utils/getHost";
 
 const AdminLogIn = () => {
   const [username, setUsername] = useState("");
@@ -17,7 +18,7 @@ const AdminLogIn = () => {
 
   async function handleSubmit(): Promise<void> {
     try {
-      const res = await axios.post("http://localhost:5000/auth/login/admin", {
+      const res = await axios.post(`http://${HOST}/auth/login/admin`, {
         username,
         password,
       });
@@ -35,14 +36,11 @@ const AdminLogIn = () => {
 
       if (token) {
         try {
-          const res = await axios.get(
-            "http://localhost:5000/auth/admin-login-auth",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+          const res = await axios.get(`http://${HOST}/auth/admin-login-auth`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
 
           if (res.status === 200) {
             navigate("/admin/dashboard");

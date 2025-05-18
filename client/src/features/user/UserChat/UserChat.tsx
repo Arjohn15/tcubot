@@ -4,8 +4,10 @@ import { useAppSelector } from "../../store/hooks";
 import { selectUserState } from "../redux/userSlice";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { SyncLoader } from "react-spinners";
-
 import axios from "axios";
+import { HOST } from "../../../utils/getHost";
+import ChatMessage from "./ChatMessage";
+import { AnimatePresence, motion } from "motion/react";
 
 const UserChat: FC = () => {
   const [message, setMessage] = useState<string>("");
@@ -14,6 +16,7 @@ const UserChat: FC = () => {
   const [convo, setConvo] = useState<
     { _id: string; message: string; sender: string }[]
   >([]);
+  const [userInfos, setUserInfos] = useState<any[]>([]);
 
   const [responseAILoading, setResponseAILoading] = useState<boolean>(false);
 
@@ -43,87 +46,78 @@ const UserChat: FC = () => {
   };
 
   async function handleSubmitMessage() {
-    setConvo((prevConvo) => [
-      ...prevConvo,
-      {
-        message: message,
-        sender: "user",
-        _id: `temp-id-message:${message}-${new Date().getTime()}`,
-      },
-    ]);
-
-    setMessage("");
-
-    scrollDownConvoOverview(true);
-
-    setResponseAILoading(true);
-
-    try {
-      const resp = await axios.post(
-        "http://localhost:5000/user/chat/ai",
-        { message },
-        {
-          headers: {
-            Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
-          },
-        }
-      );
-
-      const tempId = `temp-id-message:${message}-${Date.now()}`;
-
+    if (message !== "") {
       setConvo((prevConvo) => [
         ...prevConvo,
         {
-          message: "",
-          sender: "ai",
-          _id: tempId,
+          message: message,
+          sender: "user",
+          _id: `temp-id-message:${message}-${new Date().getTime()}`,
         },
       ]);
 
-      const fullMessage = resp.data.aiResponse;
+      setUserInfos([]);
 
-      let i = 0;
-
-      const typingInterval = setInterval(() => {
-        if (i >= fullMessage.length - 1) {
-          clearInterval(typingInterval);
-          return;
-        }
-
-        setConvo((prevConvo) =>
-          prevConvo.map((msg) =>
-            msg._id === tempId
-              ? { ...msg, message: msg.message + fullMessage[i] }
-              : msg
-          )
-        );
-
-        i++;
-        scrollDownConvoOverview(true);
-      }, 5);
+      setMessage("");
 
       scrollDownConvoOverview(true);
-      setResponseAILoading((isResponseLoading) => !isResponseLoading);
-      console.log(resp);
-    } catch (err: any) {
-      setResponseAILoading((isResponseLoading) => !isResponseLoading);
-      console.log(err);
+
+      setResponseAILoading(true);
+
+      try {
+        const resp = await axios.post(
+          `http://${HOST}/user/chat/ai`,
+          { message },
+          {
+            headers: {
+              Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+            },
+          }
+        );
+
+        const tempId = `temp-id-message:${message}-${Date.now()}`;
+
+        setConvo((prevConvo) => [
+          ...prevConvo,
+          {
+            message: resp.data.aiResponse,
+            sender: "ai",
+            _id: tempId,
+          },
+        ]);
+
+        if (resp.data.userInfos) {
+          setUserInfos(resp.data.userInfos);
+        }
+
+        scrollDownConvoOverview(true);
+        setResponseAILoading((isResponseLoading) => !isResponseLoading);
+      } catch (err: any) {
+        const tempId = `temp-id-message:${message}-${Date.now()}`;
+
+        setConvo((prevConvo) => [
+          ...prevConvo,
+          {
+            message: err.response.data.message,
+            sender: "ai",
+            _id: tempId,
+          },
+        ]);
+
+        setResponseAILoading((isResponseLoading) => !isResponseLoading);
+      }
     }
   }
 
   async function getChatHistory() {
     try {
-      const resp = await axios.get("http://localhost:5000/user/chat/history", {
+      const resp = await axios.get(`http://${HOST}/user/chat/history`, {
         headers: {
           Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
         },
       });
 
       setConvo(resp.data.chatHistory);
-
-      setTimeout(() => {
-        scrollDownConvoOverview(false);
-      }, 100);
     } catch (err: any) {
       setErrMessage(
         err.response.data.message ||
@@ -135,6 +129,8 @@ const UserChat: FC = () => {
   useEffect(() => {
     getChatHistory();
   }, []);
+
+  console.log(userInfos);
 
   if (loading) {
     return (
@@ -148,11 +144,37 @@ const UserChat: FC = () => {
     <div>
       <div
         ref={chatOverviewRef}
-        className="h-[60vh] mx-[11.5rem] mt-[3rem] overflow-y-auto"
+        className="h-[70vh] mx-[20rem] overflow-y-auto"
       >
+        <AnimatePresence initial={false}>
+          {userInfos.length !== 0 ? (
+            <div className="sticky top-[0] flex justify-end">
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className=" bg-white p-[1rem] rounded-lg border-1"
+                key="box"
+              >
+                <span>
+                  Learn more by visiting{" "}
+                  <a
+                    className="text-underline text-blue"
+                    target="_blank"
+                    href={`/user/visit/${userInfos[0].id}`}
+                  >
+                    {userInfos[0].name}
+                  </a>
+                  ’s profile.
+                </span>
+              </motion.div>
+            </div>
+          ) : null}
+        </AnimatePresence>
         {convo.length !== 0 && (
           <ul>
-            {convo.map((c) => {
+            {convo.map((c, index) => {
               return (
                 <li key={c._id}>
                   <div className="text-wrap">
@@ -164,10 +186,14 @@ const UserChat: FC = () => {
                       </div>
                     ) : (
                       <div className="flex justify-start my-[1rem]">
-                        <p
-                          dangerouslySetInnerHTML={{ __html: c.message }}
-                          className="px-[1rem] py-[0.5rem] break-words rounded-xl"
-                        />
+                        {index === convo.length - 1 ? (
+                          <ChatMessage
+                            onScrollDown={scrollDownConvoOverview}
+                            message={c.message}
+                          />
+                        ) : (
+                          <p>{c.message}</p>
+                        )}
                       </div>
                     )}
                   </div>

@@ -8,6 +8,7 @@ import AdminHeader from "../shared/AdminHeader";
 import CircularLoading from "../../../shared/components/LoadingCircular";
 import RegistrantOverview from "./RegistrantOverview";
 import ManageUsers from "../ManageUsers/ManageUsers";
+import { HOST } from "../../../utils/getHost";
 
 const AdminDashboard = () => {
   const [registrants, setRegistrants] = useState<RegistrantType[]>([]);
@@ -23,7 +24,7 @@ const AdminDashboard = () => {
 
   const fetchedAdminData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/admin/dashboard", {
+      const res = await axios.get(`http://${HOST}/admin/dashboard`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token-admin")}`,
         },
@@ -92,7 +93,9 @@ const AdminDashboard = () => {
             />
           </a>
         </div>
-        <h1 className="text-red text-base whitespace-nowrap sm:text-2x1 font-bold">Admin Dashboard</h1>
+        <h1 className="text-red text-base whitespace-nowrap sm:text-2x1 font-bold">
+          Admin Dashboard
+        </h1>
         <AdminAvatar
           first_name={admin.first_name}
           last_name={admin.last_name}

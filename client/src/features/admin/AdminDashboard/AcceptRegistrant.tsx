@@ -5,6 +5,8 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import CircularLoading from "../../../shared/components/LoadingCircular";
 import { severity_type } from "../../../shared/components/SnackbarAuto";
+import { HOST } from "../../../utils/getHost";
+
 interface AcceptRegistrantProps {
   email: string;
   first_name: string;
@@ -34,7 +36,7 @@ const AcceptRegistrant: FC<AcceptRegistrantProps> = ({
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:5000/admin/dashboard/send-email-accept",
+        `http://${HOST}/admin/dashboard/send-email-accept`,
         data,
         {
           headers: {

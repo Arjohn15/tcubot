@@ -14,6 +14,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { snackbarOpened } from "../../store/shared/snackbarSlice";
 import { getYearDescription, years } from "../../../utils/getYearDescription";
 import { getSchoolSection, sections } from "../../../utils/getSchoolSections";
+import { HOST } from "../../../utils/getHost";
 
 const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
   user,
@@ -36,7 +37,6 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
   });
 
   const dispatch = useAppDispatch();
-
   function handleOpenModal(): void {
     setModal(true);
   }
@@ -52,14 +52,11 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
 
   async function handleDeleteUser() {
     try {
-      const res = await axios.delete(
-        `http://localhost:5000/user-delete/${user._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token-admin")}`,
-          },
-        }
-      );
+      const res = await axios.delete(`http://${HOST}/user-delete/${user._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token-admin")}`,
+        },
+      });
 
       if (res.status === 200) {
         dispatch(
@@ -95,7 +92,7 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/user-update-by-admin/${user._id}`,
+        `http://${HOST}/user-update-by-admin/${user._id}`,
         filteredInputs,
         {
           headers: {

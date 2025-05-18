@@ -2,6 +2,7 @@ import axios from "axios";
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
+import { HOST } from "../../../utils/getHost";
 
 interface UserState {
   loading: boolean;
@@ -19,14 +20,11 @@ const UserVisit: FC = () => {
 
   async function getUser(): Promise<void> {
     try {
-      const resp = await axios.get(
-        `http://localhost:5000/user/chat/visit/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
-          },
-        }
-      );
+      const resp = await axios.get(`http://${HOST}/user/chat/visit/${id}`, {
+        headers: {
+          Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+        },
+      });
 
       setUserState({
         userData: resp.data.userInfo,

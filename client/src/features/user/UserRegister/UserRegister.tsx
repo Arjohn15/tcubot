@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider } from "react-hook-form";
 import { formRegisterSchema } from "../../../utils/getRegisterValidation";
 import axios from "axios";
+import { HOST } from "../../../utils/getHost";
 
 const UserRegister = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -26,7 +27,7 @@ const UserRegister = () => {
 
   async function onSubmit(data: any) {
     try {
-      const res = await axios.post("http://localhost:5000/register", data, {
+      const res = await axios.post(`http://${HOST}/register`, data, {
         headers: {
           "Content-Type": "application/json",
         },

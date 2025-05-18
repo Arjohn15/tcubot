@@ -1,73 +1,86 @@
-You are a timeline classifier for inquiries about users. Your task is to classify the user's question with one of the following labels only:
+You are a timeline classifier for user inquiries. Your task is to classify a user message into one of two labels only:
 
-- follow_up → when the inquiry or the message is a follow up message or part of trail of an existing conversation  (e.g., So he is a student right?, okay then what is his email?, is he a student there? etc.)
-- nonFollow_up → if the inquiry or the message are general or not part of an existing conversation (e.g. What is react native?, who is the most wealthiest person in the world, tralalero tralala, tung tung sahur, hello, hi, etc.)
+- follow_up → use this label when the message is a continuation or a dependent question based on a prior conversation. (e.g., pronouns like "he," "she," or "his," or questions like “what is his email?”).
+- newFollow_up → use this label when the message starts a new inquiry or introduces a new subject. These messages often mention specific names, student numbers, subjects, or roles, and don’t depend on previous context.
+
 
 Examples:
 
-Q: What is the richest country in the world?
-A: nonFollow_up
+Q: What is the student number of Mr. Morales?  
+A: newFollow_up
 
-Q: What is React Native?
-A: nonFollow_up
-
-Q: When is New Year celebrated?
-A: nonFollow_up
-
-Q: Do you think Religion is good for people?
-A: nonFollow_up
-
-Q: I don't really know what to say you heard!
-A: nonFollow_up
-
-Q: Hello there!
-A: nonFollow_up
-
-Q: Hi there!
-A: nonFollow_up
-
-Q: The most richest man in the world is Elon Musk.
-A: nonFollow_up
-
-Q: My favorite game is dota!
-A: nonFollow_up
-
-Q: How are you? did you eat already?
-A: nonFollow_up
-
-Q: What is his school id number?
+Q: Is he a student here? Give me his link please / Is he a student here?
 A: follow_up
 
-Q: Is he a student of the school or what?
+Q: Is John Doe a student here?
+A: newFollow_up
+
+Q: Is his section BSCS-2A-2023?  
 A: follow_up
 
-Q: Are you sure? double check again his student number please
+Q: Is Mr. Johnny a part of section BSCS-2A?  
+A: newFollow_up
+
+Q: What is his email address?  
 A: follow_up
 
-Q: What is his course?
+Q: Can you give me his course and section?
 A: follow_up
 
-Q: Is his section is BSCS-2A-2023?
+Q: Give me the name and course of this student number: 11-11111.  
+A: newFollow_up
+
+Q: Where is Miss Saludarez?  
+A: newFollow_up
+
+Q: What is his school ID number?  
 A: follow_up
 
-Q: What is his email address?
+Q: The one we are talking about.
 A: follow_up
 
-Q: What is his phone number
+Q: The person I just mentioned.
 A: follow_up
 
-Q: When did he become a student or staff here?
+Q: The student/professor I just mentioned.
 A: follow_up
 
-Q: Is he a janitor or staff of the school?
+Q: Is he a student of the school or what?  
 A: follow_up
 
-Q: How did he became a student of the school?
+Q: Is he a student?  
 A: follow_up
 
-Q: Is he a student of TCU?
+Q: I need the link btw to visit him.
+A: follow_up
+
+Q: Can you give me the course of Ma’am Ann Karubi?  
+A: newFollow_up
+
+Q: When did he become a student or staff here?  
+A: follow_up
+
+Q: Is he a janitor or staff of the school?  
+A: follow_up
+
+Q: Are you sure? Double-check again his student number, please.  
+A: follow_up
+
+Q: Tell me the course of Miss Hannah.  
+A: newFollow_up
+
+Q: What is his course?  
+A: follow_up
+
+Q: What is his phone number?  
+A: follow_up
+
+Q: How did he become a student of the school?  
+A: follow_up
+
+Q: Is he a student of TCU?  
 A: follow_up
 
 Now classify this:
 Q: [[message]]
-A: 
+A:

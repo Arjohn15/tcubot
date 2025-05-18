@@ -14,7 +14,7 @@ const ManageUsers: FC = () => {
   const [isInterval, setIsInterval] = useState<boolean>(true);
 
   const dispatch = useAppDispatch();
-  const { users, loading, error } = useAppSelector(selectAllUsers);
+  const { users, error } = useAppSelector(selectAllUsers);
 
   function handleChangeInput(e: React.ChangeEvent<HTMLInputElement>): void {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -132,8 +132,6 @@ const ManageUsers: FC = () => {
             </div>
           </div>
         )}
-
-        {loading && <LoadingCircular />}
 
         {error && (
           <div className="flex justify-center items-center h-full">
