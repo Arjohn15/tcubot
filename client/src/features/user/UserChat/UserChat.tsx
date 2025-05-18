@@ -11,7 +11,6 @@ import { AnimatePresence, motion } from "motion/react";
 
 const UserChat: FC = () => {
   const [message, setMessage] = useState<string>("");
-  const [errMessage, setErrMessage] = useState<string>("");
 
   const [convo, setConvo] = useState<
     { _id: string; message: string; sender: string }[]
@@ -119,7 +118,8 @@ const UserChat: FC = () => {
 
       setConvo(resp.data.chatHistory);
     } catch (err: any) {
-      setErrMessage(
+      setConvo([]);
+      console.error(
         err.response.data.message ||
           "Something went wrong. Please try again later."
       );
@@ -129,8 +129,6 @@ const UserChat: FC = () => {
   useEffect(() => {
     getChatHistory();
   }, []);
-
-  console.log(userInfos);
 
   if (loading) {
     return (

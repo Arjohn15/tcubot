@@ -12,6 +12,9 @@ A: database_query
 Q: Who is Morales?
 A: database_query
 
+Q: [any gibberish or misstype words]
+A: general_question
+
 Q: Do I have any classes tomorrow?
 A: database_query_schedule
 
