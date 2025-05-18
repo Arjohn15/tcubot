@@ -68,17 +68,17 @@ const ManageUsers: FC = () => {
               </div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="w-[80%] h-[70vh] overflow-y-auto border-2 border-gray rounded-lg px-[1rem] mb-[2rem]">
+              <div className="w-[95%] sm:w-[80%] h-[70vh] overflow-y-auto border-2 border-gray rounded-lg px-[1rem] mb-[2rem]">
                 <div className="sticky top-0 z-10 bg-white">
                   <div>
                     <div className="flex w-full text-left font-bold px-[1rem] py-[0.5rem] text-sm">
-                      <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+                      <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
                         Last name
                       </span>
-                      <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+                      <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
                         First name
                       </span>
-                      <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+                      <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
                         School number
                       </span>
                     </div>

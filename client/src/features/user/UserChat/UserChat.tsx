@@ -219,9 +219,9 @@ const UserChat: FC = () => {
             <div className="flex justify-center items-center flex-col opacity-[0.25]">
               <div>
                 <img
-                  src="/images/logos/tcubot-main-logo(2).png"
+                  src="/images/logos/tcubot-logo-gray(2).png"
                   alt="TCUbot gray logo"
-                  width={130}
+                  width={150}
                 />
               </div>
               <div className="text-center text-3xl font-bold">
@@ -234,7 +234,7 @@ const UserChat: FC = () => {
         )}
       </div>
       <div className="flex justify-center mt-[2rem]">
-        <div className="rounded-xl bg-gray w-[30%] flex items-center px-[1rem] py-[0.5rem]">
+        <div className="rounded-xl bg-gray w-[90%] md:w-[30%] flex items-center px-[1rem] py-[0.5rem]">
           <textarea
             value={message}
             placeholder="Ask about people of TCU"

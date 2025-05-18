@@ -42,7 +42,7 @@ const UserProfile = () => {
       </div>
 
       <div className="flex justify-center">
-        <div className="w-[40%] border-3 border-gray-half rounded-lg px-[2rem] py-[1rem] text-sm">
+        <div className="w-[85%] md:w-[40%] border-3 border-gray-half rounded-lg px-[2rem] py-[1rem] text-sm">
           <div className="flex flex-col items-center">
             <div className="text-4xl bg-red w-[7rem] h-[7rem] rounded-full text-white font-bold flex items-center justify-center">
               <span>

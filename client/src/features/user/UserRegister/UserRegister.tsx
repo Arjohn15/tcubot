@@ -78,9 +78,9 @@ const UserRegister = () => {
             component="form"
             onSubmit={methods.handleSubmit(onSubmit, onError)}
             noValidate
-            sx={{ maxWidth: 400, mx: "auto" }}
+            sx={{ maxWidth: "100%", mx: "auto", my: "auto", display: "flex", alignItems: "center", justifyContent: "center"}}
           >
-            <div className="w-[30vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 ">
+            <div className="w-[90vw] md:w-[40vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 ">
               <h1 className="text-xl font-bold text-center">
                 Register a new account
               </h1>

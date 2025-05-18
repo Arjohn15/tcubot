@@ -21,20 +21,20 @@ const UserDetails: FC<{ user: RegistrantType }> = ({ user }) => {
         onCloseModal={handleCloseModal}
         buttonContent={
           <div className="flex w-full text-left">
-            <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+            <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
               {user.last_name}
             </span>
-            <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+            <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
               {user.first_name}
             </span>
-            <span className="w-1/3 block text-nowrap truncate overflow-x-hidden">
+            <span className="w-1/3 block md:text-nowrap md:truncate overflow-x-hidden">
               {user.school_assigned_number}
             </span>
           </div>
         }
         buttonStyle="rounded-lg border-1 border-gray-half bg-[#efefef11] p-[1rem] normal-case w-full shadow-lg hover:bg-gray-half hover:cursor-pointer duration-300"
         boxContent={
-          <div className="px-[2rem] py-[1rem] relative bg-white rounded-lg w-[40vw] min-h-[60vh]">
+          <div className="px-[2rem] py-[1rem] relative bg-white rounded-lg w-[100%] min-h-[100%]">
             <UserInfo user={user} onCloseModal={handleCloseModal} />
           </div>
         }
