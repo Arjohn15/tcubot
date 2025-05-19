@@ -15,11 +15,17 @@ A: follow_up
 Q: Is John Doe a student here?
 A: newFollow_up
 
+Q: What is the course?
+A: follow_up
+
 Q: Is his section BSCS-2A-2023?  
 A: follow_up
 
 Q: Is Mr. Johnny a part of section BSCS-2A?  
 A: newFollow_up
+
+Q: What is the first name?
+A: follow_up
 
 Q: What is his email address?  
 A: follow_up

@@ -9,9 +9,11 @@ const path_1 = __importDefault(require("path"));
 const db_1 = require("../../config/db");
 const checkUserGreet_1 = __importDefault(require("../../utils/checkUserGreet"));
 const queryChecker_1 = __importDefault(require("../../utils/queryChecker"));
+const mongodb_1 = require("mongodb");
 const messages = db_1.db.collection("messages");
 const users = db_1.db.collection("users");
 const data_contexts = db_1.db.collection("data_contexts");
+const schedules = db_1.db.collection("schedules");
 const userWithAI = async (req, resp, userMessage) => {
     const userID = req.user.id;
     try {
@@ -43,8 +45,7 @@ const userWithAI = async (req, resp, userMessage) => {
             if (timelineResponse.status !== 200) {
                 throw new Error(intentResponse.message);
             }
-            if (timelineResponseMessage === "newFollow_up" ||
-                timelineResponseMessage === "A: newFollow_up") {
+            if (timelineResponseMessage === "newFollow_up") {
                 const queryPrompt = fs_1.default
                     .readFileSync(queryPromptPath, "utf-8")
                     .replace("[[message]]", userMessage);
@@ -79,7 +80,7 @@ const userWithAI = async (req, resp, userMessage) => {
                     return;
                 }
                 const queryFormattedResult = queryResult.map(({ hashedPassword, ...rest }) => {
-                    return { ...rest, user_id: userID };
+                    return { ...rest };
                 });
                 const hasGreet = await (0, checkUserGreet_1.default)(userID);
                 const finalPrompt = fs_1.default
@@ -102,7 +103,13 @@ const userWithAI = async (req, resp, userMessage) => {
                 if (!insertedAIMessage.acknowledged) {
                     throw new Error("An error occured. AI message was not successfully inserted.");
                 }
-                await data_contexts.insertMany(queryFormattedResult.map(({ _id, ...rest }) => rest));
+                await data_contexts.insertMany(queryFormattedResult.map(({ _id, ...rest }) => {
+                    return {
+                        ...rest,
+                        original_id: new mongodb_1.ObjectId(`${_id}`),
+                        user_id: userID,
+                    };
+                }));
                 resp.status(200).json({
                     aiResponse: finalResponseParsed.response,
                     userInfos: finalResponseParsed.userInfos.length === 0
@@ -110,8 +117,7 @@ const userWithAI = async (req, resp, userMessage) => {
                         : finalResponseParsed.userInfos,
                 });
             }
-            if (timelineResponseMessage === "follow_up" ||
-                timelineResponseMessage === "A: follow_up") {
+            if (timelineResponseMessage === "follow_up") {
                 const followUpPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "followUpPrompt.txt");
                 const chatHistory = await messages
                     .find({ user_id: userID }, { projection: { _id: 0, user_id: 0 } })
@@ -121,7 +127,7 @@ const userWithAI = async (req, resp, userMessage) => {
                 const context = await data_contexts
                     .find({ user_id: userID })
                     .sort({ _id: -1 })
-                    .limit(1)
+                    .limit(5)
                     .toArray();
                 const followUpPrompt = fs_1.default
                     .readFileSync(followUpPromptPath, "utf-8")
@@ -149,6 +155,79 @@ const userWithAI = async (req, resp, userMessage) => {
                 });
             }
         }
+        if (intentResponse.message.trim() === "self_question") {
+            const currentDate = new Date();
+            const weekdays = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+            ];
+            const currentDateformatted = currentDate.toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                weekday: "long",
+                hour12: false,
+            });
+            const selfQuestionPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "selfQuestionPrompt.txt");
+            const self = await users.findOne({ _id: new mongodb_1.ObjectId(`${userID}`) }, {
+                projection: {
+                    _id: 0,
+                    show_birthday: 0,
+                    show_phone_number: 0,
+                    hashedPassword: 0,
+                },
+            });
+            const selfSchedules = await schedules
+                .find({ assigned_section: self?.section }, { projection: { _id: 0 } })
+                .toArray();
+            const profsWithScheds = await Promise.all(selfSchedules.map(async ({ _id, professor_id, ...schedule }) => {
+                const professor = await users.findOne({
+                    _id: new mongodb_1.ObjectId(`${professor_id}`),
+                }, {
+                    projection: {
+                        _id: 0,
+                        first_name: 1,
+                        last_name: 1,
+                        email: 1,
+                        phone_number: 1,
+                        role: 1,
+                        school_assigned_number: 1,
+                    },
+                });
+                return { ...professor, ...schedule, day: weekdays[schedule.day] };
+            }));
+            const chatHistory = await messages
+                .find({ user_id: userID }, { projection: { _id: 0, user_id: 0 } })
+                .sort({ _id: -1 })
+                .limit(5)
+                .toArray();
+            const selfQuestionPrompt = fs_1.default
+                .readFileSync(selfQuestionPromptPath, "utf-8")
+                .replace("[[date]]", currentDateformatted)
+                .replace("[[message]]", userMessage)
+                .replace("[[self]]", JSON.stringify(self))
+                .replace("[[schedules]]", JSON.stringify(profsWithScheds))
+                .replace("[[chatHistory]]", JSON.stringify(chatHistory));
+            const selfQuestionPromptResponse = await (0, sendToOpenChat_1.sendToOpenChat)(selfQuestionPrompt);
+            const insertedAIMessage = await messages.insertOne({
+                user_id: userID,
+                sender: "ai",
+                message: selfQuestionPromptResponse.message,
+            });
+            if (!insertedAIMessage.acknowledged) {
+                throw new Error("An error occured. AI message was not successfully inserted.");
+            }
+            console.log(selfQuestionPrompt);
+            // messages.deleteMany({ user_id: userID });
+            resp.status(200).json({ aiResponse: selfQuestionPromptResponse.message });
+        }
         if (intentResponse.message.trim() === "general_question") {
             const nonFollowUpPromptPath = path_1.default.join(process.cwd(), "src", "controllers", "userController", "prompts", "nonFollowUpPrompt.txt");
             const hasGreet = await (0, checkUserGreet_1.default)(userID);
@@ -172,12 +251,9 @@ const userWithAI = async (req, resp, userMessage) => {
             }
             resp.status(200).json({ aiResponse: nonFollowUpResponse.message });
         }
-        if (intentResponse.message.trim() === "database_query_schedule") {
-            console.log("Hallo: Schedule");
-        }
     }
     catch (err) {
-        const errorMessage = " I'm sorry. Something went wrong. Please try again to provide your inquiry.";
+        const errorMessage = "I'm sorry. Something went wrong. Please try again to provide your inquiry.";
         try {
             console.error(err);
             const insertedAIMessage = await messages.insertOne({

@@ -5,10 +5,12 @@ import path from "path";
 import { db } from "../../config/db";
 import checkUserGreet from "../../utils/checkUserGreet";
 import queryChecker from "../../utils/queryChecker";
+import { ObjectId } from "mongodb";
 
 const messages = db.collection("messages");
 const users = db.collection("users");
 const data_contexts = db.collection("data_contexts");
+const schedules = db.collection("schedules");
 
 const userWithAI = async (
   req: Request,
@@ -89,10 +91,7 @@ const userWithAI = async (
         throw new Error(intentResponse.message);
       }
 
-      if (
-        timelineResponseMessage === "newFollow_up" ||
-        timelineResponseMessage === "A: newFollow_up"
-      ) {
+      if (timelineResponseMessage === "newFollow_up") {
         const queryPrompt = fs
           .readFileSync(queryPromptPath, "utf-8")
           .replace("[[message]]", userMessage);
@@ -141,7 +140,7 @@ const userWithAI = async (
 
         const queryFormattedResult = queryResult.map(
           ({ hashedPassword, ...rest }) => {
-            return { ...rest, user_id: userID };
+            return { ...rest };
           }
         );
 
@@ -179,7 +178,13 @@ const userWithAI = async (
         }
 
         await data_contexts.insertMany(
-          queryFormattedResult.map(({ _id, ...rest }) => rest)
+          queryFormattedResult.map(({ _id, ...rest }) => {
+            return {
+              ...rest,
+              original_id: new ObjectId(`${_id}`),
+              user_id: userID,
+            };
+          })
         );
 
         resp.status(200).json({
@@ -191,10 +196,7 @@ const userWithAI = async (
         });
       }
 
-      if (
-        timelineResponseMessage === "follow_up" ||
-        timelineResponseMessage === "A: follow_up"
-      ) {
+      if (timelineResponseMessage === "follow_up") {
         const followUpPromptPath = path.join(
           process.cwd(),
           "src",
@@ -213,7 +215,7 @@ const userWithAI = async (
         const context = await data_contexts
           .find({ user_id: userID })
           .sort({ _id: -1 })
-          .limit(1)
+          .limit(5)
           .toArray();
 
         const followUpPrompt = fs
@@ -243,6 +245,7 @@ const userWithAI = async (
             "An error occured. AI message was not successfully inserted."
           );
         }
+
         resp.status(200).json({
           aiResponse: followUpPromptParsedResponse.response,
           userInfos:
@@ -251,6 +254,113 @@ const userWithAI = async (
               : followUpPromptParsedResponse.userInfos,
         });
       }
+    }
+
+    if (intentResponse.message.trim() === "self_question") {
+      const currentDate = new Date();
+
+      const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+
+      const currentDateformatted = currentDate.toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        weekday: "long",
+        hour12: false,
+      });
+
+      const selfQuestionPromptPath = path.join(
+        process.cwd(),
+        "src",
+        "controllers",
+        "userController",
+        "prompts",
+        "selfQuestionPrompt.txt"
+      );
+
+      const self = await users.findOne(
+        { _id: new ObjectId(`${userID}`) },
+        {
+          projection: {
+            _id: 0,
+            show_birthday: 0,
+            show_phone_number: 0,
+            hashedPassword: 0,
+          },
+        }
+      );
+
+      const selfSchedules = await schedules
+        .find({ assigned_section: self?.section }, { projection: { _id: 0 } })
+        .toArray();
+
+      const profsWithScheds = await Promise.all(
+        selfSchedules.map(async ({ _id, professor_id, ...schedule }) => {
+          const professor = await users.findOne(
+            {
+              _id: new ObjectId(`${professor_id}`),
+            },
+            {
+              projection: {
+                _id: 0,
+                first_name: 1,
+                last_name: 1,
+                email: 1,
+                phone_number: 1,
+                role: 1,
+                school_assigned_number: 1,
+              },
+            }
+          );
+
+          return { ...professor, ...schedule, day: weekdays[schedule.day] };
+        })
+      );
+
+      const chatHistory = await messages
+        .find({ user_id: userID }, { projection: { _id: 0, user_id: 0 } })
+        .sort({ _id: -1 })
+        .limit(5)
+        .toArray();
+
+      const selfQuestionPrompt = fs
+        .readFileSync(selfQuestionPromptPath, "utf-8")
+        .replace("[[date]]", currentDateformatted)
+        .replace("[[message]]", userMessage)
+        .replace("[[self]]", JSON.stringify(self))
+        .replace("[[schedules]]", JSON.stringify(profsWithScheds))
+        .replace("[[chatHistory]]", JSON.stringify(chatHistory));
+
+      const selfQuestionPromptResponse = await sendToOpenChat(
+        selfQuestionPrompt
+      );
+
+      const insertedAIMessage = await messages.insertOne({
+        user_id: userID,
+        sender: "ai",
+        message: selfQuestionPromptResponse.message,
+      });
+
+      if (!insertedAIMessage.acknowledged) {
+        throw new Error(
+          "An error occured. AI message was not successfully inserted."
+        );
+      }
+
+      console.log(selfQuestionPrompt);
+
+      // messages.deleteMany({ user_id: userID });
+      resp.status(200).json({ aiResponse: selfQuestionPromptResponse.message });
     }
 
     if (intentResponse.message.trim() === "general_question") {
@@ -295,14 +405,9 @@ const userWithAI = async (
 
       resp.status(200).json({ aiResponse: nonFollowUpResponse.message });
     }
-
-    if (intentResponse.message.trim() === "database_query_schedule") {
-      console.log("Hallo: Schedule");
-    }
   } catch (err: any) {
     const errorMessage =
-      " I'm sorry. Something went wrong. Please try again to provide your inquiry.";
-
+      "I'm sorry. Something went wrong. Please try again to provide your inquiry.";
     try {
       console.error(err);
 

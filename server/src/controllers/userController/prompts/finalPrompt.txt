@@ -20,10 +20,11 @@ YOUR RESPONSE MUST BE:
 EXAMPLE FORMAT ONLY:
 {
 "response": "Your answer here.",
-"userInfos": [{"name": "name from the retrieved data", "id": "id from the retrieved data"}]
+"userInfos": [{"name": "name from the retrieved data", "id": "_id from the retrieved data"}]
 }
 
 IMPORTANT INSTRUCTIONS:
 - DO NOT ever show the ID directly in the response text—only include it in the userInfos array.
+- If there are two or more data found, ask user for more information to narrow down such as the school id number.
 - If there's no retrieved data, inform the user about it and tell them to use proper keywords for accurate results such as their full name or student number.
-- If data is found, inform the user to click the link in the box at the top for more details.
+- If data is found, inform the user to click the link in the pop-up box at the top for more details.

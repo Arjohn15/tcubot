@@ -10,11 +10,13 @@ const checkUserGreet = async (userID: string): Promise<boolean> => {
       .find({ user_id: `${userID}` }, { projection: { message: 1 } })
       .toArray();
 
-    const match = userMessages.find((message) =>
-      message.message.toLowerCase().includes("hello")
+    const hasGreeting = userMessages.some((message) =>
+      ["hello", "hi"].some((greeting) =>
+        message.message.toLowerCase().includes(greeting)
+      )
     );
 
-    if (match) {
+    if (hasGreeting) {
       hasGreet = true;
     } else {
       hasGreet = false;

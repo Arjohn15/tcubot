@@ -63,6 +63,10 @@ const UserChat: FC = () => {
 
       setResponseAILoading(true);
 
+      setTimeout(() => {
+        handleInput();
+      }, 100);
+
       try {
         const resp = await axios.post(
           `http://${HOST}/user/chat/ai`,
@@ -139,14 +143,14 @@ const UserChat: FC = () => {
   }
 
   return (
-    <div>
+    <div className="relative">
       <div
         ref={chatOverviewRef}
-        className="h-[70vh] mx-[20rem] overflow-y-auto"
+        className="h-[70vh] mx-[15rem] overflow-y-auto max-sm:mx-[1rem]"
       >
         <AnimatePresence initial={false}>
           {userInfos.length !== 0 ? (
-            <div className="sticky top-[0] flex justify-end">
+            <div className="sticky right-[1rem] top-[0] flex justify-end">
               <motion.div
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -175,22 +179,26 @@ const UserChat: FC = () => {
             {convo.map((c, index) => {
               return (
                 <li key={c._id}>
-                  <div className="text-wrap">
+                  <div className="text-wrap max-sm:break-all">
                     {c.sender === "user" ? (
-                      <div className="flex justify-end text-wrap my-[1.5rem]">
+                      <div className="flex justify-end text-wrap my-[2rem]">
                         <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words">
                           {c.message}
                         </p>
                       </div>
                     ) : (
-                      <div className="flex justify-start my-[1rem]">
+                      <div className="flex justify-start my-[2rem]">
                         {index === convo.length - 1 ? (
-                          <ChatMessage
-                            onScrollDown={scrollDownConvoOverview}
-                            message={c.message}
-                          />
+                          <div className="whitespace-pre-wrap">
+                            <ChatMessage
+                              onScrollDown={scrollDownConvoOverview}
+                              message={c.message}
+                            />
+                          </div>
                         ) : (
-                          <p>{c.message}</p>
+                          <div className="whitespace-pre-wrap">
+                            <p>{c.message}</p>
+                          </div>
                         )}
                       </div>
                     )}
