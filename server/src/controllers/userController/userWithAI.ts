@@ -144,6 +144,8 @@ const userWithAI = async (
           }
         );
 
+        console.log(queryFormattedResult);
+
         const hasGreet = await checkUserGreet(userID);
 
         const finalPrompt = fs

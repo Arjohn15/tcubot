@@ -1,5 +1,4 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { IoSend } from "react-icons/io5";
 import { useAppSelector } from "../../store/hooks";
 import { selectUserState } from "../redux/userSlice";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
@@ -8,10 +7,9 @@ import axios from "axios";
 import { HOST } from "../../../utils/getHost";
 import ChatMessage from "./ChatMessage";
 import { AnimatePresence, motion } from "motion/react";
+import ChatTextArea from "./ChatTextArea";
 
 const UserChat: FC = () => {
-  const [message, setMessage] = useState<string>("");
-
   const [convo, setConvo] = useState<
     { _id: string; message: string; sender: string }[]
   >([]);
@@ -44,7 +42,7 @@ const UserChat: FC = () => {
     }
   };
 
-  async function handleSubmitMessage() {
+  async function handleSubmitMessage(message: string) {
     if (message !== "") {
       setConvo((prevConvo) => [
         ...prevConvo,
@@ -56,8 +54,6 @@ const UserChat: FC = () => {
       ]);
 
       setUserInfos([]);
-
-      setMessage("");
 
       scrollDownConvoOverview(true);
 
@@ -146,7 +142,7 @@ const UserChat: FC = () => {
     <div className="relative">
       <div
         ref={chatOverviewRef}
-        className="h-[70vh] mx-[15rem] overflow-y-auto max-sm:mx-[1rem]"
+        className="h-[70vh] mx-[20rem] mt-[1rem] overflow-y-auto max-sm:mx-[1rem]"
       >
         <AnimatePresence initial={false}>
           {userInfos.length !== 0 ? (
@@ -175,7 +171,7 @@ const UserChat: FC = () => {
           ) : null}
         </AnimatePresence>
         {convo.length !== 0 && (
-          <ul>
+          <ul className="px-[1rem]">
             {convo.map((c, index) => {
               return (
                 <li key={c._id}>
@@ -187,7 +183,7 @@ const UserChat: FC = () => {
                         </p>
                       </div>
                     ) : (
-                      <div className="flex justify-start my-[2rem]">
+                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem] bg-[#efefef]">
                         {index === convo.length - 1 ? (
                           <div className="whitespace-pre-wrap">
                             <ChatMessage
@@ -239,32 +235,8 @@ const UserChat: FC = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center mt-[2rem]">
-        <div className="rounded-xl bg-gray w-[90%] md:w-[30%] flex items-center px-[1rem] py-[0.5rem]">
-          <textarea
-            value={message}
-            placeholder="Ask about people of TCU"
-            ref={textareaRef}
-            onInput={handleInput}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-2 rounded resize-none overflow-auto max-h-[5.3125rem] outline-none"
-            rows={1}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmitMessage();
-              }
-            }}
-          ></textarea>
-          <button
-            onClick={handleSubmitMessage}
-            className="ml-[0.5rem] hover:opacity-[0.5] hover:cursor-pointer duration-300"
-          >
-            <span className="text-3xl text-red">
-              <IoSend />
-            </span>
-          </button>
-        </div>
+      <div className="flex justify-center mt-[1rem]">
+        <ChatTextArea onSubmitMessage={handleSubmitMessage} />
       </div>
     </div>
   );

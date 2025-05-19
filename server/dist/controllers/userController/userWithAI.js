@@ -82,6 +82,7 @@ const userWithAI = async (req, resp, userMessage) => {
                 const queryFormattedResult = queryResult.map(({ hashedPassword, ...rest }) => {
                     return { ...rest };
                 });
+                console.log(queryFormattedResult);
                 const hasGreet = await (0, checkUserGreet_1.default)(userID);
                 const finalPrompt = fs_1.default
                     .readFileSync(finalPromptPath, "utf-8")
