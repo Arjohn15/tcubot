@@ -183,7 +183,7 @@ const UserChat: FC = () => {
                         </p>
                       </div>
                     ) : (
-                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem] bg-[#efefef]">
+                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem]">
                         {index === convo.length - 1 ? (
                           <div className="whitespace-pre-wrap">
                             <ChatMessage

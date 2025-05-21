@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userVisit = exports.userProfessorDeleteSchedule = exports.userProfessorEditSchedule = exports.userProfessorAllSchedule = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
+exports.userWeekdaySchedule = exports.userVisit = exports.userProfessorDeleteSchedule = exports.userProfessorEditSchedule = exports.userProfessorAllSchedule = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const passwordUpdateSchema_1 = require("../../schema/passwordUpdateSchema");
@@ -353,3 +353,50 @@ const userVisit = async (req, resp) => {
     }
 };
 exports.userVisit = userVisit;
+const userWeekdaySchedule = async (req, resp) => {
+    const weekDay = req.query.weekDay;
+    const section = req.query.section;
+    const role = req.query.role;
+    const userID = req.query.id;
+    const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    try {
+        let weekDaySchedule;
+        if (role === "student") {
+            weekDaySchedule = await schedules
+                .find({
+                assigned_section: section,
+                day: Number(weekDay),
+            })
+                .toArray();
+        }
+        if (role === "professor") {
+            weekDaySchedule = await schedules
+                .find({
+                professor_id: userID,
+                day: Number(weekDay),
+            })
+                .toArray();
+        }
+        if (!weekDaySchedule || weekDaySchedule.length === 0) {
+            resp
+                .status(404)
+                .json({ message: `No ${weekdays[Number(weekDay)]} schedule.` });
+            return;
+        }
+        resp.status(200).json({ weekDaySchedule });
+    }
+    catch (err) {
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.userWeekdaySchedule = userWeekdaySchedule;

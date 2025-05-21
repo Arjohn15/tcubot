@@ -13,6 +13,7 @@ import {
   userUpdateByAdmin,
   userUpdatePassword,
   userVisit,
+  userWeekdaySchedule,
 } from "../controllers/userController/userController";
 import { formRegisterSchema } from "../schema/formRegisterSchema";
 import { validateRegistrants } from "../middleware/validateRegistrants";
@@ -32,6 +33,12 @@ userRouter.get(
   userChatHistory
 );
 userRouter.get("/user/chat/visit/:id", authenticate, authorize_user, userVisit);
+userRouter.get(
+  "/user/schedule-weekday",
+  authenticate,
+  authorize_user,
+  userWeekdaySchedule
+);
 
 userRouter.post(
   "/register",

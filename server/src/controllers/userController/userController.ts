@@ -452,3 +452,58 @@ export const userVisit = async (
       .json({ message: "Something went wrong. Please try again later." });
   }
 };
+
+export const userWeekdaySchedule = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const weekDay = req.query.weekDay;
+  const section = req.query.section;
+  const role = req.query.role;
+  const userID = req.query.id;
+
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  try {
+    let weekDaySchedule;
+
+    if (role === "student") {
+      weekDaySchedule = await schedules
+        .find({
+          assigned_section: section,
+          day: Number(weekDay),
+        })
+        .toArray();
+    }
+
+    if (role === "professor") {
+      weekDaySchedule = await schedules
+        .find({
+          professor_id: userID,
+          day: Number(weekDay),
+        })
+        .toArray();
+    }
+
+    if (!weekDaySchedule || weekDaySchedule.length === 0) {
+      resp
+        .status(404)
+        .json({ message: `No ${weekdays[Number(weekDay)]} schedule.` });
+      return;
+    }
+
+    resp.status(200).json({ weekDaySchedule });
+  } catch (err) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};

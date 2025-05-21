@@ -8,7 +8,8 @@ const checkUserGreet = async (userID) => {
         const userMessages = await messages
             .find({ user_id: `${userID}` }, { projection: { message: 1 } })
             .toArray();
-        const hasGreeting = userMessages.some((message) => ["hello", "hi"].some((greeting) => message.message.toLowerCase().includes(greeting)));
+        const hasGreeting = userMessages.length >= 2;
+        console.log(hasGreeting);
         if (hasGreeting) {
             hasGreet = true;
         }

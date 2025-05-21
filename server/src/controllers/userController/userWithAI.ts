@@ -106,13 +106,11 @@ const userWithAI = async (
 
         let queryResponseParsed = JSON.parse(queryResponseChecked);
 
-        let queryResult = await users
-          .find(queryResponseParsed.query, {
-            projection: {
-              ...queryResponseParsed.projection,
-            },
-          })
-          .toArray();
+        let queryResult = await users.findOne(queryResponseParsed.query, {
+          projection: {
+            ...queryResponseParsed.projection,
+          },
+        });
 
         if (!queryResult || queryResult.length === 0) {
           const queryFailedPrompt = `This is a prompt for failed result. You are talking directly now to a user. Your task is to inform them that you did not find any results regarding their inquiry.`;
@@ -138,13 +136,7 @@ const userWithAI = async (
           return;
         }
 
-        const queryFormattedResult = queryResult.map(
-          ({ hashedPassword, ...rest }) => {
-            return { ...rest };
-          }
-        );
-
-        console.log(queryFormattedResult);
+        const { hashedPassword, ...queryFormattedResult } = queryResult;
 
         const hasGreet = await checkUserGreet(userID);
 
@@ -179,15 +171,13 @@ const userWithAI = async (
           );
         }
 
-        await data_contexts.insertMany(
-          queryFormattedResult.map(({ _id, ...rest }) => {
-            return {
-              ...rest,
-              original_id: new ObjectId(`${_id}`),
-              user_id: userID,
-            };
-          })
-        );
+        const { _id, ...queryResultInsert } = queryFormattedResult;
+
+        await data_contexts.insertOne({
+          ...queryResultInsert,
+          original_id: _id.toString(),
+          user_id: userID,
+        });
 
         resp.status(200).json({
           aiResponse: finalResponseParsed.response,
@@ -359,9 +349,6 @@ const userWithAI = async (
         );
       }
 
-      console.log(selfQuestionPrompt);
-
-      // messages.deleteMany({ user_id: userID });
       resp.status(200).json({ aiResponse: selfQuestionPromptResponse.message });
     }
 
