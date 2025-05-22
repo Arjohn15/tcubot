@@ -44,6 +44,23 @@ const UserChat: FC = () => {
     }
   };
 
+  async function getChatHistory() {
+    try {
+      const resp = await axios.get(`http://${HOST}/user/chat/history`, {
+        headers: {
+          Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+        },
+      });
+
+      setConvo(resp.data.chatHistory);
+    } catch (err: any) {
+      setConvo([]);
+      console.error(
+        err.response.data.message ||
+          "Something went wrong. Please try again later."
+      );
+    }
+  }
   async function handleSubmitMessage(message: string) {
     if (message !== "") {
       setConvo((prevConvo) => [
@@ -108,24 +125,6 @@ const UserChat: FC = () => {
 
         setResponseAILoading((isResponseLoading) => !isResponseLoading);
       }
-    }
-  }
-
-  async function getChatHistory() {
-    try {
-      const resp = await axios.get(`http://${HOST}/user/chat/history`, {
-        headers: {
-          Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
-        },
-      });
-
-      setConvo(resp.data.chatHistory);
-    } catch (err: any) {
-      setConvo([]);
-      console.error(
-        err.response.data.message ||
-          "Something went wrong. Please try again later."
-      );
     }
   }
 
@@ -195,7 +194,7 @@ const UserChat: FC = () => {
             {convo.map((c, index) => {
               return (
                 <li key={c._id}>
-                  <div className="text-wrap max-sm:break-all">
+                  <div className="text-wrap">
                     {c.sender === "user" ? (
                       <div className="flex justify-end text-wrap my-[2rem]">
                         <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words">

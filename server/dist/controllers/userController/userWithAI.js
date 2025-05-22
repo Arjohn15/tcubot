@@ -122,7 +122,7 @@ const userWithAI = async (req, resp, userMessage) => {
                 const context = await data_contexts
                     .find({ user_id: userID })
                     .sort({ _id: -1 })
-                    .limit(5)
+                    .limit(1)
                     .toArray();
                 const followUpPrompt = fs_1.default
                     .readFileSync(followUpPromptPath, "utf-8")
