@@ -1,0 +1,125 @@
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { MdOutlinePeopleAlt } from "react-icons/md";
+import { IoIosArrowDown } from "react-icons/io";
+import axios from "axios";
+import { HOST } from "../../../utils/getHost";
+import LoadingCircular from "../../../shared/components/LoadingCircular";
+
+interface RecentVisit {
+  visitee_name: string;
+  visitee_id: string;
+}
+
+interface RecentVisitsState {
+  loading: boolean;
+  error: string | null;
+  recentVisits: RecentVisit[];
+}
+const RecentVisits = () => {
+  const [isRecentVisits, setIsRecentVisits] = useState<boolean>(false);
+  const [recentVisitsState, setRecentVisitsState] = useState<RecentVisitsState>(
+    {
+      loading: true,
+      error: null,
+      recentVisits: [],
+    }
+  );
+
+  useEffect(() => {
+    const getAllRecentVisits = async () => {
+      try {
+        const resp = await axios.get<{ visits: RecentVisit[] }>(
+          `http://${HOST}/user/recent-visits`,
+          {
+            headers: {
+              Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+            },
+          }
+        );
+
+        setRecentVisitsState({
+          loading: false,
+          error: null,
+          recentVisits: resp.data.visits,
+        });
+      } catch (err: any) {
+        console.log(err);
+        setRecentVisitsState({
+          loading: false,
+          error:
+            err.response.data.message ??
+            "Something went wrong. Please try again later.",
+          recentVisits: [],
+        });
+      }
+    };
+
+    getAllRecentVisits();
+  }, []);
+
+  return (
+    <div className="mr-[0.5rem]">
+      <button
+        onClick={() => setIsRecentVisits(!isRecentVisits)}
+        className="bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
+      >
+        <span>
+          <MdOutlinePeopleAlt />
+        </span>
+        <span>View my recent visits</span>
+        <motion.div
+          className="inline-block"
+          animate={{ rotate: isRecentVisits ? 180 : 0 }}
+          transition={{ duration: 0.1 }}
+          key="arrowUpDown"
+        >
+          <IoIosArrowDown />
+        </motion.div>
+      </button>
+      <AnimatePresence>
+        {isRecentVisits ? (
+          <motion.div
+            key="slidingDiv"
+            initial={{ y: "-5%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-5%", opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <div className="relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
+              {recentVisitsState.loading && <LoadingCircular size="1.5rem" />}
+
+              {recentVisitsState.error && (
+                <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                  {recentVisitsState.error}
+                </p>
+              )}
+              <ul className="flex flex-col gap-y-2">
+                {recentVisitsState.recentVisits.length === 0 ? (
+                  <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                    You have no recent visits.
+                  </p>
+                ) : (
+                  recentVisitsState.recentVisits.map((recentVisit) => {
+                    return (
+                      <li key={recentVisit.visitee_id} className="text-sm">
+                        <a
+                          href={`/user/visit/${recentVisit.visitee_id}`}
+                          className="text-blue underline"
+                        >
+                          {recentVisit.visitee_name}
+                        </a>
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default RecentVisits;

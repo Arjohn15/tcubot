@@ -1,13 +1,14 @@
 import axios from "axios";
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FC, useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { HOST } from "../../../utils/getHost";
 import dayjs from "dayjs";
 import { getCourseFormalName } from "../../../utils/getCourseFormalName";
 import ScheduleProvider from "./ScheduleProvider";
 import SchoolActivity from "./SchoolActivity";
-
+import { Button } from "@mui/material";
+import { IoMdArrowBack } from "react-icons/io";
 interface UserProfile {
   first_name: string;
   last_name: string;
@@ -30,6 +31,9 @@ interface UserState {
 }
 const UserVisit: FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPathRef = useRef(location.pathname);
 
   const [userState, setUserState] = useState<UserState>({
     loading: true,
@@ -50,6 +54,28 @@ const UserVisit: FC = () => {
     errorMessage: null,
   });
 
+  async function addUserRecentVisit(
+    userFName: string,
+    userLName: string
+  ): Promise<void> {
+    try {
+      await axios.post(
+        `http://${HOST}/user/recent-visits`,
+        {
+          visitee_id: id,
+          visitee_name: `${userFName} ${userLName}`,
+        },
+        {
+          headers: {
+            Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+          },
+        }
+      );
+    } catch (err: any) {
+      console.error(err.response.data.message);
+    }
+  }
+
   async function getUser(): Promise<void> {
     try {
       const resp = await axios.get(`http://${HOST}/user/chat/visit/${id}`, {
@@ -63,6 +89,11 @@ const UserVisit: FC = () => {
         loading: false,
         errorMessage: null,
       });
+
+      addUserRecentVisit(
+        resp.data.userInfo.first_name,
+        resp.data.userInfo.last_name
+      );
     } catch (err: any) {
       setUserState({
         userData: {
@@ -92,7 +123,7 @@ const UserVisit: FC = () => {
   if (userState.loading) {
     return <LoadingCircular />;
   }
-  console.log(userState.userData);
+
   if (userState.errorMessage) {
     return (
       <div className="h-full flex justify-center items-center">
@@ -120,7 +151,7 @@ const UserVisit: FC = () => {
 
   return (
     <div className="flex">
-      <div className="w-[40%] px-[3rem] py-[2rem] border-gray-half border-b-2">
+      <div className="relative w-[45%] px-[3rem] py-[2rem] border-gray-half border-b-2">
         <h2 className="text-2xl font-bold pb-[2.5rem]">Personal Information</h2>
 
         <ul className="flex flex-col gap-y-3 py-[1rem]">
@@ -185,6 +216,24 @@ const UserVisit: FC = () => {
             </>
           )}
         </ul>
+        <div className="absolute top-[0.25rem] left-0">
+          <Button
+            style={{ minWidth: "max-content" }}
+            onClick={() => {
+              navigate(-1);
+
+              setTimeout(() => {
+                if (currentPathRef.current === window.location.pathname) {
+                  navigate("/user/chat");
+                }
+              }, 200);
+            }}
+          >
+            <span className="text-2xl text-black">
+              <IoMdArrowBack />
+            </span>
+          </Button>
+        </div>
       </div>
       <ScheduleProvider>
         <SchoolActivity section={section} role={role} />

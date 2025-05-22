@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { IoMdArrowDropright } from "react-icons/io";
 import { isTimeInRange } from "../../../utils/getTimeRange";
 
 dayjs.extend(customParseFormat);
@@ -30,7 +31,8 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
   const [weekDaySchedule, setWeekDaySchedule] = useState<WeekDaySchedule[]>([]);
 
   const { id } = useParams();
-  const { schedule, onChangeScheduleID } = useSchedule();
+  const { schedule, onChangeScheduleID, onChangeWeekDaySchedule } =
+    useSchedule();
 
   useEffect(() => {
     async function getWeekDaySchedule(): Promise<void> {
@@ -54,6 +56,8 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
               weekday.time_end
             ) && weekday.day === dayjs(new Date()).day()
         );
+
+        onChangeWeekDaySchedule(response.data.weekDaySchedule);
 
         if (currentSchedule) {
           onChangeScheduleID(currentSchedule._id);
@@ -79,7 +83,7 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
           const isSelected = weekDay._id === schedule.scheduleID;
 
           return (
-            <li key={weekDay._id}>
+            <li key={weekDay._id} className="relative">
               <Button
                 style={{
                   border: isSelected ? "1px solid #eb7373" : "1px solid black",
@@ -88,12 +92,17 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
                 }}
                 onClick={() => onChangeScheduleID(weekDay._id)}
               >
-                <div className="text-black flex">
+                <div className="text-black flex min-w-[10rem] justify-center">
                   {dayjs(weekDay.time_start, "HH:mm").format("h:mm A")}
                   <span className="block mx-[0.5rem]">-</span>
                   {dayjs(weekDay.time_end, "HH:mm").format("h:mm A")}
                 </div>
               </Button>
+              {isSelected && (
+                <span className="text-red text-xl absolute left-[-1.5rem] top-[50%] translate-y-[-50%]">
+                  <IoMdArrowDropright />
+                </span>
+              )}
             </li>
           );
         })}

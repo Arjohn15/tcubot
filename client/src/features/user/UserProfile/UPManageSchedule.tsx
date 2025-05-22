@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, useRef, useState } from "react";
 import Modal from "../../../shared/components/Modal";
 import { FaClock } from "react-icons/fa6";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
@@ -8,7 +8,7 @@ import { sections } from "../../../utils/getSchoolSections";
 import * as yup from "yup";
 import { formProfessorSchedSchema } from "../../../utils/getProfSchedValidation";
 import axios from "axios";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { snackbarOpened } from "../../store/shared/snackbarSlice";
 import dayjs from "dayjs";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
@@ -16,6 +16,7 @@ import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { IoMdCheckmark } from "react-icons/io";
 import { HOST } from "../../../utils/getHost";
+import { selectUserState } from "../redux/userSlice";
 
 interface ScheduleType {
   timeStart?: string;
@@ -85,6 +86,7 @@ const UPManageSchedule: FC = () => {
 
   const dispatch = useAppDispatch();
 
+  const { user } = useAppSelector(selectUserState);
   function handleOpenModal(): void {
     setModal(true);
     getAllProfSchedules(schedule.day);
@@ -151,7 +153,10 @@ const UPManageSchedule: FC = () => {
     try {
       const resp = await axios.post(
         `http://${HOST}/user/professor/schedule`,
-        validatedData,
+        {
+          professorName: `${user.first_name} ${user.last_name}`,
+          ...validatedData,
+        },
         {
           headers: {
             Authorization: `Bearer: ${localStorage.getItem("token-user")}`,

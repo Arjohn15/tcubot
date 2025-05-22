@@ -12,7 +12,6 @@ const checkUserGreet = async (userID: string): Promise<boolean> => {
 
     const hasGreeting = userMessages.length >= 2;
 
-    console.log(hasGreeting);
     if (hasGreeting) {
       hasGreet = true;
     } else {

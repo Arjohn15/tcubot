@@ -9,7 +9,6 @@ const checkUserGreet = async (userID) => {
             .find({ user_id: `${userID}` }, { projection: { message: 1 } })
             .toArray();
         const hasGreeting = userMessages.length >= 2;
-        console.log(hasGreeting);
         if (hasGreeting) {
             hasGreet = true;
         }

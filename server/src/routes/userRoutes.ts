@@ -1,5 +1,8 @@
 import { Router } from "express";
 import {
+  addRecentUserVisit,
+  getRecentUserVisits,
+  getUser,
   user_data,
   user_register,
   userChatAI,
@@ -26,6 +29,7 @@ import {
 const userRouter = Router();
 
 userRouter.get("/user", authenticate, authorize_user, user_data);
+userRouter.get("/user/visit/:id", authenticate, authorize_user, getUser);
 userRouter.get(
   "/user/chat/history",
   authenticate,
@@ -38,6 +42,12 @@ userRouter.get(
   authenticate,
   authorize_user,
   userWeekdaySchedule
+);
+userRouter.get(
+  "/user/recent-visits",
+  authenticate,
+  authorize_user,
+  getRecentUserVisits
 );
 
 userRouter.post(
@@ -57,6 +67,12 @@ userRouter.post(
   authenticate,
   authorize_user,
   userProfessorAllSchedule
+);
+userRouter.post(
+  "/user/recent-visits",
+  authenticate,
+  authorize_user,
+  addRecentUserVisit
 );
 
 userRouter.put("/user-update", authenticate, authorize_user, userUpdate);

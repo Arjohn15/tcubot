@@ -292,9 +292,17 @@ const userWithAI = async (
         }
       );
 
-      const selfSchedules = await schedules
-        .find({ assigned_section: self?.section }, { projection: { _id: 0 } })
-        .toArray();
+      let selfSchedules;
+
+      if (self?.role === "student") {
+        selfSchedules = await schedules
+          .find({ assigned_section: self?.section }, { projection: { _id: 0 } })
+          .toArray();
+      } else {
+        selfSchedules = await schedules
+          .find({ professor_id: userID }, { projection: { _id: 0 } })
+          .toArray();
+      }
 
       const profsWithScheds = await Promise.all(
         selfSchedules.map(async ({ _id, professor_id, ...schedule }) => {

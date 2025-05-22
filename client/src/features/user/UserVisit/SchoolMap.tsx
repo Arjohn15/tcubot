@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import getSchoolMaps, { allFloorAreas } from "../../../utils/getSchoolMaps";
 import { Button } from "@mui/material";
+import { useSchedule } from "./ScheduleProvider";
 
 type FloorLevelType = "1st" | "2nd" | "3rd" | "4th";
 
@@ -37,7 +38,7 @@ const floorLevels: { name: string; id: FloorLevelType }[] = [
 const SchoolMap = () => {
   const [floorLevel, setFloorLevel] = useState<FloorLevelType>("1st");
 
-  const currentFloorLevel = allFloorAreas.find((fl) => fl.id === "205");
+  const { schedule } = useSchedule();
 
   let maps;
 
@@ -63,6 +64,14 @@ const SchoolMap = () => {
     }
   }
 
+  const selectedRoom = schedule.weekdaySchedule.find(
+    (weekDay: { _id: string }) => weekDay._id === schedule.scheduleID
+  ) as { room: string } | undefined;
+
+  const currentFloorLevel = allFloorAreas.find(
+    (fl) => fl.id === selectedRoom?.room
+  );
+
   useEffect(() => {
     if (
       currentFloorLevel &&
@@ -71,8 +80,21 @@ const SchoolMap = () => {
       setFloorLevel(currentFloorLevel.floorLevel as FloorLevelType);
     }
   }, []);
+
+  useEffect(() => {
+    if (
+      currentFloorLevel &&
+      ["1st", "2nd", "3rd", "4th"].includes(currentFloorLevel.floorLevel)
+    ) {
+      setFloorLevel(currentFloorLevel.floorLevel as FloorLevelType);
+    }
+  }, [currentFloorLevel?.floorLevel]);
+
   return (
-    <div className="flex items-center border-2 border-gray-half rounded-lg my-[1rem] p-[1rem]">
+    <div className="relative flex items-center border-2 border-gray-half rounded-lg my-[1rem] p-[1rem]">
+      <h3 className="absolute top-[1.25rem] right-[50%] translate-x-[-50%] font-bold">
+        {floorLevel} Floor
+      </h3>
       <div className="w-[85%] relative">
         {imageMaps.map((map) => {
           const isCurrentFloorLevl = map.floorLevel === floorLevel;
@@ -94,20 +116,20 @@ const SchoolMap = () => {
             heightPercent,
             label,
           }) => (
-            <button
-              className="bg-green opacity-[0.5]"
+            <div
+              className="opacity-[0.5]"
               key={id}
               style={{
+                background: selectedRoom?.room === id ? "#4aef97ff" : "none",
                 position: "absolute",
                 top: `${topPercent}%`,
                 left: `${leftPercent}%`,
                 width: `${widthPercent}%`,
                 height: `${heightPercent}%`,
-                cursor: "pointer",
                 transition: "background-color 0.3s, border-color 0.3s",
               }}
               title={label}
-            ></button>
+            />
           )
         )}
       </div>

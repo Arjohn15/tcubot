@@ -11,6 +11,7 @@ const registrants = db.collection("registrants");
 const users = db.collection("users");
 const messages = db.collection("messages");
 const schedules = db.collection("schedules");
+const recent_visits = db.collection("recent_visits");
 
 export const user_data = async (
   req: Request,
@@ -293,6 +294,7 @@ export const userProfessorSchedule = async (req: Request, resp: Response) => {
       "assigned_section",
       "code",
       "day",
+      "professor_name",
     ];
 
     for (const [key, value] of Object.entries(req.body)) {
@@ -502,6 +504,87 @@ export const userWeekdaySchedule = async (
 
     resp.status(200).json({ weekDaySchedule });
   } catch (err) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const getUser = async (req: Request, resp: Response): Promise<void> => {
+  const userID = req.params.id;
+
+  try {
+    const user = await users.findOne(
+      { _id: new ObjectId(`${userID}`) },
+      {
+        projection: {
+          _id: 0,
+          first_name: 1,
+          last_name: 1,
+        },
+      }
+    );
+
+    if (!user) {
+      resp.status(404).json({ message: "User not found." });
+      return;
+    }
+
+    resp.status(200).json({ user });
+  } catch (err: any) {
+    resp
+      .status(500)
+      .json({ message: "Something went wrong. Please try again later." });
+  }
+};
+
+export const addRecentUserVisit = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const { visitee_id, visitee_name } = req.body;
+  const userID = (req as any).user.id;
+
+  try {
+    const recentVisit = await recent_visits.findOne({
+      visitor_id: userID,
+      visitee_id: visitee_id,
+    });
+
+    if (!recentVisit) {
+      const recentVisitInsert = await recent_visits.insertOne({
+        visitor_id: userID,
+        visitee_id,
+        visitee_name,
+      });
+
+      if (!recentVisitInsert.acknowledged || !recentVisitInsert.insertedId) {
+        throw new Error(
+          "Recent visit information is not successfully inserted."
+        );
+      }
+
+      resp.status(200).json({
+        message: "Recent visit information is successfully inserted.",
+      });
+    }
+  } catch (err: any) {
+    resp.status(500).json({
+      message: err.message || "Something went wrong. Please try again later.",
+    });
+  }
+};
+
+export const getRecentUserVisits = async (
+  req: Request,
+  resp: Response
+): Promise<void> => {
+  const userID = (req as any).user.id;
+
+  try {
+    const visits = await recent_visits.find({ visitor_id: userID }).toArray();
+    resp.status(200).json({ visits });
+  } catch (err: any) {
     resp
       .status(500)
       .json({ message: "Something went wrong. Please try again later." });

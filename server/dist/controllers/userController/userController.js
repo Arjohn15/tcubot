@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userWeekdaySchedule = exports.userVisit = exports.userProfessorDeleteSchedule = exports.userProfessorEditSchedule = exports.userProfessorAllSchedule = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
+exports.getRecentUserVisits = exports.addRecentUserVisit = exports.getUser = exports.userWeekdaySchedule = exports.userVisit = exports.userProfessorDeleteSchedule = exports.userProfessorEditSchedule = exports.userProfessorAllSchedule = exports.userProfessorSchedule = exports.userChatHistory = exports.userChatAI = exports.userUpdateByAdmin = exports.userDelete = exports.userUpdatePassword = exports.userUpdate = exports.user_register = exports.user_data = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dayjs_1 = __importDefault(require("dayjs"));
 const passwordUpdateSchema_1 = require("../../schema/passwordUpdateSchema");
@@ -15,6 +15,7 @@ const registrants = db_1.db.collection("registrants");
 const users = db_1.db.collection("users");
 const messages = db_1.db.collection("messages");
 const schedules = db_1.db.collection("schedules");
+const recent_visits = db_1.db.collection("recent_visits");
 const user_data = async (req, resp) => {
     const user_id = req.user.id;
     try {
@@ -227,6 +228,7 @@ const userProfessorSchedule = async (req, resp) => {
             "assigned_section",
             "code",
             "day",
+            "professor_name",
         ];
         for (const [key, value] of Object.entries(req.body)) {
             if (value !== undefined) {
@@ -400,3 +402,68 @@ const userWeekdaySchedule = async (req, resp) => {
     }
 };
 exports.userWeekdaySchedule = userWeekdaySchedule;
+const getUser = async (req, resp) => {
+    const userID = req.params.id;
+    try {
+        const user = await users.findOne({ _id: new mongodb_1.ObjectId(`${userID}`) }, {
+            projection: {
+                _id: 0,
+                first_name: 1,
+                last_name: 1,
+            },
+        });
+        if (!user) {
+            resp.status(404).json({ message: "User not found." });
+            return;
+        }
+        resp.status(200).json({ user });
+    }
+    catch (err) {
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.getUser = getUser;
+const addRecentUserVisit = async (req, resp) => {
+    const { visitee_id, visitee_name } = req.body;
+    const userID = req.user.id;
+    try {
+        const recentVisit = await recent_visits.findOne({
+            visitor_id: userID,
+            visitee_id: visitee_id,
+        });
+        if (!recentVisit) {
+            const recentVisitInsert = await recent_visits.insertOne({
+                visitor_id: userID,
+                visitee_id,
+                visitee_name,
+            });
+            if (!recentVisitInsert.acknowledged || !recentVisitInsert.insertedId) {
+                throw new Error("Recent visit information is not successfully inserted.");
+            }
+            resp.status(200).json({
+                message: "Recent visit information is successfully inserted.",
+            });
+        }
+    }
+    catch (err) {
+        resp.status(500).json({
+            message: err.message || "Something went wrong. Please try again later.",
+        });
+    }
+};
+exports.addRecentUserVisit = addRecentUserVisit;
+const getRecentUserVisits = async (req, resp) => {
+    const userID = req.user.id;
+    try {
+        const visits = await recent_visits.find({ visitor_id: userID }).toArray();
+        resp.status(200).json({ visits });
+    }
+    catch (err) {
+        resp
+            .status(500)
+            .json({ message: "Something went wrong. Please try again later." });
+    }
+};
+exports.getRecentUserVisits = getRecentUserVisits;

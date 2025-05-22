@@ -8,6 +8,8 @@ import { HOST } from "../../../utils/getHost";
 import ChatMessage from "./ChatMessage";
 import { AnimatePresence, motion } from "motion/react";
 import ChatTextArea from "./ChatTextArea";
+import RecentVisits from "./RecentVisits";
+import { IoMdClose } from "react-icons/io";
 
 const UserChat: FC = () => {
   const [convo, setConvo] = useState<
@@ -91,6 +93,7 @@ const UserChat: FC = () => {
 
         scrollDownConvoOverview(true);
         setResponseAILoading((isResponseLoading) => !isResponseLoading);
+        getChatHistory();
       } catch (err: any) {
         const tempId = `temp-id-message:${message}-${Date.now()}`;
 
@@ -144,32 +147,49 @@ const UserChat: FC = () => {
         ref={chatOverviewRef}
         className="h-[70vh] mx-[20rem] mt-[1rem] overflow-y-auto max-sm:mx-[1rem]"
       >
-        <AnimatePresence initial={false}>
-          {userInfos.length !== 0 ? (
-            <div className="sticky right-[1rem] top-[0] flex justify-end">
+        <div className="sticky right-[1rem] top-[0] flex justify-end">
+          <AnimatePresence initial={false}>
+            {userInfos.length !== 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className=" bg-white p-[1rem] rounded-lg border-1"
+                className=" bg-white p-[1rem] rounded-lg border-1 relative"
                 key="box"
               >
                 <span>
                   Learn more by visiting{" "}
                   <a
                     className="text-underline text-blue"
-                    target="_blank"
                     href={`/user/visit/${userInfos[0].id}`}
                   >
                     {userInfos[0].name}
                   </a>
                   ’s profile.
                 </span>
+
+                <button
+                  onClick={() => setUserInfos([])}
+                  className="absolute top-[0.25rem] right-[0.5rem] hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                >
+                  <span>
+                    <IoMdClose />
+                  </span>
+                </button>
               </motion.div>
-            </div>
-          ) : null}
-        </AnimatePresence>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="absolute"
+              >
+                <RecentVisits />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         {convo.length !== 0 && (
           <ul className="px-[1rem]">
             {convo.map((c, index) => {

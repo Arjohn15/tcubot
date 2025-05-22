@@ -4,10 +4,12 @@ interface ScheduleContextType {
   schedule: {
     weekday: number;
     scheduleID: string;
+    weekdaySchedule: any[];
   };
 
   onChangeWeekDay: (weekday: number) => void;
   onChangeScheduleID: (id: string) => void;
+  onChangeWeekDaySchedule: (weekdaySched: any[]) => void;
 }
 
 const ScheduleContext = createContext<ScheduleContextType | undefined>(
@@ -18,6 +20,7 @@ const ScheduleProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [schedule, setSchedule] = useState<ScheduleContextType["schedule"]>({
     weekday: new Date().getDay(),
     scheduleID: "",
+    weekdaySchedule: [],
   });
 
   function handleChangeWeekDay(weekday: number): void {
@@ -25,7 +28,15 @@ const ScheduleProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }
 
   function handleChangeScheduleID(id: string): void {
-    setSchedule({ ...schedule, scheduleID: id });
+    setSchedule((prevSched) => {
+      return { ...prevSched, scheduleID: id };
+    });
+  }
+  function handleChangeWeekDaySchedule(weekdaySched: any[]): void {
+    setSchedule({
+      ...schedule,
+      weekdaySchedule: weekdaySched,
+    });
   }
 
   return (
@@ -34,6 +45,7 @@ const ScheduleProvider: FC<{ children: ReactNode }> = ({ children }) => {
         schedule,
         onChangeWeekDay: handleChangeWeekDay,
         onChangeScheduleID: handleChangeScheduleID,
+        onChangeWeekDaySchedule: handleChangeWeekDaySchedule,
       }}
     >
       {children}
