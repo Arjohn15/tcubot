@@ -20,7 +20,7 @@ const SnackbarAuto: FC<SnackbarAutoProps> = ({
     event: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason
   ) => {
-    if (reason === "clickaway") {
+    if (event && reason === "clickaway") {
       return;
     }
 
