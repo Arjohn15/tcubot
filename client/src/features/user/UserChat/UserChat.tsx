@@ -4,12 +4,13 @@ import { selectUserState } from "../redux/userSlice";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { SyncLoader } from "react-spinners";
 import axios from "axios";
-import { HOST } from "../../../utils/getHost";
 import ChatMessage from "./ChatMessage";
 import { AnimatePresence, motion } from "motion/react";
 import ChatTextArea from "./ChatTextArea";
 import RecentVisits from "./RecentVisits";
 import { IoMdClose } from "react-icons/io";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const UserChat: FC = () => {
   const [convo, setConvo] = useState<
@@ -46,7 +47,7 @@ const UserChat: FC = () => {
 
   async function getChatHistory() {
     try {
-      const resp = await axios.get(`http://${HOST}/user/chat/history`, {
+      const resp = await axios.get(`${HOST}/user/chat/history`, {
         headers: {
           Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
         },
@@ -84,7 +85,7 @@ const UserChat: FC = () => {
 
       try {
         const resp = await axios.post(
-          `http://${HOST}/user/chat/ai`,
+          `${HOST}/user/chat/ai`,
           { message },
           {
             headers: {

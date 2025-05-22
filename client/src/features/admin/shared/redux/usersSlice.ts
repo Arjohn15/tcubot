@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../../store/store";
 import { RegistrantType } from "../../AdminDashboard/Registrant";
-import { HOST } from "../../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 interface UsersState {
   users: RegistrantType[];
@@ -21,7 +22,7 @@ export const fetchUsers = createAsyncThunk<any[]>(
   async () => {
     const token = localStorage.getItem("token-admin");
 
-    const res = await axios.get(`http://${HOST}/admin/dashboard/users`, {
+    const res = await axios.get(`${HOST}/admin/dashboard/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

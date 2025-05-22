@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, FC } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { IoSend } from "react-icons/io5";
 

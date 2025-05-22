@@ -6,7 +6,6 @@ import { useState } from "react";
 import getDaysInMonth from "../../../utils/getDaysInMonth";
 import getYearsRange from "../../../utils/getYearsRange";
 
-// Define months array and current date values
 const months = [
   "January",
   "February",
@@ -27,26 +26,26 @@ const currentDate = new Date().getDate();
 const currentYear = new Date().getFullYear();
 
 const UserBirthday = () => {
-  const { control } = useFormContext(); // Get the form context from RHF
+  const { control } = useFormContext();
 
-  // Local states to manage month, day, and year
+
   const [month, setMonth] = useState<number>(currentMonth);
   const [date, setDate] = useState<number>(currentDate);
   const [year, setYear] = useState<number>(currentYear);
 
-  const dates = getDaysInMonth(month); // Get days based on month
-  const years = getYearsRange(); // Get available years range
+  const dates = getDaysInMonth(month); 
+  const years = getYearsRange(); 
 
-  // This will merge the month, day, and year into a single string for RHF
+  
   const birthdayValue = `${year}-${String(month + 1).padStart(2, "0")}-${String(
     date
   ).padStart(2, "0")}`;
 
   return (
     <Controller
-      name="birthday" // The field name in RHF
+      name="birthday" 
       control={control}
-      defaultValue={birthdayValue} // Default value when the form is initialized
+      defaultValue={birthdayValue} 
       render={({ field, fieldState: { error } }) => (
         <div>
           <span className="block text-sm pb-[0.5rem]">Birthday *</span>

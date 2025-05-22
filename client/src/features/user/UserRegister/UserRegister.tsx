@@ -8,7 +8,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider } from "react-hook-form";
 import { formRegisterSchema } from "../../../utils/getRegisterValidation";
 import axios from "axios";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const UserRegister = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,7 +17,7 @@ const UserRegister = () => {
   const navigate = useNavigate();
 
   const methods = useForm({
-    resolver: yupResolver(formRegisterSchema), // use yup validation
+    resolver: yupResolver(formRegisterSchema),
     defaultValues: {
       role: "student",
       year: "None",
@@ -27,7 +28,7 @@ const UserRegister = () => {
 
   async function onSubmit(data: any) {
     try {
-      const res = await axios.post(`http://${HOST}/register`, data, {
+      const res = await axios.post(`${HOST}/register`, data, {
         headers: {
           "Content-Type": "application/json",
         },

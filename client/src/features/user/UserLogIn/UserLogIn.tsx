@@ -6,7 +6,8 @@ import { LuEye } from "react-icons/lu";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import SnackbarAuto from "../../../shared/components/SnackbarAuto";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const UserLogIn = () => {
   const [schoolNumber, setSchoolNumber] = useState("");
@@ -20,7 +21,7 @@ const UserLogIn = () => {
 
   async function handleSubmit(): Promise<void> {
     try {
-      const res = await axios.post(`http://${HOST}/auth/login/user`, {
+      const res = await axios.post(`${HOST}/auth/login/user`, {
         school_assigned_number: schoolNumber,
         password,
       });
@@ -49,7 +50,7 @@ const UserLogIn = () => {
 
       if (token) {
         try {
-          const res = await axios.get(`http://${HOST}/auth/user-login-auth`, {
+          const res = await axios.get(`${HOST}/auth/user-login-auth`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

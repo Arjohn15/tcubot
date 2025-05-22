@@ -15,8 +15,9 @@ import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { IoMdCheckmark } from "react-icons/io";
-import { HOST } from "../../../utils/getHost";
 import { selectUserState } from "../redux/userSlice";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 interface ScheduleType {
   timeStart?: string;
@@ -110,7 +111,7 @@ const UPManageSchedule: FC = () => {
   async function getAllProfSchedules(selectedDay: number): Promise<void> {
     try {
       const resp = await axios.post(
-        `http://${HOST}/user/professor/schedule-all`,
+        `${HOST}/user/professor/schedule-all`,
         { day: selectedDay },
         {
           headers: {
@@ -152,7 +153,7 @@ const UPManageSchedule: FC = () => {
   ): Promise<void> {
     try {
       const resp = await axios.post(
-        `http://${HOST}/user/professor/schedule`,
+        `${HOST}/user/professor/schedule`,
         {
           professorName: `${user.first_name} ${user.last_name}`,
           ...validatedData,
@@ -425,7 +426,7 @@ const UPManageSchedule: FC = () => {
                                   onClick={async () => {
                                     try {
                                       const resp = await axios.put(
-                                        `http://${HOST}/user/professor/schedule-update/${schedule._id}`,
+                                        `${HOST}/user/professor/schedule-update/${schedule._id}`,
                                         scheduleEdit,
                                         {
                                           headers: {
@@ -514,7 +515,7 @@ const UPManageSchedule: FC = () => {
                                     onClick={async () => {
                                       try {
                                         const resp = await axios.delete(
-                                          `http://${HOST}/user/professor/schedule-delete/${schedule._id}`,
+                                          `${HOST}/user/professor/schedule-delete/${schedule._id}`,
                                           {
                                             headers: {
                                               Authorization: `Bearer: ${localStorage.getItem(

@@ -6,7 +6,8 @@ import { LuEye, LuEyeOff } from "react-icons/lu";
 import axios from "axios";
 import { useAppDispatch } from "../../store/hooks";
 import { snackbarOpened } from "../../store/shared/snackbarSlice";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const UPChangePassword: FC = () => {
   const [modal, setModal] = useState<boolean>(false);
@@ -28,7 +29,7 @@ const UPChangePassword: FC = () => {
   async function handleSavePassword() {
     try {
       const resp = await axios.put(
-        `http://${HOST}/user-update-password`,
+        `${HOST}/user-update-password`,
         { oldPassword, newPassword },
         {
           headers: {

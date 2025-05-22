@@ -3,9 +3,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { MdOutlinePeopleAlt } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import axios from "axios";
-import { HOST } from "../../../utils/getHost";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import ClickOutside from "../../../shared/components/OutsideClick";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 interface RecentVisit {
   visitee_name: string;
@@ -31,7 +32,7 @@ const RecentVisits = () => {
     const getAllRecentVisits = async () => {
       try {
         const resp = await axios.get<{ visits: RecentVisit[] }>(
-          `http://${HOST}/user/recent-visits`,
+          `${HOST}/user/recent-visits`,
           {
             headers: {
               Authorization: `Bearer: ${localStorage.getItem("token-user")}`,

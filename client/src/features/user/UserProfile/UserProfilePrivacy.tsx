@@ -6,7 +6,8 @@ import { FaCheck } from "react-icons/fa6";
 import axios from "axios";
 import { useAppDispatch } from "../../store/hooks";
 import { fetchUser } from "../redux/userSlice";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const privacy_options = [
   {
@@ -45,7 +46,7 @@ const UserProfilePrivacy: FC<ProfilePrivacyProps> = ({
   async function handleUpdatePrivacy(val: number) {
     try {
       const resp = await axios.put(
-        `http://${HOST}/user-update`,
+        `${HOST}/user-update`,
         { [field]: val },
         {
           headers: {

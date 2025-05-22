@@ -2,13 +2,15 @@ import axios from "axios";
 import { FC, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
-import { HOST } from "../../../utils/getHost";
 import dayjs from "dayjs";
 import { getCourseFormalName } from "../../../utils/getCourseFormalName";
 import ScheduleProvider from "./ScheduleProvider";
 import SchoolActivity from "./SchoolActivity";
 import { Button } from "@mui/material";
 import { IoMdArrowBack } from "react-icons/io";
+
+const HOST = import.meta.env.VITE_API_URL;
+
 interface UserProfile {
   first_name: string;
   last_name: string;
@@ -60,7 +62,7 @@ const UserVisit: FC = () => {
   ): Promise<void> {
     try {
       await axios.post(
-        `http://${HOST}/user/recent-visits`,
+        `${HOST}/user/recent-visits`,
         {
           visitee_id: id,
           visitee_name: `${userFName} ${userLName}`,
@@ -78,7 +80,7 @@ const UserVisit: FC = () => {
 
   async function getUser(): Promise<void> {
     try {
-      const resp = await axios.get(`http://${HOST}/user/chat/visit/${id}`, {
+      const resp = await axios.get(`${HOST}/user/chat/visit/${id}`, {
         headers: {
           Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
         },

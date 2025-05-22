@@ -14,7 +14,8 @@ import { useAppDispatch } from "../../store/hooks";
 import { snackbarOpened } from "../../store/shared/snackbarSlice";
 import { getYearDescription, years } from "../../../utils/getYearDescription";
 import { getSchoolSection, sections } from "../../../utils/getSchoolSections";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
   user,
@@ -52,7 +53,7 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
 
   async function handleDeleteUser() {
     try {
-      const res = await axios.delete(`http://${HOST}/user-delete/${user._id}`, {
+      const res = await axios.delete(`${HOST}/user-delete/${user._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token-admin")}`,
         },
@@ -92,7 +93,7 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
 
     try {
       const res = await axios.put(
-        `http://${HOST}/user-update-by-admin/${user._id}`,
+        `${HOST}/user-update-by-admin/${user._id}`,
         filteredInputs,
         {
           headers: {

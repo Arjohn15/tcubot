@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../store/store";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 interface UserState {
   user: {
@@ -46,7 +47,7 @@ const initialState: UserState = {
 export const fetchUser = createAsyncThunk<any[]>("user/fetchUser", async () => {
   const token = localStorage.getItem("token-user");
 
-  const res = await axios.get(`http://${HOST}/user`, {
+  const res = await axios.get(`${HOST}/user`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

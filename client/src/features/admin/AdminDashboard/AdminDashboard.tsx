@@ -8,7 +8,8 @@ import AdminHeader from "../shared/AdminHeader";
 import CircularLoading from "../../../shared/components/LoadingCircular";
 import RegistrantOverview from "./RegistrantOverview";
 import ManageUsers from "../ManageUsers/ManageUsers";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const AdminDashboard = () => {
   const [registrants, setRegistrants] = useState<RegistrantType[]>([]);
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
 
   const fetchedAdminData = async () => {
     try {
-      const res = await axios.get(`http://${HOST}/admin/dashboard`, {
+      const res = await axios.get(`${HOST}/admin/dashboard`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token-admin")}`,
         },

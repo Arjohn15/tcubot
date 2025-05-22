@@ -1,13 +1,14 @@
 import { FC, useEffect, useState } from "react";
 import { useSchedule } from "./ScheduleProvider";
 import axios from "axios";
-import { HOST } from "../../../utils/getHost";
 import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { IoMdArrowDropright } from "react-icons/io";
 import { isTimeInRange } from "../../../utils/getTimeRange";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 dayjs.extend(customParseFormat);
 
@@ -38,7 +39,7 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
     async function getWeekDaySchedule(): Promise<void> {
       try {
         const response = await axios.get(
-          `http://${HOST}/user/schedule-weekday?weekDay=${schedule.weekday}&section=${section}&id=${id}&role=${role}`,
+          `${HOST}/user/schedule-weekday?weekDay=${schedule.weekday}&section=${section}&id=${id}&role=${role}`,
           {
             headers: {
               Authorization: `Bearer: ${localStorage.getItem("token-user")}`,

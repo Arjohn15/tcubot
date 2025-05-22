@@ -5,7 +5,8 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import CircularLoading from "../../../shared/components/LoadingCircular";
 import { severity_type } from "../../../shared/components/SnackbarAuto";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 interface AcceptRegistrantProps {
   email: string;
@@ -36,7 +37,7 @@ const AcceptRegistrant: FC<AcceptRegistrantProps> = ({
     setLoading(true);
     try {
       const res = await axios.post(
-        `http://${HOST}/admin/dashboard/send-email-accept`,
+        `${HOST}/admin/dashboard/send-email-accept`,
         data,
         {
           headers: {

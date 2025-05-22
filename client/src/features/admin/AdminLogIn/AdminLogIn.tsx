@@ -6,7 +6,8 @@ import { LuEye } from "react-icons/lu";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AdminHeader from "../shared/AdminHeader";
-import { HOST } from "../../../utils/getHost";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const AdminLogIn = () => {
   const [username, setUsername] = useState("");
@@ -18,7 +19,7 @@ const AdminLogIn = () => {
 
   async function handleSubmit(): Promise<void> {
     try {
-      const res = await axios.post(`http://${HOST}/auth/login/admin`, {
+      const res = await axios.post(`${HOST}/auth/login/admin`, {
         username,
         password,
       });
@@ -36,7 +37,7 @@ const AdminLogIn = () => {
 
       if (token) {
         try {
-          const res = await axios.get(`http://${HOST}/auth/admin-login-auth`, {
+          const res = await axios.get(`${HOST}/auth/admin-login-auth`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
