@@ -5,6 +5,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import axios from "axios";
 import { HOST } from "../../../utils/getHost";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
+import ClickOutside from "../../../shared/components/OutsideClick";
 
 interface RecentVisit {
   visitee_name: string;
@@ -60,64 +61,66 @@ const RecentVisits = () => {
 
   return (
     <div className="mr-[0.5rem]">
-      <button
-        onClick={() => setIsRecentVisits(!isRecentVisits)}
-        className="bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
-      >
-        <span>
-          <MdOutlinePeopleAlt />
-        </span>
-        <span>View my recent visits</span>
-        <motion.div
-          className="inline-block"
-          animate={{ rotate: isRecentVisits ? 180 : 0 }}
-          transition={{ duration: 0.1 }}
-          key="arrowUpDown"
+      <ClickOutside onClickOutside={() => setIsRecentVisits(false)}>
+        <button
+          onClick={() => setIsRecentVisits(!isRecentVisits)}
+          className="bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
         >
-          <IoIosArrowDown />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {isRecentVisits ? (
+          <span>
+            <MdOutlinePeopleAlt />
+          </span>
+          <span>View my recent visits</span>
           <motion.div
-            key="slidingDiv"
-            initial={{ y: "-5%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "-5%", opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            className="inline-block"
+            animate={{ rotate: isRecentVisits ? 180 : 0 }}
+            transition={{ duration: 0.1 }}
+            key="arrowUpDown"
           >
-            <div className="relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
-              {recentVisitsState.loading && <LoadingCircular size="1.5rem" />}
-
-              {recentVisitsState.error && (
-                <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
-                  {recentVisitsState.error}
-                </p>
-              )}
-              <ul className="flex flex-col gap-y-2">
-                {recentVisitsState.recentVisits.length === 0 ? (
-                  <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
-                    You have no recent visits.
-                  </p>
-                ) : (
-                  recentVisitsState.recentVisits.map((recentVisit) => {
-                    return (
-                      <li key={recentVisit.visitee_id} className="text-sm">
-                        <a
-                          href={`/user/visit/${recentVisit.visitee_id}`}
-                          className="text-blue underline"
-                        >
-                          {recentVisit.visitee_name}
-                        </a>
-                      </li>
-                    );
-                  })
-                )}
-              </ul>
-            </div>
+            <IoIosArrowDown />
           </motion.div>
-        ) : null}
-      </AnimatePresence>
+        </button>
+        <AnimatePresence>
+          {isRecentVisits ? (
+            <motion.div
+              key="slidingDiv"
+              initial={{ y: "-5%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-5%", opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
+                {recentVisitsState.loading && <LoadingCircular size="1.5rem" />}
+
+                {recentVisitsState.error && (
+                  <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                    {recentVisitsState.error}
+                  </p>
+                )}
+                <ul className="flex flex-col gap-y-2">
+                  {recentVisitsState.recentVisits.length === 0 ? (
+                    <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                      You have no recent visits.
+                    </p>
+                  ) : (
+                    recentVisitsState.recentVisits.map((recentVisit) => {
+                      return (
+                        <li key={recentVisit.visitee_id} className="text-sm">
+                          <a
+                            href={`/user/visit/${recentVisit.visitee_id}`}
+                            className="text-blue underline"
+                          >
+                            {recentVisit.visitee_name}
+                          </a>
+                        </li>
+                      );
+                    })
+                  )}
+                </ul>
+              </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+      </ClickOutside>
     </div>
   );
 };
