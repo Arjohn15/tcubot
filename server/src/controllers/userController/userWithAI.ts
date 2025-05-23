@@ -4,7 +4,6 @@ import { sendToOpenChat } from "../../utils/sendToOpenChat";
 import path from "path";
 import { db } from "../../config/db";
 import checkUserGreet from "../../utils/checkUserGreet";
-import queryChecker from "../../utils/queryChecker";
 import { ObjectId } from "mongodb";
 
 const messages = db.collection("messages");
@@ -102,9 +101,7 @@ const userWithAI = async (
           throw new Error(queryResponse.message);
         }
 
-        let queryResponseChecked = queryChecker(queryResponse.message);
-
-        let queryResponseParsed = JSON.parse(queryResponseChecked);
+        let queryResponseParsed = JSON.parse(queryPrompt);
 
         let queryResult = await users.findOne(queryResponseParsed.query, {
           projection: {

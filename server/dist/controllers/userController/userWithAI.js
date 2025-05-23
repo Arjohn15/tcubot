@@ -8,7 +8,6 @@ const sendToOpenChat_1 = require("../../utils/sendToOpenChat");
 const path_1 = __importDefault(require("path"));
 const db_1 = require("../../config/db");
 const checkUserGreet_1 = __importDefault(require("../../utils/checkUserGreet"));
-const queryChecker_1 = __importDefault(require("../../utils/queryChecker"));
 const mongodb_1 = require("mongodb");
 const messages = db_1.db.collection("messages");
 const users = db_1.db.collection("users");
@@ -53,8 +52,7 @@ const userWithAI = async (req, resp, userMessage) => {
                 if (queryResponse.status !== 200) {
                     throw new Error(queryResponse.message);
                 }
-                let queryResponseChecked = (0, queryChecker_1.default)(queryResponse.message);
-                let queryResponseParsed = JSON.parse(queryResponseChecked);
+                let queryResponseParsed = JSON.parse(queryPrompt);
                 let queryResult = await users.findOne(queryResponseParsed.query, {
                     projection: {
                         ...queryResponseParsed.projection,
