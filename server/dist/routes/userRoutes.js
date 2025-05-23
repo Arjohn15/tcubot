@@ -4,7 +4,7 @@ const express_1 = require("express");
 const userController_1 = require("../controllers/userController/userController");
 const formRegisterSchema_1 = require("../schema/formRegisterSchema");
 const validateRegistrants_1 = require("../middleware/validateRegistrants");
-const authMiddleware_1 = require("../middleware/authMiddleware.js");
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const userRouter = (0, express_1.Router)();
 userRouter.get(
   "/user",
