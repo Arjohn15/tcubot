@@ -12,6 +12,16 @@ const HOST = import.meta.env.VITE_API_URL;
 
 dayjs.extend(customParseFormat);
 
+const weekdays = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 export interface WeekDaySchedule {
   time_start: string;
   time_end: string;
@@ -28,7 +38,7 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
   section,
   role,
 }) => {
-  const [errMessage, setErrMessage] = useState(null);
+  const [errMessage, setErrMessage] = useState<string | null>(null);
   const [weekDaySchedule, setWeekDaySchedule] = useState<WeekDaySchedule[]>([]);
 
   const { id } = useParams();
@@ -47,24 +57,27 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
           }
         );
 
-        setWeekDaySchedule(response.data.weekDaySchedule);
+        if (response.data.weekDaySchedule.length === 0) {
+          setErrMessage(`No ${weekdays[Number(schedule.weekday)]} schedule.`);
+        } else {
+          setErrMessage(null);
+          setWeekDaySchedule(response.data.weekDaySchedule);
 
-        const currentSchedule = response.data.weekDaySchedule.find(
-          (weekday: { time_start: string; time_end: string; day: number }) =>
-            isTimeInRange(
-              dayjs().format("HH:mm"),
-              weekday.time_start,
-              weekday.time_end
-            ) && weekday.day === dayjs(new Date()).day()
-        );
+          const currentSchedule = response.data.weekDaySchedule.find(
+            (weekday: { time_start: string; time_end: string; day: number }) =>
+              isTimeInRange(
+                dayjs().format("HH:mm"),
+                weekday.time_start,
+                weekday.time_end
+              ) && weekday.day === dayjs(new Date()).day()
+          );
 
-        onChangeWeekDaySchedule(response.data.weekDaySchedule);
+          onChangeWeekDaySchedule(response.data.weekDaySchedule);
 
-        if (currentSchedule) {
-          onChangeScheduleID(currentSchedule._id);
+          if (currentSchedule) {
+            onChangeScheduleID(currentSchedule._id);
+          }
         }
-
-        setErrMessage(null);
       } catch (err: any) {
         setErrMessage(err.response.data.message);
         setWeekDaySchedule([]);

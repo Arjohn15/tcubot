@@ -19,6 +19,7 @@ interface UserState {
     password: string;
     show_birthday: 0 | 1;
     show_phone_number: 0 | 1;
+    _id: string;
   };
   loading: boolean;
   error: string | null;
@@ -39,6 +40,7 @@ const initialState: UserState = {
     password: "",
     show_birthday: 0,
     show_phone_number: 0,
+    _id: "",
   },
   loading: false,
   error: null,

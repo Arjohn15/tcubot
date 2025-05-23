@@ -464,16 +464,6 @@ export const userWeekdaySchedule = async (
   const role = req.query.role;
   const userID = req.query.id;
 
-  const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
   try {
     let weekDaySchedule;
 
@@ -493,13 +483,6 @@ export const userWeekdaySchedule = async (
           day: Number(weekDay),
         })
         .toArray();
-    }
-
-    if (!weekDaySchedule || weekDaySchedule.length === 0) {
-      resp
-        .status(404)
-        .json({ message: `No ${weekdays[Number(weekDay)]} schedule.` });
-      return;
     }
 
     resp.status(200).json({ weekDaySchedule });

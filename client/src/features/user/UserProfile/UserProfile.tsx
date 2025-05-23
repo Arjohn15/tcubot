@@ -11,6 +11,7 @@ import { getYearDescription } from "../../../utils/getYearDescription";
 import UPChangePassword from "./UPChangePassword";
 import { getSchoolSection } from "../../../utils/getSchoolSections";
 import UPManageSchedule from "./UPManageSchedule";
+import { GrSchedule } from "react-icons/gr";
 
 const UserProfile = () => {
   const { user } = useAppSelector(selectUserState);
@@ -106,6 +107,17 @@ const UserProfile = () => {
             </div>
             <div className="mt-[2rem]">
               <UPChangePassword />
+            </div>
+            <div className="mt-[1rem]">
+              <a
+                href={`/user/visit/${user._id}`}
+                className="w-max flex items-center border-2 border-gray rounded-xl px-[0.5rem] hover:cursor-pointer hover:opacity-[0.65] duration-300 font-bold"
+              >
+                <span>My schedule</span>
+                <span className="block ml-[0.5rem]">
+                  <GrSchedule />
+                </span>
+              </a>
             </div>
             {user.role === "professor" && (
               <div className="mt-[1rem]">
