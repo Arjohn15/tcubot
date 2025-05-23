@@ -12,8 +12,6 @@ const ChatMessage: FC<{
         loop={1}
         cursor={false}
         typeSpeed={1}
-        deleteSpeed={0}
-        delaySpeed={100}
         onType={() => onScrollDown(true)}
       />
     </>

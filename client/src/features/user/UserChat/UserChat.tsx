@@ -37,6 +37,7 @@ const UserChat: FC = () => {
     }, 100);
   }
 
+  console.log("halo");
   const handleInput = () => {
     const textarea = textareaRef.current;
     if (textarea) {
