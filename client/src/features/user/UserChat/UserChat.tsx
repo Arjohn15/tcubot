@@ -37,7 +37,6 @@ const UserChat: FC = () => {
     }, 100);
   }
 
-  console.log("halo");
   const handleInput = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -63,6 +62,7 @@ const UserChat: FC = () => {
       );
     }
   }
+
   async function handleSubmitMessage(message: string) {
     if (message !== "") {
       setConvo((prevConvo) => [
@@ -112,7 +112,6 @@ const UserChat: FC = () => {
 
         scrollDownConvoOverview(true);
         setResponseAILoading((isResponseLoading) => !isResponseLoading);
-        getChatHistory();
       } catch (err: any) {
         const tempId = `temp-id-message:${message}-${Date.now()}`;
 
