@@ -101,7 +101,7 @@ const userWithAI = async (
           throw new Error(queryResponse.message);
         }
 
-        let queryResponseParsed = JSON.parse(queryPrompt);
+        let queryResponseParsed = JSON.parse(queryResponse.message);
 
         let queryResult = await users.findOne(queryResponseParsed.query, {
           projection: {
