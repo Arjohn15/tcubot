@@ -28,27 +28,27 @@ const currentYear = new Date().getFullYear();
 const UserBirthday = () => {
   const { control } = useFormContext();
 
-
   const [month, setMonth] = useState<number>(currentMonth);
   const [date, setDate] = useState<number>(currentDate);
   const [year, setYear] = useState<number>(currentYear);
 
-  const dates = getDaysInMonth(month); 
-  const years = getYearsRange(); 
+  const dates = getDaysInMonth(month);
+  const years = getYearsRange();
 
-  
   const birthdayValue = `${year}-${String(month + 1).padStart(2, "0")}-${String(
     date
   ).padStart(2, "0")}`;
 
   return (
     <Controller
-      name="birthday" 
+      name="birthday"
       control={control}
-      defaultValue={birthdayValue} 
+      defaultValue={birthdayValue}
       render={({ field, fieldState: { error } }) => (
         <div>
-          <span className="block text-sm pb-[0.5rem]">Birthday *</span>
+          <span className="block text-sm pb-[0.5rem] max-sm:text-xs">
+            Birthday *
+          </span>
           <div className="flex gap-x-3">
             {/* BIRTH MONTH */}
             <div className="grow-1">
@@ -72,7 +72,9 @@ const UserBirthday = () => {
                 >
                   {months.map((month, index) => (
                     <MenuItem key={month} value={index}>
-                      {month}
+                      <span className="max-sm:text-xs max-sm:font-bold">
+                        {month}
+                      </span>
                     </MenuItem>
                   ))}
                 </Select>
@@ -101,7 +103,9 @@ const UserBirthday = () => {
                 >
                   {dates.map((d) => (
                     <MenuItem key={d} value={d}>
-                      {d}
+                      <span className="max-sm:text-xs max-sm:font-bold">
+                        {d}
+                      </span>
                     </MenuItem>
                   ))}
                 </Select>
@@ -130,7 +134,9 @@ const UserBirthday = () => {
                 >
                   {years.map((y) => (
                     <MenuItem key={y} value={y}>
-                      {y}
+                      <span className="max-sm:text-xs max-sm:font-bold">
+                        {y}
+                      </span>
                     </MenuItem>
                   ))}
                 </Select>

@@ -65,13 +65,14 @@ const UserRegister = () => {
     }
   }
   return (
-    <div className="h-[100vh] flex flex-col">
+    <div className="h-[100vh] flex flex-col max-sm:h-max">
       <div className="grow-1">
         <div className="mt-[3rem] mb-[0.5rem] w-full flex justify-center">
           <img
             src="/images/logos/tcubot-main-logo(2).png"
             alt="TCUbot main logo"
             width={250}
+            className="w-[250px] max-sm:w-[110px]"
           />
         </div>
         <FormProvider {...methods}>
@@ -88,18 +89,18 @@ const UserRegister = () => {
               justifyContent: "center",
             }}
           >
-            <div className="w-[90vw] md:w-[30vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 ">
-              <h1 className="text-xl font-bold text-center">
+            <div className="w-[33.5vw] max-sm:w-[90vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 max-sm:text-sm max-sm:border-none max-sm:px-[0.25rem] max-sm:py-[0.25rem] max-sm:mb-[3rem] max-lg:w-[80vw]">
+              <h1 className="text-xl font-bold text-center max-sm:text-sm">
                 Register a new account
               </h1>
-              <div className="flex gap-x-3">
+              <div className="flex gap-x-3 max-sm:flex-col max-sm:gap-y-5">
                 {/* FIRST NAME */}
-                <div>
+                <div className="grow-1">
                   <RHFTextField name="first_name" label="First Name *" />
                 </div>
 
                 {/* LAST NAME */}
-                <div>
+                <div className="grow-1">
                   <RHFTextField name="last_name" label="Last Name *" />
                 </div>
               </div>
@@ -121,7 +122,7 @@ const UserRegister = () => {
               <UserRole />
 
               {/* PASSWORD */}
-              <div className="mt-[1rem]">
+              <div className="mt-[1rem] max-sm:mt-[0]">
                 <RHFTextField
                   name="password"
                   label="New password"
@@ -155,7 +156,7 @@ const UserRegister = () => {
                 </span>
                 <span className="absolute top-[0] right-[2rem]">
                   <Link to={"/"}>
-                    <span className="font-bold w-max text-red mt-[1rem] block hover:cursor-pointer hover:underline">
+                    <span className="font-bold w-max text-red mt-[1rem] block hover:cursor-pointer hover:underline max-sm:text-xs">
                       Log in account
                     </span>
                   </Link>

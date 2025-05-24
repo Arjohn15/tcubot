@@ -68,23 +68,30 @@ const UserLogIn = () => {
   }, []);
 
   return (
-    <div className="h-[100vh] flex flex-col">
+    <div className="h-[100vh] flex flex-col max-sm:text-xs max-sm:h-max max-sm:mt-[8rem]">
       <div className="grow-1 flex flex-col items-center justify-center">
         <div className="mb-[0.5rem]">
           <img
             src="/images/logos/tcubot-main-logo(2).png"
             alt="TCUbot main logo"
-            width={250}
+            className="w-[250px] max-sm:w-[200px]"
           />
         </div>
-        <div className="w-[75vw] sm:w-[50vw] md:w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 mb-[5rem]">
-          <div className="mt-[1rem]">
+        <div className="w-[25vw] max-sm:w-[85vw] max-md:w-[70vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 mb-[5rem] max-sm:mb-[0]">
+          <div className="mt-[1rem] max-sm:mt-[0]">
             <TextField
               id="user-schoolNumber"
               label="School assigned number"
               variant="outlined"
               fullWidth
               onChange={(e) => setSchoolNumber(e.target.value)}
+              sx={{
+                "@media (max-width: 640px)": {
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.85rem",
+                  },
+                },
+              }}
             />
           </div>
           <div>
@@ -109,6 +116,13 @@ const UserLogIn = () => {
                   ),
                 },
               }}
+              sx={{
+                "@media (max-width: 640px)": {
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.85rem",
+                  },
+                },
+              }}
             />
           </div>
           <div className="flex flex-col items-center">
@@ -122,14 +136,17 @@ const UserLogIn = () => {
                 textTransform: "none",
                 padding: "0.75rem 0 0.75rem 0",
                 marginTop: "1rem",
+                "@media (max-width: 640px)": {
+                  marginTop: "0",
+                },
               }}
               fullWidth
               type="submit"
               onClick={handleSubmit}
             >
-              <span className="text-lg">Log In</span>
+              <span className="text-lg max-sm:text-sm">Log In</span>
             </Button>
-            <Link to={"/register"} className="block mt-[1rem]">
+            <Link to={"/register"} className="block mt-[1rem] max-sm:mt-[0]">
               <span className="font-bold w-max text-red mt-[1rem] block hover:cursor-pointer hover:underline">
                 Register new account
               </span>

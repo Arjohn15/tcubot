@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, useMediaQuery } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface TextFieldProps {
@@ -9,7 +9,6 @@ interface TextFieldProps {
 
 export const RHFTextField = ({ name, label, type }: TextFieldProps) => {
   const { control } = useFormContext();
-
   return (
     <Controller
       name={name}
@@ -23,6 +22,13 @@ export const RHFTextField = ({ name, label, type }: TextFieldProps) => {
             label={label}
             error={!!error}
             type={type}
+            sx={{
+              "@media (max-width: 640px)": {
+                "& .MuiInputBase-input": {
+                  fontSize: "0.85rem",
+                },
+              },
+            }}
           />
           {error && (
             <span className="text-red text-xs mt-1">{error.message}</span>
