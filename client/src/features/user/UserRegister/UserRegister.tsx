@@ -93,7 +93,7 @@ const UserRegister = () => {
               <h1 className="text-xl font-bold text-center max-sm:text-sm">
                 Register a new account
               </h1>
-              <div className="flex gap-x-3 max-sm:flex-col max-sm:gap-y-5">
+              <div className="flex gap-x-3 max-sm:gap-y-5">
                 {/* FIRST NAME */}
                 <div className="grow-1">
                   <RHFTextField name="first_name" label="First Name *" />
