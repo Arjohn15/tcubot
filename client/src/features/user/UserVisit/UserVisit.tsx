@@ -123,7 +123,11 @@ const UserVisit: FC = () => {
   }, []);
 
   if (userState.loading) {
-    return <LoadingCircular />;
+    return (
+      <div className="h-[80vh]">
+        <LoadingCircular />
+      </div>
+    );
   }
 
   if (userState.errorMessage) {

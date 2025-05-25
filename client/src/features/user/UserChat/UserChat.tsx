@@ -147,93 +147,95 @@ const UserChat: FC = () => {
         ref={chatOverviewRef}
         className="h-[70vh] mx-[20rem] mt-[1rem] overflow-y-auto max-lg:mx-[0] max-lg:text-sm"
       >
-        <div className="sticky right-[1rem] top-[0] flex justify-end">
-          <AnimatePresence initial={false}>
-            {userInfos.length !== 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className=" bg-white p-[1rem] mr-[1rem] rounded-lg border-1 relative max-lg:px-[0.5rem]"
-                key="box"
-              >
-                <span>
-                  Learn more by visiting{" "}
-                  <a
-                    className="text-underline text-red"
-                    href={`/user/visit/${userInfos[0].id}`}
-                  >
-                    {userInfos[0].name}
-                  </a>
-                  ’s profile.
-                </span>
-
-                <button
-                  onClick={() => setUserInfos([])}
-                  className="absolute top-[0.25rem] right-[0.5rem] hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                >
-                  <span>
-                    <IoMdClose />
-                  </span>
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="absolute"
-              >
-                <RecentVisits />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
         {convo.length !== 0 && (
-          <ul className="px-[1rem] max-lg:px-[1.5rem]">
-            {convo.map((c, index) => {
-              return (
-                <li key={c._id}>
-                  <div className="text-wrap">
-                    {c.sender === "user" ? (
-                      <div className="flex justify-end text-wrap my-[2rem] max-lg:my-[1.5rem]">
-                        <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words max-lg:max-w-[80%]">
-                          {c.message}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem] max-lg:my-[1.5rem] max-lg:p-[0]">
-                        {index === convo.length - 1 ? (
-                          <div className="whitespace-pre-wrap">
-                            <ChatMessage
-                              onScrollDown={scrollDownConvoOverview}
-                              message={c.message}
-                            />
-                          </div>
-                        ) : (
-                          <div className="whitespace-pre-wrap">
-                            <p>{c.message}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+          <>
+            <div className="sticky right-[1rem] top-[0] flex justify-end">
+              <AnimatePresence initial={false}>
+                {userInfos.length !== 0 ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -50 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className=" bg-white p-[1rem] mr-[1rem] rounded-lg border-1 relative max-lg:px-[0.5rem]"
+                    key="box"
+                  >
+                    <span>
+                      Learn more by visiting{" "}
+                      <a
+                        className="text-underline text-red"
+                        href={`/user/visit/${userInfos[0].id}`}
+                      >
+                        {userInfos[0].name}
+                      </a>
+                      ’s profile.
+                    </span>
+
+                    <button
+                      onClick={() => setUserInfos([])}
+                      className="absolute top-[0.25rem] right-[0.5rem] hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                    >
+                      <span>
+                        <IoMdClose />
+                      </span>
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -50 }}
+                    className="absolute"
+                  >
+                    <RecentVisits />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            <ul className="px-[1rem] max-lg:px-[1.5rem]">
+              {convo.map((c, index) => {
+                return (
+                  <li key={c._id}>
+                    <div className="text-wrap">
+                      {c.sender === "user" ? (
+                        <div className="flex justify-end text-wrap my-[2rem] max-lg:my-[1.5rem]">
+                          <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words max-lg:max-w-[80%]">
+                            {c.message}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex justify-start my-[2rem] rounded-xl p-[1rem] max-lg:my-[1.5rem] max-lg:p-[0]">
+                          {index === convo.length - 1 ? (
+                            <div className="whitespace-pre-wrap">
+                              <ChatMessage
+                                onScrollDown={scrollDownConvoOverview}
+                                message={c.message}
+                              />
+                            </div>
+                          ) : (
+                            <div className="whitespace-pre-wrap">
+                              <p>{c.message}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+              {responseAILoading && (
+                <li>
+                  <span className="block px-[1rem]">
+                    <SyncLoader
+                      size="0.5rem"
+                      color="gray"
+                      speedMultiplier={0.5}
+                    />
+                  </span>
                 </li>
-              );
-            })}
-            {responseAILoading && (
-              <li>
-                <span className="block px-[1rem]">
-                  <SyncLoader
-                    size="0.5rem"
-                    color="gray"
-                    speedMultiplier={0.5}
-                  />
-                </span>
-              </li>
-            )}
-          </ul>
+              )}
+            </ul>
+          </>
         )}
 
         {convo.length === 0 && (
@@ -243,10 +245,10 @@ const UserChat: FC = () => {
                 <img
                   src="/images/logos/tcubot-logo-gray(2).png"
                   alt="TCUbot gray logo"
-                  width={150}
+                  className="w-[150px] max-sm:w-[120px]"
                 />
               </div>
-              <div className="text-center text-3xl font-bold">
+              <div className="text-center text-3xl font-bold max-sm:text-2xl">
                 <p>
                   Hi, {user.first_name} <br /> How can I help you?
                 </p>
