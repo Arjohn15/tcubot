@@ -24,7 +24,7 @@ export default function ChatTextArea({
         ref={textareaRef}
         rows={1}
         placeholder="Type your message..."
-        className="w-full resize-none overflow-auto p-2 rounded outline-none max-h-[4rem]"
+        className="w-full resize-none overflow-auto p-2 rounded outline-none max-h-[4rem] max-lg:text-sm max-lg:p-1"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) => {

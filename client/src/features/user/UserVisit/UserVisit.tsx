@@ -152,11 +152,13 @@ const UserVisit: FC = () => {
   } = userState.userData;
 
   return (
-    <div className="flex">
-      <div className="relative w-[45%] px-[3rem] py-[2rem] border-gray-half border-b-2">
-        <h2 className="text-2xl font-bold pb-[2.5rem]">Personal Information</h2>
+    <div className="flex max-lg:flex-col">
+      <div className="relative w-[45%] px-[3rem] py-[2rem] max-lg:w-full max-lg:border-b-2 max-lg:border-gray-half max-lg:px-[2rem] max-lg:py-[1rem]">
+        <h2 className="text-2xl font-bold pb-[2.5rem] max-lg:text-lg max-lg:text-center max-lg:pb-[0.5rem]">
+          Personal Information
+        </h2>
 
-        <ul className="flex flex-col gap-y-3 py-[1rem]">
+        <ul className="flex flex-col gap-y-3 py-[1rem] max-lg:text-xs">
           <li className="flex mt-[0.25rem]">
             <span>First name:</span>
             <span className="font-bold block ml-[0.5rem]">{first_name}</span>

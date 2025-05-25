@@ -78,7 +78,7 @@ const UPChangePassword: FC = () => {
         }
         buttonStyle="flex items-center border-2 border-gray rounded-xl px-[0.5rem] hover:cursor-pointer hover:opacity-[0.65] duration-300 font-bold"
         boxContent={
-          <div className="bg-white p-[1rem] rounded-lg w-[20vw]">
+          <div className="bg-white p-[1rem] rounded-lg w-[20vw] max-lg:w-[80vw]">
             <h3 className="font-bold text-center text-xl pb-[1rem]">
               Change password
             </h3>
@@ -105,6 +105,13 @@ const UPChangePassword: FC = () => {
                     },
                   }}
                   onChange={(e) => setOldPassword(e.target.value)}
+                  sx={{
+                    "@media (max-width: 640px)": {
+                      "& .MuiInputBase-input": {
+                        fontSize: "0.85rem",
+                      },
+                    },
+                  }}
                 />
               </div>
               <div>
@@ -128,6 +135,13 @@ const UPChangePassword: FC = () => {
                     },
                   }}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  sx={{
+                    "@media (max-width: 640px)": {
+                      "& .MuiInputBase-input": {
+                        fontSize: "0.85rem",
+                      },
+                    },
+                  }}
                 />
               </div>
               {passwordErr && (

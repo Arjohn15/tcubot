@@ -87,12 +87,14 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
   }, [schedule.weekday, section, id, role, HOST]);
 
   if (errMessage) {
-    return <p className="text-gray">{errMessage}</p>;
+    return (
+      <p className="w-max mt-[1rem] text-gray max-md:text-xs">{errMessage}</p>
+    );
   }
 
   return (
     <div className="mt-[1rem]">
-      <ul className="grid gap-y-3.5">
+      <ul className="grid gap-y-3.5 max-sm:grid-cols-2 max-lg:gap-x-5">
         {weekDaySchedule.map((weekDay) => {
           const isSelected = weekDay._id === schedule.scheduleID;
 
@@ -106,14 +108,14 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
                 }}
                 onClick={() => onChangeScheduleID(weekDay._id)}
               >
-                <div className="text-black flex min-w-[10rem] justify-center">
+                <div className="text-black flex min-w-[10rem] justify-center max-md:text-[0.65rem] max-md:min-w-[7.5rem]">
                   {dayjs(weekDay.time_start, "HH:mm").format("h:mm A")}
                   <span className="block mx-[0.5rem]">-</span>
                   {dayjs(weekDay.time_end, "HH:mm").format("h:mm A")}
                 </div>
               </Button>
               {isSelected && (
-                <span className="text-red text-xl absolute left-[-1.5rem] top-[50%] translate-y-[-50%]">
+                <span className="text-red text-xl absolute left-[-1.5rem] top-[50%] translate-y-[-50%] max-md:text-lg max-md:left-[-1rem]">
                   <IoMdArrowDropright />
                 </span>
               )}

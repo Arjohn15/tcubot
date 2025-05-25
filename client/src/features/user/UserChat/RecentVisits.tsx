@@ -65,12 +65,12 @@ const RecentVisits = () => {
       <ClickOutside onClickOutside={() => setIsRecentVisits(false)}>
         <button
           onClick={() => setIsRecentVisits(!isRecentVisits)}
-          className="bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
+          className="shadow-xl bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
         >
           <span>
             <MdOutlinePeopleAlt />
           </span>
-          <span>View my recent visits</span>
+          <span className="max-lg:text-xs">View my recent visits</span>
           <motion.div
             className="inline-block"
             animate={{ rotate: isRecentVisits ? 180 : 0 }}
@@ -89,7 +89,7 @@ const RecentVisits = () => {
               exit={{ y: "-5%", opacity: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
+              <div className="shadow-lg relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
                 {recentVisitsState.loading && <LoadingCircular size="1.5rem" />}
 
                 {recentVisitsState.error && (
@@ -97,18 +97,26 @@ const RecentVisits = () => {
                     {recentVisitsState.error}
                   </p>
                 )}
-                <ul className="flex flex-col gap-y-2">
+                <ul
+                  role="list"
+                  className="ml-[1rem] flex flex-col gap-y-2 list-disc"
+                >
                   {recentVisitsState.recentVisits.length === 0 ? (
-                    <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
-                      You have no recent visits.
-                    </p>
+                    <li>
+                      <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                        You have no recent visits.
+                      </p>
+                    </li>
                   ) : (
                     recentVisitsState.recentVisits.map((recentVisit) => {
                       return (
-                        <li key={recentVisit.visitee_id} className="text-sm">
+                        <li
+                          key={recentVisit.visitee_id}
+                          className="text-sm max-lg:text-xs"
+                        >
                           <a
                             href={`/user/visit/${recentVisit.visitee_id}`}
-                            className="text-blue underline"
+                            className="text-red hover:underline"
                           >
                             {recentVisit.visitee_name}
                           </a>

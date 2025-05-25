@@ -21,7 +21,7 @@ const UserPage = () => {
   }, [error]);
 
   return (
-    <div className="h-[100vh] flex flex-col">
+    <div className="h-[100vh] flex flex-col max-lg:h-max">
       <UserHeader />
 
       <Outlet />

@@ -23,7 +23,7 @@ const UserHeader: FC = () => {
           <LoadingCircular size="2.5rem" />
         ) : (
           <Link to={"/user/profile"}>
-            <div className="text-xl bg-red w-[3rem] h-[3rem] rounded-full text-white font-bold flex items-center justify-center">
+            <div className="text-xl bg-red w-[3rem] h-[3rem] rounded-full text-white font-bold flex items-center justify-center max-sm:w-[2.5rem] max-sm:h-[2.5rem] max-sm:text-base">
               <span>
                 {user.first_name[0]}
                 {user.last_name[0]}

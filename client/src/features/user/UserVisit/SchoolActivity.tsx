@@ -37,31 +37,31 @@ const SchoolActivity: FC<{ section: string; role: string }> = ({
     (fl) => fl.id === selectedRoom?.room
   );
   return (
-    <div className="grow-1 px-[3rem] py-[2rem] border-gray-half border-b-2 border-l-2">
-      <h2 className="text-2xl font-bold pb-[2.5rem]">
+    <div className="grow-1 px-[3rem] py-[2rem] border-gray-half border-l-2 max-lg:py-[1rem] max-lg:px-[2rem]">
+      <h2 className="text-2xl font-bold pb-[2.5rem] max-lg:text-lg max-lg:text-center max-lg:pb-[2.5rem]">
         School Activity Details ({weekdays[schedule.weekday]})
       </h2>
 
-      <div className="flex">
-        <div className="w-[20%]">
-          <div className="flex justify-between items-center h-[3rem]">
-            <h3 className="font-bold">Schedule</h3>
+      <div className="flex max-lg:flex-col">
+        <div className="pr-[1rem] max-lg:w-[100%] max-lg:mb-[1rem]">
+          <div className="flex justify-between items-center h-[3rem] max-lg:h-0 max-lg:pb-[1rem]">
+            <h3 className="font-bold max-lg:text-sm">Schedule</h3>
           </div>
           <WeekDaySchedule section={section} role={role} />
         </div>
-        <div className="w-[80%]">
+        <div>
           <div className="flex justify-between items-center h-[3rem]">
-            <h3 className="font-bold">Assigned room/area</h3>
+            <h3 className="font-bold max-lg:text-sm">Assigned room/area</h3>
             <ScheduleDate />
           </div>
           <SchoolMap />
         </div>
       </div>
 
-      <div className="border-2 border-gray-half mt-[3rem] p-[1rem] rounded-lg">
-        <h3 className="font-bold">Room Information</h3>
+      <div className="border-2 border-gray-half mt-[3rem] p-[1rem] rounded-lg max-lg:text-xs max-lg:mt-[0.5rem]">
+        <h3 className="font-bold max-lg:text-sm">Room Information</h3>
 
-        <ul className="flex flex-col gap-y-3 py-[1rem]">
+        <ul className="flex flex-col gap-y-3 py-[1rem] max-lg:gap-y-2 max-lg:py-[0.5rem]">
           <li className="flex mt-[0.25rem]">
             <span>Room number:</span>
             <span className="font-bold block ml-[0.5rem]">
@@ -76,7 +76,7 @@ const SchoolActivity: FC<{ section: string; role: string }> = ({
             </span>
           </li>
           <li className="flex mt-[0.25rem]">
-            <span>Class subject:</span>
+            <span className="text-nowrap">Class subject:</span>
             <span className="font-bold block ml-[0.5rem]">
               {selectedRoom?.subject}{" "}
               {selectedRoom?.code && `(${selectedRoom.code})`}

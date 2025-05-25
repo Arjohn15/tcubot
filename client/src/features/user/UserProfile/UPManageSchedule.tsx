@@ -238,284 +238,200 @@ const UPManageSchedule: FC = () => {
         }
         buttonStyle="flex items-center border-2 border-gray rounded-xl px-[0.5rem] hover:cursor-pointer hover:opacity-[0.65] duration-300 font-bold"
         boxContent={
-          <div className="relative bg-white rounded-lg w-[60vw] h-[80vh] overflow-y-auto p-[1rem]">
-            <div className="flex items-center justify-center text-xl p-[1rem]">
+          <div className="relative bg-white rounded-lg w-[60vw] h-[80vh] overflow-y-auto p-[1rem] max-md:w-[90vw] max-md:h-[60vh]">
+            <div className="flex items-center justify-center text-xl p-[1rem] max-md:text-lg">
               <h1 className="font-bold">My Schedule</h1>
               <span className="block ml-[0.5rem]">
                 <FaClock />
               </span>
             </div>
 
-            <table className="table-auto text-center w-full border border-gray border-collapse">
-              <thead>
-                <tr>
-                  <th colSpan={5} className="p-[0.25rem]">
-                    <div className="flex justify-evenly items-center col-span-5 p-[0.5rem]">
-                      <button
-                        onClick={() => {
-                          if (schedule.day <= 0) {
-                            setSchedule({
-                              ...schedule,
-                              day: weekDays.length - 1,
-                            });
-                            getAllProfSchedules(weekDays.length - 1);
-                          } else {
-                            setSchedule({ ...schedule, day: schedule.day - 1 });
-                            getAllProfSchedules(schedule.day - 1);
-                          }
-                        }}
-                        className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                      >
-                        <span className="text-2xl">
-                          <RiArrowLeftSLine />
+            <div className="overflow-x-auto max-md:w-[100%]">
+              <table className="w-full table-auto text-center border border-gray border-collapse max-md:text-xs">
+                <thead>
+                  <tr>
+                    <th colSpan={5} className="p-[0.25rem]">
+                      <div className="flex justify-evenly items-center col-span-5 p-[0.5rem]">
+                        <button
+                          onClick={() => {
+                            if (schedule.day <= 0) {
+                              setSchedule({
+                                ...schedule,
+                                day: weekDays.length - 1,
+                              });
+                              getAllProfSchedules(weekDays.length - 1);
+                            } else {
+                              setSchedule({
+                                ...schedule,
+                                day: schedule.day - 1,
+                              });
+                              getAllProfSchedules(schedule.day - 1);
+                            }
+                          }}
+                          className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                        >
+                          <span className="text-2xl">
+                            <RiArrowLeftSLine />
+                          </span>
+                        </button>
+                        <span className="font-bold block w-[8.5rem]">
+                          {weekDays[schedule.day]}
                         </span>
-                      </button>
-                      <span className="font-bold block w-[8.5rem]">
-                        {weekDays[schedule.day]}
-                      </span>
-                      <button
-                        onClick={() => {
-                          if (schedule.day >= weekDays.length - 1) {
-                            setSchedule({ ...schedule, day: 0 });
-                            getAllProfSchedules(0);
-                          } else {
-                            setSchedule({
-                              ...schedule,
-                              day: schedule.day + 1,
-                            });
-                            getAllProfSchedules(schedule.day + 1);
-                          }
-                        }}
-                        className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                      >
-                        <span className="text-2xl">
-                          <RiArrowRightSLine />
-                        </span>
-                      </button>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
+                        <button
+                          onClick={() => {
+                            if (schedule.day >= weekDays.length - 1) {
+                              setSchedule({ ...schedule, day: 0 });
+                              getAllProfSchedules(0);
+                            } else {
+                              setSchedule({
+                                ...schedule,
+                                day: schedule.day + 1,
+                              });
+                              getAllProfSchedules(schedule.day + 1);
+                            }
+                          }}
+                          className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                        >
+                          <span className="text-2xl">
+                            <RiArrowRightSLine />
+                          </span>
+                        </button>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                <tr>
-                  <td className="w-[11.5rem] border border-gray p-[0.25rem] font-bold">
-                    <span>Start time / End time</span>
-                  </td>
-                  <td className="border border-gray p-[0.25rem] font-bold">
-                    <span>Section</span>
-                  </td>
-                  <td className="border border-gray p-[0.25rem] font-bold">
-                    <span>Room</span>
-                  </td>
-                  <td className="border border-gray p-[0.25rem] font-bold">
-                    <span>Subject</span>
-                  </td>
-                  <td className="border border-gray p-[0.25rem] font-bold">
-                    <span>Code</span>
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td className="w-[11.5rem] border border-gray p-[0.25rem] font-bold">
+                      <span>Start time / End time</span>
+                    </td>
+                    <td className="border border-gray p-[0.25rem] font-bold">
+                      <span>Section</span>
+                    </td>
+                    <td className="border border-gray p-[0.25rem] font-bold">
+                      <span>Room</span>
+                    </td>
+                    <td className="border border-gray p-[0.25rem] font-bold">
+                      <span>Subject</span>
+                    </td>
+                    <td className="border border-gray p-[0.25rem] font-bold">
+                      <span className="block max-md:px-[2rem]">Code</span>
+                    </td>
+                  </tr>
 
-                {schedules.length !== 0 &&
-                  schedules.map((schedule) => {
-                    const formattedTimeStart = dayjs(
-                      `1970-01-01T${schedule.time_start}`
-                    ).format("h:mm A");
-                    const formattedTimeEnd = dayjs(
-                      `1970-01-01T${schedule.time_end}`
-                    ).format("h:mm A");
+                  {schedules.length !== 0 &&
+                    schedules.map((schedule) => {
+                      const formattedTimeStart = dayjs(
+                        `1970-01-01T${schedule.time_start}`
+                      ).format("h:mm A");
+                      const formattedTimeEnd = dayjs(
+                        `1970-01-01T${schedule.time_end}`
+                      ).format("h:mm A");
 
-                    return (
-                      <tr
-                        key={schedule._id}
-                        onMouseEnter={() => setConfigureID(schedule._id)}
-                        onMouseLeave={() => setConfigureID("")}
-                      >
-                        {editID === schedule._id ? (
-                          <>
-                            <td className="border border-gray p-[0.5rem] w-[10px]">
-                              <div className="flex justify-center gap-x-2">
+                      return (
+                        <tr
+                          key={schedule._id}
+                          onMouseEnter={() => setConfigureID(schedule._id)}
+                          onMouseLeave={() => setConfigureID("")}
+                        >
+                          {editID === schedule._id ? (
+                            <>
+                              <td className="border border-gray p-[0.5rem] w-[10px]">
+                                <div className="flex justify-center gap-x-2">
+                                  <div>
+                                    <input
+                                      ref={startTimeRef}
+                                      name="timeStart"
+                                      type="time"
+                                      value={scheduleEdit.timeStart}
+                                      onChange={handleChangeEditSchedule}
+                                      className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                    />
+                                  </div>
+                                  <span>-</span>
+                                  <div>
+                                    <input
+                                      name="timeEnd"
+                                      type="time"
+                                      value={scheduleEdit.timeEnd}
+                                      onChange={handleChangeEditSchedule}
+                                      className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="border border-gray p-[0.25rem] w-[10px]">
+                                <div>
+                                  <select
+                                    name="assignedSection"
+                                    value={scheduleEdit.assignedSection}
+                                    onChange={handleChangeEditSchedule}
+                                    className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                  >
+                                    {sections.map((section) => {
+                                      return (
+                                        <option
+                                          key={section.id}
+                                          value={section.id}
+                                        >
+                                          {section.name}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                </div>
+                              </td>
+                              <td className="border border-gray p-[0.25rem] w-[10px] ">
                                 <div>
                                   <input
-                                    ref={startTimeRef}
-                                    name="timeStart"
-                                    type="time"
-                                    value={scheduleEdit.timeStart}
+                                    placeholder="e.g. 420"
+                                    name="room"
+                                    value={scheduleEdit.room}
+                                    type="text"
                                     onChange={handleChangeEditSchedule}
-                                    className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                    className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
                                   />
                                 </div>
-                                <span>-</span>
+                              </td>
+                              <td className="border border-gray p-[0.25rem] w-[10px]">
                                 <div>
                                   <input
-                                    name="timeEnd"
-                                    type="time"
-                                    value={scheduleEdit.timeEnd}
+                                    placeholder="e.g. PE"
+                                    name="subject"
+                                    value={scheduleEdit.subject}
+                                    type="text"
                                     onChange={handleChangeEditSchedule}
-                                    className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                    className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
                                   />
                                 </div>
-                              </div>
-                            </td>
-                            <td className="border border-gray p-[0.25rem] w-[10px]">
-                              <div>
-                                <select
-                                  name="assignedSection"
-                                  value={scheduleEdit.assignedSection}
-                                  onChange={handleChangeEditSchedule}
-                                  className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                                >
-                                  {sections.map((section) => {
-                                    return (
-                                      <option
-                                        key={section.id}
-                                        value={section.id}
-                                      >
-                                        {section.name}
-                                      </option>
-                                    );
-                                  })}
-                                </select>
-                              </div>
-                            </td>
-                            <td className="border border-gray p-[0.25rem] w-[10px] ">
-                              <div>
-                                <input
-                                  placeholder="e.g. 420"
-                                  name="room"
-                                  value={scheduleEdit.room}
-                                  type="text"
-                                  onChange={handleChangeEditSchedule}
-                                  className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                                />
-                              </div>
-                            </td>
-                            <td className="border border-gray p-[0.25rem] w-[10px]">
-                              <div>
-                                <input
-                                  placeholder="e.g. PE"
-                                  name="subject"
-                                  value={scheduleEdit.subject}
-                                  type="text"
-                                  onChange={handleChangeEditSchedule}
-                                  className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                                />
-                              </div>
-                            </td>
-                            <td className="border border-gray py-[0.25rem] px-[1rem] w-[10px] relative">
-                              <div>
-                                <input
-                                  placeholder="e.g. GE22"
-                                  name="code"
-                                  value={scheduleEdit.code}
-                                  type="text"
-                                  onChange={handleChangeEditSchedule}
-                                  className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                                />
-                              </div>
-                              <div className="flex gap-x-1 absolute top-[50%] right-0 translate-y-[-50%]">
-                                <button
-                                  onClick={() => setEditID("")}
-                                  className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                                >
-                                  <span className="text-red text-lg">
-                                    <IoMdClose />
-                                  </span>
-                                </button>
-                                <button
-                                  onClick={async () => {
-                                    try {
-                                      const resp = await axios.put(
-                                        `${HOST}/user/professor/schedule-update/${schedule._id}`,
-                                        scheduleEdit,
-                                        {
-                                          headers: {
-                                            Authorization: `Bearer: ${localStorage.getItem(
-                                              "token-user"
-                                            )}`,
-                                          },
-                                        }
-                                      );
-
-                                      dispatch(
-                                        snackbarOpened({
-                                          message: resp.data.message,
-                                          severity: "success",
-                                          isSnackbar: true,
-                                        })
-                                      );
-
-                                      getAllProfSchedules(schedule.day);
-                                    } catch (err: any) {
-                                      dispatch(
-                                        snackbarOpened({
-                                          message:
-                                            err.response.data.message ||
-                                            "Unknown error. Please try again later.",
-                                          severity: "error",
-                                          isSnackbar: true,
-                                        })
-                                      );
-                                      setSchedulesLoading(false);
-                                      handleCloseModal();
-                                    }
-                                    setEditID("");
-                                  }}
-                                  className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                                >
-                                  <span className="text-green text-lg">
-                                    <IoMdCheckmark />
-                                  </span>
-                                </button>
-                              </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td className="border border-gray p-[0.25rem]">
-                              <span>
-                                {formattedTimeStart} - {formattedTimeEnd}
-                              </span>
-                            </td>
-                            <td className="border border-gray p-[0.25rem] uppercase">
-                              <span>{schedule.assigned_section}</span>
-                            </td>
-                            <td className="border border-gray p-[0.25rem]">
-                              <span>{schedule.room}</span>
-                            </td>
-                            <td className="border border-gray p-[0.25rem]">
-                              <span>{schedule.subject}</span>
-                            </td>
-                            <td className="border border-gray py-[0.25rem] px-[2rem] relative">
-                              <span>{schedule.code}</span>
-                              {configureID === schedule._id && (
-                                <div className="flex gap-x-1 absolute top-[50%] right-[0.5rem] translate-y-[-50%]">
+                              </td>
+                              <td className="border border-gray py-[0.25rem] px-[1rem] w-[10px] relative">
+                                <div>
+                                  <input
+                                    placeholder="e.g. GE22"
+                                    name="code"
+                                    value={scheduleEdit.code}
+                                    type="text"
+                                    onChange={handleChangeEditSchedule}
+                                    className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                                  />
+                                </div>
+                                <div className="flex gap-x-1 absolute top-[50%] right-0 translate-y-[-50%]">
                                   <button
-                                    onClick={() => {
-                                      setEditID(schedule._id);
-                                      setScheduleEdit({
-                                        assignedSection:
-                                          schedule.assigned_section,
-                                        code: schedule.code,
-                                        day: schedule.day,
-                                        room: schedule.room,
-                                        subject: schedule.subject,
-                                        timeEnd: schedule.time_end,
-                                        timeStart: schedule.time_start,
-                                      });
-                                    }}
+                                    onClick={() => setEditID("")}
                                     className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
                                   >
-                                    <span>
-                                      <MdEdit />
+                                    <span className="text-red text-lg">
+                                      <IoMdClose />
                                     </span>
                                   </button>
                                   <button
-                                    className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
                                     onClick={async () => {
                                       try {
-                                        const resp = await axios.delete(
-                                          `${HOST}/user/professor/schedule-delete/${schedule._id}`,
+                                        const resp = await axios.put(
+                                          `${HOST}/user/professor/schedule-update/${schedule._id}`,
+                                          scheduleEdit,
                                           {
                                             headers: {
                                               Authorization: `Bearer: ${localStorage.getItem(
@@ -524,6 +440,7 @@ const UPManageSchedule: FC = () => {
                                             },
                                           }
                                         );
+
                                         dispatch(
                                           snackbarOpened({
                                             message: resp.data.message,
@@ -531,6 +448,7 @@ const UPManageSchedule: FC = () => {
                                             isSnackbar: true,
                                           })
                                         );
+
                                         getAllProfSchedules(schedule.day);
                                       } catch (err: any) {
                                         dispatch(
@@ -542,156 +460,243 @@ const UPManageSchedule: FC = () => {
                                             isSnackbar: true,
                                           })
                                         );
+                                        setSchedulesLoading(false);
+                                        handleCloseModal();
                                       }
+                                      setEditID("");
                                     }}
+                                    className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
                                   >
-                                    <span className="text-red">
-                                      <MdDelete />
+                                    <span className="text-green text-lg">
+                                      <IoMdCheckmark />
                                     </span>
                                   </button>
                                 </div>
-                              )}
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    );
-                  })}
-                {schedulesLoading && (
-                  <tr>
-                    <td colSpan={5} className="py-[0.5rem]">
-                      <LoadingCircular size="1.5rem" />
-                    </td>
-                  </tr>
-                )}
-
-                {schedules.length === 0 && !newSchedule && (
-                  <tr>
-                    <td colSpan={5} className="p-[1rem] opacity-[0.25]">
-                      <span>
-                        You have no schedule on {weekDays[schedule.day]}
-                      </span>
-                    </td>
-                  </tr>
-                )}
-                {!newSchedule && (
-                  <tr>
-                    <td colSpan={5}>
-                      <button
-                        onClick={() => {
-                          setNewSchedule(true);
-                          setTimeout(() => {
-                            if (startTimeRef.current) {
-                              startTimeRef.current.focus();
-                            }
-                          }, 100);
-                        }}
-                        className="bg-gray w-full flex justify-center p-[0.25rem] hover:cursor-pointer hover:bg-gray-half duration-300"
-                      >
-                        <span className="text-xl text-green-600">
-                          <IoMdAddCircleOutline />
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                )}
-                {newSchedule && (
-                  <>
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              <td className="border border-gray p-[0.25rem]">
+                                <span>
+                                  {formattedTimeStart} - {formattedTimeEnd}
+                                </span>
+                              </td>
+                              <td className="border border-gray p-[0.25rem] uppercase">
+                                <span>{schedule.assigned_section}</span>
+                              </td>
+                              <td className="border border-gray p-[0.25rem]">
+                                <span>{schedule.room}</span>
+                              </td>
+                              <td className="border border-gray p-[0.25rem]">
+                                <span>{schedule.subject}</span>
+                              </td>
+                              <td className="border border-gray py-[0.25rem] px-[2rem] relative">
+                                <span>{schedule.code}</span>
+                                {configureID === schedule._id && (
+                                  <div className="flex gap-x-1 absolute top-[50%] right-[0.5rem] translate-y-[-50%]">
+                                    <button
+                                      onClick={() => {
+                                        setEditID(schedule._id);
+                                        setScheduleEdit({
+                                          assignedSection:
+                                            schedule.assigned_section,
+                                          code: schedule.code,
+                                          day: schedule.day,
+                                          room: schedule.room,
+                                          subject: schedule.subject,
+                                          timeEnd: schedule.time_end,
+                                          timeStart: schedule.time_start,
+                                        });
+                                      }}
+                                      className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                                    >
+                                      <span>
+                                        <MdEdit />
+                                      </span>
+                                    </button>
+                                    <button
+                                      className="hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                                      onClick={async () => {
+                                        try {
+                                          const resp = await axios.delete(
+                                            `${HOST}/user/professor/schedule-delete/${schedule._id}`,
+                                            {
+                                              headers: {
+                                                Authorization: `Bearer: ${localStorage.getItem(
+                                                  "token-user"
+                                                )}`,
+                                              },
+                                            }
+                                          );
+                                          dispatch(
+                                            snackbarOpened({
+                                              message: resp.data.message,
+                                              severity: "success",
+                                              isSnackbar: true,
+                                            })
+                                          );
+                                          getAllProfSchedules(schedule.day);
+                                        } catch (err: any) {
+                                          dispatch(
+                                            snackbarOpened({
+                                              message:
+                                                err.response.data.message ||
+                                                "Unknown error. Please try again later.",
+                                              severity: "error",
+                                              isSnackbar: true,
+                                            })
+                                          );
+                                        }
+                                      }}
+                                    >
+                                      <span className="text-red">
+                                        <MdDelete />
+                                      </span>
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </>
+                          )}
+                        </tr>
+                      );
+                    })}
+                  {schedulesLoading && (
                     <tr>
-                      <td className="border border-gray p-[0.5rem] w-[10px]">
-                        <div className="flex justify-center gap-x-2">
-                          <div>
-                            <input
-                              ref={startTimeRef}
-                              name="timeStart"
-                              type="time"
-                              value={schedule.timeStart}
-                              onChange={handleChangeSchedule}
-                              className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                            />
-                          </div>
-                          <span>-</span>
-                          <div>
-                            <input
-                              name="timeEnd"
-                              type="time"
-                              value={schedule.timeEnd}
-                              onChange={handleChangeSchedule}
-                              className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="border border-gray p-[0.25rem] w-[10px]">
-                        <div>
-                          <select
-                            name="assignedSection"
-                            value={schedule.assignedSection}
-                            onChange={handleChangeSchedule}
-                            className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                          >
-                            {sections.map((section) => {
-                              return (
-                                <option key={section.id} value={section.id}>
-                                  {section.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                        </div>
-                      </td>
-                      <td className="border border-gray p-[0.25rem] w-[10px]">
-                        <div>
-                          <input
-                            placeholder="e.g. 420"
-                            name="room"
-                            value={schedule.room}
-                            type="text"
-                            onChange={handleChangeSchedule}
-                            className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                          />
-                        </div>
-                      </td>
-                      <td className="border border-gray p-[0.25rem] w-[10px]">
-                        <div>
-                          <input
-                            placeholder="e.g. PE"
-                            name="subject"
-                            value={schedule.subject}
-                            type="text"
-                            onChange={handleChangeSchedule}
-                            className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                          />
-                        </div>
-                      </td>
-                      <td className="border border-gray p-[0.25rem] w-[10px]">
-                        <div>
-                          <input
-                            placeholder="e.g. GE22"
-                            name="code"
-                            value={schedule.code}
-                            type="text"
-                            onChange={handleChangeSchedule}
-                            className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                          />
-                        </div>
+                      <td colSpan={5} className="py-[0.5rem]">
+                        <LoadingCircular size="1.5rem" />
                       </td>
                     </tr>
-                    {errorScheduleFields.length !== 0 && (
-                      <tr>
-                        <td colSpan={5}>
-                          <span className="text-red text-xs p-[0.5rem] block">
-                            Field {errorScheduleFields}{" "}
-                            {errorScheduleFields.length > 1 ? "are" : "is"}{" "}
-                            required
+                  )}
+
+                  {schedules.length === 0 && !newSchedule && (
+                    <tr>
+                      <td colSpan={5} className="p-[1rem] opacity-[0.25]">
+                        <span>
+                          You have no schedule on {weekDays[schedule.day]}
+                        </span>
+                      </td>
+                    </tr>
+                  )}
+                  {!newSchedule && (
+                    <tr>
+                      <td colSpan={5}>
+                        <button
+                          onClick={() => {
+                            setNewSchedule(true);
+                            setTimeout(() => {
+                              if (startTimeRef.current) {
+                                startTimeRef.current.focus();
+                              }
+                            }, 100);
+                          }}
+                          className="bg-gray w-full flex justify-center p-[0.25rem] hover:cursor-pointer hover:bg-gray-half duration-300"
+                        >
+                          <span className="text-xl text-green-600">
+                            <IoMdAddCircleOutline />
                           </span>
+                        </button>
+                      </td>
+                    </tr>
+                  )}
+                  {newSchedule && (
+                    <>
+                      <tr>
+                        <td className="border border-gray p-[0.5rem] w-[10px]">
+                          <div className="flex justify-center gap-x-2">
+                            <div>
+                              <input
+                                ref={startTimeRef}
+                                name="timeStart"
+                                type="time"
+                                value={schedule.timeStart}
+                                onChange={handleChangeSchedule}
+                                className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                              />
+                            </div>
+                            <span>-</span>
+                            <div>
+                              <input
+                                name="timeEnd"
+                                type="time"
+                                value={schedule.timeEnd}
+                                onChange={handleChangeSchedule}
+                                className="border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="border border-gray p-[0.25rem] w-[10px]">
+                          <div>
+                            <select
+                              name="assignedSection"
+                              value={schedule.assignedSection}
+                              onChange={handleChangeSchedule}
+                              className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                            >
+                              {sections.map((section) => {
+                                return (
+                                  <option key={section.id} value={section.id}>
+                                    {section.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
+                        </td>
+                        <td className="border border-gray p-[0.25rem] w-[10px]">
+                          <div>
+                            <input
+                              placeholder="e.g. 420"
+                              name="room"
+                              value={schedule.room}
+                              type="text"
+                              onChange={handleChangeSchedule}
+                              className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                            />
+                          </div>
+                        </td>
+                        <td className="border border-gray p-[0.25rem] w-[10px]">
+                          <div>
+                            <input
+                              placeholder="e.g. PE"
+                              name="subject"
+                              value={schedule.subject}
+                              type="text"
+                              onChange={handleChangeSchedule}
+                              className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                            />
+                          </div>
+                        </td>
+                        <td className="border border-gray p-[0.25rem] w-[10px]">
+                          <div>
+                            <input
+                              placeholder="e.g. GE22"
+                              name="code"
+                              value={schedule.code}
+                              type="text"
+                              onChange={handleChangeSchedule}
+                              className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
+                            />
+                          </div>
                         </td>
                       </tr>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
+                      {errorScheduleFields.length !== 0 && (
+                        <tr>
+                          <td colSpan={5}>
+                            <span className="text-red text-xs p-[0.5rem] block">
+                              Field {errorScheduleFields}{" "}
+                              {errorScheduleFields.length > 1 ? "are" : "is"}{" "}
+                              required
+                            </span>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
             {newSchedule && (
               <div className="flex justify-center bg-gray-half p-[0.25rem]">

@@ -91,77 +91,80 @@ const SchoolMap = () => {
   }, [currentFloorLevel?.floorLevel]);
 
   return (
-    <div className="relative flex items-center border-2 border-gray-half rounded-lg my-[1rem] p-[1rem]">
-      <h3 className="absolute top-[1.25rem] right-[50%] translate-x-[-50%] font-bold">
-        {floorLevel} Floor
-      </h3>
-      <div className="w-[85%] relative">
-        {imageMaps.map((map) => {
-          const isCurrentFloorLevl = map.floorLevel === floorLevel;
-          return (
-            <img
-              key={map.floorLevel}
-              src={map.src}
-              alt={map.alt}
-              style={{ display: isCurrentFloorLevl ? "inline" : "none" }}
-            />
-          );
-        })}
-        {maps.map(
-          ({
-            id,
-            topPercent,
-            leftPercent,
-            widthPercent,
-            heightPercent,
-            label,
-          }) => (
-            <div
-              className="opacity-[0.5]"
-              key={id}
-              style={{
-                background: selectedRoom?.room === id ? "#4aef97ff" : "none",
-                position: "absolute",
-                top: `${topPercent}%`,
-                left: `${leftPercent}%`,
-                width: `${widthPercent}%`,
-                height: `${heightPercent}%`,
-                transition: "background-color 0.3s, border-color 0.3s",
-              }}
-              title={label}
-            />
-          )
-        )}
-      </div>
-      <div className="w-[15%]">
-        <h3 className="text-center font-bold">Floor levels:</h3>
-        <ul className="flex flex-col items-center gap-y-3 my-[0.5rem]">
-          {floorLevels.map((fl) => {
-            const isCurrentFloorLevl = fl.id === floorLevel;
+    <div className="relative flex flex-col items-center border-2 border-gray-half rounded-lg my-[1rem] p-[1rem]">
+      <h3 className="font-bold max-lg:text-xs">{floorLevel} Floor</h3>
+      <div className="flex items-center max-sm:flex-col">
+        <div className="w-[85%] relative max-lg:w-[100%]">
+          {imageMaps.map((map) => {
+            const isCurrentFloorLevl = map.floorLevel === floorLevel;
             return (
-              <li key={fl.id}>
-                <Button
-                  style={{
-                    minWidth: "0",
-                    minHeight: "0",
-                    padding: "0",
-                    borderRadius: "100%",
-                    color: isCurrentFloorLevl ? "#efefef" : "black",
-                    background: isCurrentFloorLevl ? "#eb7373" : "none",
-                    fontWeight: isCurrentFloorLevl ? "bold" : "normal",
-                  }}
-                  onClick={() => {
-                    setFloorLevel(fl.id);
-                  }}
-                >
-                  <div className="flex items-center justify-center rounded-full border-1 borde-black w-[2.5rem] h-[2.5rem]">
-                    <span>{fl.name}</span>
-                  </div>
-                </Button>
-              </li>
+              <img
+                key={map.floorLevel}
+                src={map.src}
+                alt={map.alt}
+                style={{ display: isCurrentFloorLevl ? "inline" : "none" }}
+                width={3000}
+              />
             );
           })}
-        </ul>
+          {maps.map(
+            ({
+              id,
+              topPercent,
+              leftPercent,
+              widthPercent,
+              heightPercent,
+              label,
+            }) => (
+              <div
+                className="opacity-[0.5]"
+                key={id}
+                style={{
+                  background: selectedRoom?.room === id ? "#4aef97ff" : "none",
+                  position: "absolute",
+                  top: `${topPercent}%`,
+                  left: `${leftPercent}%`,
+                  width: `${widthPercent}%`,
+                  height: `${heightPercent}%`,
+                  transition: "background-color 0.3s, border-color 0.3s",
+                }}
+                title={label}
+              />
+            )
+          )}
+        </div>
+        <div className="w-[15%] max-sm:w-[100%] max-sm:mt-[1rem]">
+          <h3 className="text-center font-bold max-sm:text-xs">
+            Floor levels:
+          </h3>
+          <ul className="flex flex-col items-center gap-y-3 my-[0.5rem] max-sm:flex-row-reverse max-sm:justify-center max-sm:gap-x-3">
+            {floorLevels.map((fl) => {
+              const isCurrentFloorLevl = fl.id === floorLevel;
+              return (
+                <li key={fl.id}>
+                  <Button
+                    style={{
+                      minWidth: "0",
+                      minHeight: "0",
+                      padding: "0",
+                      borderRadius: "100%",
+                      color: isCurrentFloorLevl ? "#efefef" : "black",
+                      background: isCurrentFloorLevl ? "#eb7373" : "none",
+                      fontWeight: isCurrentFloorLevl ? "bold" : "normal",
+                    }}
+                    onClick={() => {
+                      setFloorLevel(fl.id);
+                    }}
+                  >
+                    <div className="flex items-center justify-center rounded-full border-1 borde-black w-[2.5rem] h-[2.5rem] max-sm:w-[1.5rem] max-sm:h-[1.5rem] max-sm:text-xs">
+                      <span>{fl.name}</span>
+                    </div>
+                  </Button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </div>
   );

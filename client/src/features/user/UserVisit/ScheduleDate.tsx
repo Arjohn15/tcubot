@@ -12,7 +12,7 @@ const ScheduleDate = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [date, setDate] = useState<Dayjs | null>(dayjs(new Date()));
 
-  const { onChangeWeekDay } = useSchedule();
+  const { onChangeWeekDay, onChangeScheduleID } = useSchedule();
 
   function handleOpenModal(): void {
     setModal(true);
@@ -29,7 +29,9 @@ const ScheduleDate = () => {
         style={{ border: "2px solid #d9d9d977" }}
       >
         <div className="flex items-center gap-x-3 capitalize text-black rounded-lg">
-          <span className="font-bold">{date?.format("MMMM DD, YYYY")}</span>
+          <span className="font-bold max-lg:text-xs">
+            {date?.format("MMMM DD, YYYY")}
+          </span>
           <span className="text-lg">
             <TbCalendarTime />
           </span>
@@ -46,6 +48,7 @@ const ScheduleDate = () => {
                 onChange={(newValue) => {
                   setDate(newValue);
                   onChangeWeekDay(newValue?.day() ?? new Date().getDay());
+                  onChangeScheduleID("");
                   handleCloseModal();
                 }}
               />

@@ -29,21 +29,23 @@ const UserProfile = () => {
     }
   }
   return (
-    <div className="pb-[3rem]">
+    <div className="pb-[3rem] max-lg:pb-[1rem]">
       <div className="relative flex items-center justify-center py-[1rem]">
         <button
           className="absolute left-[1rem] hover:cursor-pointer hover:opacity-[0.5] duration-300"
           onClick={() => navigate(-1)}
         >
-          <span className="text-2xl">
+          <span className="text-2xl max-lg:text-lg">
             <IoArrowBack />
           </span>
         </button>
-        <h1 className="text-center font-bold text-2xl">Profile</h1>
+        <h1 className="text-center font-bold text-2xl max-lg:text-lg">
+          Profile
+        </h1>
       </div>
 
       <div className="flex justify-center">
-        <div className="w-[85%] md:w-[40%] border-3 border-gray-half rounded-lg px-[2rem] py-[1rem] text-sm">
+        <div className="w-[85%] md:w-[40%] border-3 border-gray-half rounded-lg px-[2rem] py-[1rem] text-sm max-lg:border-none max-lg:px-[2rem] max-lg:py-0 max-lg:w-[100%]">
           <div className="flex flex-col items-center">
             <div className="text-4xl bg-red w-[7rem] h-[7rem] rounded-full text-white font-bold flex items-center justify-center">
               <span>
@@ -75,7 +77,7 @@ const UserProfile = () => {
               <UserProfileBirthday />
             </div>
 
-            <div className="mt-[2rem]">
+            <div className="mt-[2rem] max-lg:border-y-1 max-lg:border-gray-half max-lg:py-[1rem]">
               <h2 className="text-lg font-bold">School Information</h2>
               {user.role === "student" && (
                 <>
@@ -96,7 +98,7 @@ const UserProfile = () => {
               </span>
             </div>
 
-            <div className="mt-[2rem]">
+            <div className="mt-[2rem] max-lg:border-b-1 max-lg:border-gray-half max-lg:py-[1rem] max-lg:mt-[0]">
               <h2 className="text-lg font-bold">Contact</h2>
               <span className="mt-[1rem] mb-[0.5rem] block">
                 <strong>Email:</strong> {user.email}

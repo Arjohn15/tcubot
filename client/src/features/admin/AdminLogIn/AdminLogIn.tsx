@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LuEyeOff } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AdminHeader from "../shared/AdminHeader";
 
 const HOST = import.meta.env.VITE_API_URL;
@@ -58,8 +58,8 @@ const AdminLogIn = () => {
   return (
     <>
       <AdminHeader />
-      <div className="grow-1 flex items-center justify-center">
-        <div className="w-[75vw] sm:w-[50vw] md:w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5">
+      <div className="grow-1 flex items-center justify-center max-sm:grow-0 max-sm:mt-[11.5rem] max-sm:text-xs">
+        <div className="w-[25vw] border-2 border-gray-half px-[1.5rem] py-[2rem] rounded-lg grid gap-y-5 max-sm:w-[85vw]">
           <div>
             <TextField
               id="admin-username"
@@ -67,6 +67,13 @@ const AdminLogIn = () => {
               variant="outlined"
               fullWidth
               onChange={(e) => setUsername(e.target.value)}
+              sx={{
+                "@media (max-width: 640px)": {
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.85rem",
+                  },
+                },
+              }}
             />
           </div>
           <div>
@@ -91,11 +98,18 @@ const AdminLogIn = () => {
                   ),
                 },
               }}
+              sx={{
+                "@media (max-width: 640px)": {
+                  "& .MuiInputBase-input": {
+                    fontSize: "0.85rem",
+                  },
+                },
+              }}
             />
           </div>
           <div>
             {serverMessage && (
-              <p className="text-red text-center text-sm pb-[1rem]">
+              <p className="text-red text-center text-sm pb-[1rem] max-sm:text-xs">
                 {serverMessage}
               </p>
             )}
@@ -110,7 +124,7 @@ const AdminLogIn = () => {
               type="submit"
               onClick={handleSubmit}
             >
-              <span className="text-lg">Log In</span>
+              <span className="text-lg max-sm:text-sm">Log In</span>
             </Button>
           </div>
         </div>

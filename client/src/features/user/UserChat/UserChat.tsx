@@ -145,7 +145,7 @@ const UserChat: FC = () => {
     <div className="relative">
       <div
         ref={chatOverviewRef}
-        className="h-[70vh] mx-[20rem] mt-[1rem] overflow-y-auto max-sm:mx-[1rem]"
+        className="h-[70vh] mx-[20rem] mt-[1rem] overflow-y-auto max-lg:mx-[0] max-lg:text-sm"
       >
         <div className="sticky right-[1rem] top-[0] flex justify-end">
           <AnimatePresence initial={false}>
@@ -155,13 +155,13 @@ const UserChat: FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -50 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className=" bg-white p-[1rem] rounded-lg border-1 relative"
+                className=" bg-white p-[1rem] mr-[1rem] rounded-lg border-1 relative max-lg:px-[0.5rem]"
                 key="box"
               >
                 <span>
                   Learn more by visiting{" "}
                   <a
-                    className="text-underline text-blue"
+                    className="text-underline text-red"
                     href={`/user/visit/${userInfos[0].id}`}
                   >
                     {userInfos[0].name}
@@ -191,19 +191,19 @@ const UserChat: FC = () => {
           </AnimatePresence>
         </div>
         {convo.length !== 0 && (
-          <ul className="px-[1rem]">
+          <ul className="px-[1rem] max-lg:px-[1.5rem]">
             {convo.map((c, index) => {
               return (
                 <li key={c._id}>
                   <div className="text-wrap">
                     {c.sender === "user" ? (
-                      <div className="flex justify-end text-wrap my-[2rem]">
-                        <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words">
+                      <div className="flex justify-end text-wrap my-[2rem] max-lg:my-[1.5rem]">
+                        <p className="max-w-[50%] bg-red text-white px-[1rem] py-[0.5rem] rounded-xl break-words max-lg:max-w-[80%]">
                           {c.message}
                         </p>
                       </div>
                     ) : (
-                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem]">
+                      <div className="flex justify-start my-[2rem] rounded-xl p-[1rem] max-lg:my-[1.5rem] max-lg:p-[0]">
                         {index === convo.length - 1 ? (
                           <div className="whitespace-pre-wrap">
                             <ChatMessage
