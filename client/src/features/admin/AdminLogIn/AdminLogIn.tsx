@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LuEyeOff } from "react-icons/lu";
 import { LuEye } from "react-icons/lu";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AdminHeader from "../shared/AdminHeader";
 
 const HOST = import.meta.env.VITE_API_URL;
