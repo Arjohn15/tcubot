@@ -569,15 +569,17 @@ const UPManageSchedule: FC = () => {
                     </tr>
                   )}
 
-                  {schedules.length === 0 && !newSchedule && (
-                    <tr>
-                      <td colSpan={5} className="p-[1rem] opacity-[0.25]">
-                        <span>
-                          You have no schedule on {weekDays[schedule.day]}
-                        </span>
-                      </td>
-                    </tr>
-                  )}
+                  {!schedulesLoading &&
+                    schedules.length === 0 &&
+                    !newSchedule && (
+                      <tr>
+                        <td colSpan={5} className="p-[1rem] opacity-[0.25]">
+                          <span>
+                            You have no schedule on {weekDays[schedule.day]}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
                   {!newSchedule && (
                     <tr>
                       <td colSpan={5}>
