@@ -31,10 +31,8 @@ const AdminDashboard = () => {
         },
       });
 
-      console.log(res.data.registrants);
       setRegistrants(res.data.registrants);
       setAdmin(res.data.admin);
-      console.log(res.data.admin);
       setLoading(false);
     } catch (err: any) {
       setLoading(false);

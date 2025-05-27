@@ -36,7 +36,7 @@ const ManageUsers: FC = () => {
       <h2 className="heading-two text-center">Manage Users</h2>
 
       <div className="border-2 border-gray-half rounded-lg">
-        {users.length !== 0 && (
+        {users.length !== 0 ? (
           <div>
             <div className="flex justify-center gap-x-2 mx-[1rem] my-[2rem]">
               <div className="w-[12.5rem]">
@@ -130,6 +130,12 @@ const ManageUsers: FC = () => {
                 </ul>
               </div>
             </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-[20rem]">
+            <h3 className="font-bold text-xl text-gray">
+              No users as of now for TCUbot.
+            </h3>
           </div>
         )}
 
