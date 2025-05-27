@@ -58,6 +58,7 @@ const UserBirthday = () => {
                   error={!!error}
                   value={month}
                   onChange={(e) => {
+                    alert(e.target.value);
                     const newMonth = Number(e.target.value);
                     setMonth(newMonth);
                     field.onChange(
@@ -89,6 +90,7 @@ const UserBirthday = () => {
                   error={!!error}
                   value={date}
                   onChange={(e) => {
+                    alert(e.target.value);
                     const newDate = Number(e.target.value);
                     setDate(newDate);
                     field.onChange(
@@ -120,6 +122,7 @@ const UserBirthday = () => {
                   error={!!error}
                   value={year}
                   onChange={(e) => {
+                    alert(e.target.value);
                     const newYear = Number(e.target.value);
                     setYear(newYear);
                     field.onChange(
