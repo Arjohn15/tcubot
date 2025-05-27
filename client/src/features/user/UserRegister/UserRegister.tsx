@@ -28,6 +28,7 @@ const UserRegister = () => {
   });
 
   async function onSubmit(data: any) {
+    alert(data);
     setRegisterLoading(true);
     try {
       const res = await axios.post(`${HOST}/register`, data, {

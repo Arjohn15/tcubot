@@ -39,8 +39,6 @@ const UserBirthday = () => {
     date
   ).padStart(2, "0")}`;
 
-  alert(birthdayValue);
-
   return (
     <Controller
       name="birthday"
@@ -92,7 +90,6 @@ const UserBirthday = () => {
                   error={!!error}
                   value={date}
                   onChange={(e) => {
-                    alert(e.target.value);
                     const newDate = Number(e.target.value);
                     setDate(newDate);
                     field.onChange(
@@ -124,7 +121,6 @@ const UserBirthday = () => {
                   error={!!error}
                   value={year}
                   onChange={(e) => {
-                    alert(e.target.value);
                     const newYear = Number(e.target.value);
                     setYear(newYear);
                     field.onChange(
