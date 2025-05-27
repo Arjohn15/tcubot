@@ -1,4 +1,5 @@
 // validationSchema.ts
+import dayjs from "dayjs";
 import * as yup from "yup";
 
 export const formRegisterSchema = yup.object({
@@ -25,24 +26,22 @@ export const formRegisterSchema = yup.object({
     .optional(),
 
   birthday: yup
-    .date()
+    .string()
     .required("Birthday is required")
-    .max(new Date(), "Birthday cannot be in the future")
-    .test("min-age", `You must be at least 15 years old`, (value) => {
+    .matches(/^\d{4}-\d{2}-\d{2}$/, "Birthday must be in YYYY-MM-DD format")
+    .test("valid-date", "Birthday must be a valid date", (value) => {
+      return dayjs(value, "YYYY-MM-DD", true).isValid();
+    })
+    .test("not-in-future", "Birthday cannot be in the future", (value) => {
       if (!value) return false;
-
-      const today = new Date();
-      let age = today.getFullYear() - value.getFullYear();
-
-      const birthdayThisYear = new Date(
-        today.getFullYear(),
-        value.getMonth(),
-        value.getDate()
-      );
-      if (today < birthdayThisYear) {
-        age -= 1;
-      }
-
+      const date = dayjs(value, "YYYY-MM-DD");
+      return date.isBefore(dayjs().add(1, "day"), "day");
+    })
+    .test("min-age", "You must be at least 15 years old", (value) => {
+      if (!value) return false;
+      const birthDate = dayjs(value, "YYYY-MM-DD");
+      const today = dayjs();
+      const age = today.diff(birthDate, "year");
       return age >= 15;
     }),
 
