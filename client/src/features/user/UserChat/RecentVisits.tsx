@@ -64,70 +64,77 @@ const RecentVisits = () => {
     return (
       <>
         {recentVisitsState.recentVisits.length !== 0 && (
-          <div className="mr-[0.5rem]">
-            <ClickOutside onClickOutside={() => setIsRecentVisits(false)}>
-              <button
-                onClick={() => setIsRecentVisits(!isRecentVisits)}
-                className="shadow-xl bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
-              >
-                <span>
-                  <MdOutlinePeopleAlt />
-                </span>
-                <span className="max-lg:text-xs">View my recent visits</span>
-                <motion.div
-                  className="inline-block"
-                  animate={{ rotate: isRecentVisits ? 180 : 0 }}
-                  transition={{ duration: 0.1 }}
-                  key="arrowUpDown"
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="absolute"
+          >
+            <div className="mr-[0.5rem]">
+              <ClickOutside onClickOutside={() => setIsRecentVisits(false)}>
+                <button
+                  onClick={() => setIsRecentVisits(!isRecentVisits)}
+                  className="shadow-xl bg-white border-1 border-gray-half flex gap-x-2 p-[0.25rem] items-center rounded-lg text-sm hover:bg-[#efefef] hover:cursor-pointer duration-300"
                 >
-                  <IoIosArrowDown />
-                </motion.div>
-              </button>
-              <AnimatePresence>
-                {isRecentVisits ? (
+                  <span>
+                    <MdOutlinePeopleAlt />
+                  </span>
+                  <span className="max-lg:text-xs">View my recent visits</span>
                   <motion.div
-                    key="slidingDiv"
-                    initial={{ y: "-5%", opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: "-5%", opacity: 0 }}
-                    transition={{ duration: 0.25 }}
+                    className="inline-block"
+                    animate={{ rotate: isRecentVisits ? 180 : 0 }}
+                    transition={{ duration: 0.1 }}
+                    key="arrowUpDown"
                   >
-                    <div className="shadow-lg relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
-                      {recentVisitsState.loading && (
-                        <LoadingCircular size="1.5rem" />
-                      )}
-
-                      {recentVisitsState.error && (
-                        <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
-                          {recentVisitsState.error}
-                        </p>
-                      )}
-                      <ul
-                        role="list"
-                        className="ml-[1rem] flex flex-col gap-y-2 list-disc"
-                      >
-                        {recentVisitsState.recentVisits.map((recentVisit) => {
-                          return (
-                            <li
-                              key={recentVisit.visitee_id}
-                              className="text-sm max-lg:text-xs"
-                            >
-                              <a
-                                href={`/user/visit/${recentVisit.visitee_id}`}
-                                className="text-red hover:underline"
-                              >
-                                {recentVisit.visitee_name}
-                              </a>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                    <IoIosArrowDown />
                   </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </ClickOutside>
-          </div>
+                </button>
+                <AnimatePresence>
+                  {isRecentVisits ? (
+                    <motion.div
+                      key="slidingDiv"
+                      initial={{ y: "-5%", opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: "-5%", opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <div className="shadow-lg relative w-[10rem] h-[10rem] bg-white border-1 border-t-0 border-gray-half overflow-y-auto rounded-lg mt-[0.25rem] p-[0.5rem]">
+                        {recentVisitsState.loading && (
+                          <LoadingCircular size="1.5rem" />
+                        )}
+
+                        {recentVisitsState.error && (
+                          <p className="text-xs absolute top-[50%] translate-y-[-50%] text-center text-gray">
+                            {recentVisitsState.error}
+                          </p>
+                        )}
+                        <ul
+                          role="list"
+                          className="ml-[1rem] flex flex-col gap-y-2 list-disc"
+                        >
+                          {recentVisitsState.recentVisits.map((recentVisit) => {
+                            return (
+                              <li
+                                key={recentVisit.visitee_id}
+                                className="text-sm max-lg:text-xs"
+                              >
+                                <a
+                                  href={`/user/visit/${recentVisit.visitee_id}`}
+                                  className="text-red hover:underline"
+                                >
+                                  {recentVisit.visitee_name}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </ClickOutside>
+            </div>
+          </motion.div>
         )}
       </>
     );
