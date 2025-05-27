@@ -34,12 +34,17 @@ export const formRegisterSchema = yup.object({
     .date()
     .required("Birthday is required")
     .max(new Date(), "Birthday cannot be in the future")
+    .transform((value, originalValue) => {
+      if (typeof originalValue === "string") {
+        const [year, month, day] = originalValue.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      }
+      return value;
+    })
     .test("min-age", "You must be at least 15 years old", (value) => {
       if (!value) return false;
 
-      // 👇 Ensure value is interpreted as local date
-      const birthDate = parseLocalDate(dayjs(value).format("YYYY-MM-DD"));
-
+      const birthDate = value;
       const today = new Date();
       const todayDateOnly = new Date(
         today.getFullYear(),
