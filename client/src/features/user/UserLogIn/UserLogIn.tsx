@@ -22,7 +22,9 @@ const UserLogIn = () => {
   const navigate = useNavigate();
 
   async function handleSubmit(): Promise<void> {
+    setServerMessage("");
     setLogInLoading(true);
+
     try {
       const res = await axios.post(`${HOST}/auth/login/user`, {
         school_assigned_number: schoolNumber,
@@ -132,7 +134,7 @@ const UserLogIn = () => {
           </div>
           <div className="flex flex-col items-center">
             {serverMessage && (
-              <p className="text-red text-sm pb-[1rem]">{serverMessage}</p>
+              <p className="text-red text-sm">{serverMessage}</p>
             )}
             {loginLoading ? (
               <LoadingCircular size="1.5rem" />

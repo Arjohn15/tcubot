@@ -241,9 +241,18 @@ export const userUpdateByAdmin = async (
 
     const formattedValues = Object.fromEntries(values);
 
+    delete formattedValues.formatted_birthday;
+
     await users.updateOne(
       { _id: new ObjectId(`${userID}`) },
-      { $set: formattedValues }
+      {
+        $set: {
+          formattedBirthday: dayjs(req.body.formattedBirthday).format(
+            "YYYY-MM-DD"
+          ),
+          ...formattedValues,
+        },
+      }
     );
 
     resp.status(200).json({ message: "Update successful" });

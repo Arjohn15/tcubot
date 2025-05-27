@@ -33,7 +33,7 @@ const UserProfile = () => {
       <div className="relative flex items-center justify-center py-[1rem]">
         <button
           className="absolute left-[1rem] hover:cursor-pointer hover:opacity-[0.5] duration-300"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/user/chat")}
         >
           <span className="text-2xl max-lg:text-lg">
             <IoArrowBack />
