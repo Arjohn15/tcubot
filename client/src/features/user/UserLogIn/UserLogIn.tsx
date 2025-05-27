@@ -134,7 +134,7 @@ const UserLogIn = () => {
           </div>
           <div className="flex flex-col items-center">
             {serverMessage && (
-              <p className="text-red text-sm">{serverMessage}</p>
+              <p className="text-red text-sm pb-[1rem]">{serverMessage}</p>
             )}
             {loginLoading ? (
               <LoadingCircular size="1.5rem" />
