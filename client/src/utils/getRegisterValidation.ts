@@ -1,5 +1,11 @@
 // validationSchema.ts
+import dayjs from "dayjs";
 import * as yup from "yup";
+
+function parseLocalDate(dateString: string) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
 
 export const formRegisterSchema = yup.object({
   first_name: yup
@@ -28,18 +34,28 @@ export const formRegisterSchema = yup.object({
     .date()
     .required("Birthday is required")
     .max(new Date(), "Birthday cannot be in the future")
-    .test("min-age", `You must be at least 15 years old`, (value) => {
+    .test("min-age", "You must be at least 15 years old", (value) => {
       if (!value) return false;
 
+      // 👇 Ensure value is interpreted as local date
+      const birthDate = parseLocalDate(dayjs(value).format("YYYY-MM-DD"));
+
       const today = new Date();
-      let age = today.getFullYear() - value.getFullYear();
+      const todayDateOnly = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+
+      let age = todayDateOnly.getFullYear() - birthDate.getFullYear();
 
       const birthdayThisYear = new Date(
-        today.getFullYear(),
-        value.getMonth(),
-        value.getDate()
+        todayDateOnly.getFullYear(),
+        birthDate.getMonth(),
+        birthDate.getDate()
       );
-      if (today < birthdayThisYear) {
+
+      if (todayDateOnly < birthdayThisYear) {
         age -= 1;
       }
 
