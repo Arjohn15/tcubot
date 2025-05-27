@@ -39,11 +39,16 @@ const UserBirthday = () => {
     date
   ).padStart(2, "0")}`;
 
+  function parseLocalDate(dateString: string) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   return (
     <Controller
       name="birthday"
       control={control}
-      defaultValue={birthdayValue}
+      defaultValue={parseLocalDate(birthdayValue)}
       render={({ field, fieldState: { error } }) => (
         <div>
           <span className="block text-sm pb-[0.5rem] max-sm:text-xs">

@@ -28,33 +28,18 @@ export const formRegisterSchema = yup.object({
     .date()
     .required("Birthday is required")
     .max(new Date(), "Birthday cannot be in the future")
-    .transform((value, originalValue) => {
-      if (typeof originalValue === "string") {
-        const [year, month, day] = originalValue.split("-").map(Number);
-        return new Date(year, month - 1, day); // local midnight
-      }
-      return value;
-    })
-    .test("min-age", "You must be at least 15 years old", (value) => {
+    .test("min-age", `You must be at least 15 years old`, (value) => {
       if (!value) return false;
 
-      const birthDate = value;
       const today = new Date();
-      const todayDateOnly = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
-      let age = todayDateOnly.getFullYear() - birthDate.getFullYear();
+      let age = today.getFullYear() - value.getFullYear();
 
       const birthdayThisYear = new Date(
-        todayDateOnly.getFullYear(),
-        birthDate.getMonth(),
-        birthDate.getDate()
+        today.getFullYear(),
+        value.getMonth(),
+        value.getDate()
       );
-
-      if (todayDateOnly < birthdayThisYear) {
+      if (today < birthdayThisYear) {
         age -= 1;
       }
 
