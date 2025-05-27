@@ -1,11 +1,5 @@
 // validationSchema.ts
-import dayjs from "dayjs";
 import * as yup from "yup";
-
-function parseLocalDate(dateString: string) {
-  const [year, month, day] = dateString.split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
 
 export const formRegisterSchema = yup.object({
   first_name: yup
@@ -37,7 +31,7 @@ export const formRegisterSchema = yup.object({
     .transform((value, originalValue) => {
       if (typeof originalValue === "string") {
         const [year, month, day] = originalValue.split("-").map(Number);
-        return new Date(year, month - 1, day);
+        return new Date(year, month - 1, day); // local midnight
       }
       return value;
     })
