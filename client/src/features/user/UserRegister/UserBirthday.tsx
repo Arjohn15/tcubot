@@ -39,6 +39,8 @@ const UserBirthday = () => {
     date
   ).padStart(2, "0")}`;
 
+  alert(birthdayValue);
+
   return (
     <Controller
       name="birthday"
