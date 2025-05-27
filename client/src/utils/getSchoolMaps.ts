@@ -5,7 +5,7 @@ const firstFloorAreas = [
     left: 9,
     width: 239,
     height: 128,
-    label: "Kitchen",
+    label: "Kitchen 1",
     floorLevel: "1st",
   },
   {
@@ -14,7 +14,7 @@ const firstFloorAreas = [
     left: 9,
     width: 115,
     height: 169,
-    label: "Kitchen",
+    label: "Kitchen 2",
     floorLevel: "1st",
   },
   {
@@ -68,7 +68,7 @@ const firstFloorAreas = [
     left: 372,
     width: 175,
     height: 126,
-    label: "Room 112",
+    label: "Room 112 (Computer Lab 1)",
     floorLevel: "1st",
   },
   {
@@ -77,7 +77,7 @@ const firstFloorAreas = [
     left: 550,
     width: 178,
     height: 127,
-    label: "Room 111",
+    label: "Room 111 (Computer Lab 2)",
     floorLevel: "1st",
   },
   {
@@ -143,7 +143,7 @@ const secondFloorAreas = [
     left: 7,
     width: 120,
     height: 128,
-    label: "cefr",
+    label: "College of Education Faculty Room",
     floorLevel: "2nd",
   },
   {
@@ -152,7 +152,7 @@ const secondFloorAreas = [
     left: 127,
     width: 128,
     height: 128,
-    label: "Room 214",
+    label: "Tourism Laboratory / Room 214",
     floorLevel: "2nd",
   },
   {
@@ -188,7 +188,7 @@ const secondFloorAreas = [
     left: 609,
     width: 122,
     height: 130,
-    label: "Room 210",
+    label: "University Hub 2 / Room 210",
     floorLevel: "2nd",
   },
   {
@@ -197,7 +197,7 @@ const secondFloorAreas = [
     left: 727,
     width: 120,
     height: 128,
-    label: "avr",
+    label: "University Hub 1 / Audio Visual Room",
     floorLevel: "2nd",
   },
   {
@@ -215,7 +215,7 @@ const secondFloorAreas = [
     left: 966,
     width: 110,
     height: 125,
-    label: "ocl",
+    label: "Office of the Chief Librarian",
     floorLevel: "2nd",
   },
   {
@@ -233,7 +233,7 @@ const secondFloorAreas = [
     left: 1192,
     width: 110,
     height: 128,
-    label: "ao",
+    label: "Athletics' Office",
     floorLevel: "2nd",
   },
   {
@@ -269,7 +269,7 @@ const secondFloorAreas = [
     left: 9,
     width: 117,
     height: 128,
-    label: "chtmf",
+    label: "College of Hospitality and Tourism Management Faculty Room",
     floorLevel: "2nd",
   },
   {
@@ -278,7 +278,7 @@ const secondFloorAreas = [
     left: 372,
     width: 120,
     height: 127,
-    label: "swl",
+    label: "Social Work Laboratory",
     floorLevel: "2nd",
   },
   {
@@ -407,7 +407,7 @@ const thirdFloorAreas = [
     left: 844,
     width: 457,
     height: 131,
-    label: "gcs",
+    label: "Library / General Collection Section",
     floorLevel: "3rd",
   },
   {
@@ -416,7 +416,7 @@ const thirdFloorAreas = [
     left: 1300,
     width: 128,
     height: 183,
-    label: "Room 306",
+    label: "Room 306 (Special Collection Section)",
     floorLevel: "3rd",
   },
   {
@@ -425,7 +425,7 @@ const thirdFloorAreas = [
     left: 1426,
     width: 117,
     height: 180,
-    label: "Room 305",
+    label: "Room 305 (Graduate School Library)",
     floorLevel: "3rd",
   },
   {
@@ -452,7 +452,7 @@ const thirdFloorAreas = [
     left: 197,
     width: 54,
     height: 131,
-    label: "bic",
+    label: "Business Incubation Center",
     floorLevel: "3rd",
   },
   {
@@ -488,7 +488,7 @@ const thirdFloorAreas = [
     left: 725,
     width: 119,
     height: 79,
-    label: "cao",
+    label: "College and Arts Office",
     floorLevel: "3rd",
   },
   {
@@ -698,7 +698,7 @@ const fourthFloorAreas = [
     left: 1422,
     width: 125,
     height: 124,
-    label: "osl",
+    label: "Office Simulation Laboratory",
     floorLevel: "4th",
   },
   {
@@ -713,16 +713,16 @@ const fourthFloorAreas = [
 ];
 
 export const allFloorAreas = [
-  ...firstFloorAreas.map(({ width, height, label, left, top, ...rest }) => {
+  ...firstFloorAreas.map(({ width, height, left, top, ...rest }) => {
     return { ...rest };
   }),
-  ...secondFloorAreas.map(({ width, height, label, left, top, ...rest }) => {
+  ...secondFloorAreas.map(({ width, height, left, top, ...rest }) => {
     return { ...rest };
   }),
-  ...thirdFloorAreas.map(({ width, height, label, left, top, ...rest }) => {
+  ...thirdFloorAreas.map(({ width, height, left, top, ...rest }) => {
     return { ...rest };
   }),
-  ...fourthFloorAreas.map(({ width, height, label, left, top, ...rest }) => {
+  ...fourthFloorAreas.map(({ width, height, left, top, ...rest }) => {
     return { ...rest };
   }),
 ];

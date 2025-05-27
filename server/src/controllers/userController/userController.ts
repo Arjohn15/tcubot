@@ -303,7 +303,6 @@ export const userProfessorSchedule = async (req: Request, resp: Response) => {
       "assigned_section",
       "code",
       "day",
-      "professor_name",
     ];
 
     for (const [key, value] of Object.entries(req.body)) {
@@ -534,7 +533,7 @@ export const addRecentUserVisit = async (
   req: Request,
   resp: Response
 ): Promise<void> => {
-  const { visitee_id, visitee_name } = req.body;
+  const { visitee_id } = req.body;
   const userID = (req as any).user.id;
 
   try {
@@ -546,8 +545,7 @@ export const addRecentUserVisit = async (
     if (!recentVisit) {
       const recentVisitInsert = await recent_visits.insertOne({
         visitor_id: userID,
-        visitee_id,
-        visitee_name,
+        visitee_id: visitee_id,
       });
 
       if (!recentVisitInsert.acknowledged || !recentVisitInsert.insertedId) {
@@ -574,8 +572,27 @@ export const getRecentUserVisits = async (
   const userID = (req as any).user.id;
 
   try {
-    const visits = await recent_visits.find({ visitor_id: userID }).toArray();
-    resp.status(200).json({ visits });
+    const visits = await recent_visits
+      .find({ visitor_id: userID }, { projection: { _id: 0, visitee_id: 1 } })
+      .toArray();
+
+    const visiteesInfo = await users
+      .find(
+        {
+          _id: {
+            $in: visits.map((visit) => new ObjectId(`${visit.visitee_id}`)),
+          },
+        },
+        {
+          projection: {
+            first_name: 1,
+            last_name: 1,
+          },
+        }
+      )
+      .toArray();
+
+    resp.status(200).json({ visiteesInfo });
   } catch (err: any) {
     resp
       .status(500)

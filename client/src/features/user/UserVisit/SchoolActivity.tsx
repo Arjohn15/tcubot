@@ -1,9 +1,12 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import ScheduleDate from "./ScheduleDate";
 import WeekDaySchedule from "./WeekDaySchedule";
 import SchoolMap from "./SchoolMap";
 import { useSchedule } from "./ScheduleProvider";
 import { allFloorAreas } from "../../../utils/getSchoolMaps";
+import axios from "axios";
+
+const HOST = import.meta.env.VITE_API_URL;
 
 const weekdays = [
   "Sunday",
@@ -15,10 +18,18 @@ const weekdays = [
   "Saturday",
 ];
 
+interface UserType {
+  first_name: string;
+  last_name: string;
+}
 const SchoolActivity: FC<{ section: string; role: string }> = ({
   section,
   role,
 }) => {
+  const [user, setUser] = useState<UserType>({
+    first_name: "",
+    last_name: "",
+  });
   const { schedule } = useSchedule();
 
   const selectedRoom = schedule.weekdaySchedule.find(
@@ -28,14 +39,43 @@ const SchoolActivity: FC<{ section: string; role: string }> = ({
         room: string;
         code: string;
         subject: string;
-        professor_name: string;
         professor_id: string;
+        assigned_section: string;
       }
     | undefined;
 
   const currentFloorLevel = allFloorAreas.find(
     (fl) => fl.id === selectedRoom?.room
   );
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const resp = await axios.get<{ user: UserType }>(
+          `${HOST}/user/visit/${selectedRoom?.professor_id}`,
+          {
+            headers: {
+              Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
+            },
+          }
+        );
+
+        setUser(resp.data.user);
+      } catch (err: any) {
+        console.error(
+          err.response.data.message ||
+            "Something went wrong. Please try again later."
+        );
+      }
+    };
+
+    if (selectedRoom?.professor_id) {
+      getUserData();
+    } else {
+      setUser({ first_name: "", last_name: "" });
+    }
+  }, [selectedRoom?.professor_id]);
+
   return (
     <div className="grow-1 px-[3rem] py-[2rem] border-gray-half border-l-2 max-lg:py-[1rem] max-lg:px-[2rem]">
       <h2 className="text-2xl font-bold pb-[2.5rem] max-lg:text-lg max-lg:text-center max-lg:pb-[2.5rem]">
@@ -76,6 +116,12 @@ const SchoolActivity: FC<{ section: string; role: string }> = ({
             </span>
           </li>
           <li className="flex mt-[0.25rem]">
+            <span className="text-nowrap">Class section:</span>
+            <span className="font-bold block ml-[0.5rem] uppercase">
+              {selectedRoom?.assigned_section}
+            </span>
+          </li>
+          <li className="flex mt-[0.25rem]">
             <span className="text-nowrap">Class subject:</span>
             <span className="font-bold block ml-[0.5rem]">
               {selectedRoom?.subject}{" "}
@@ -89,7 +135,7 @@ const SchoolActivity: FC<{ section: string; role: string }> = ({
                 href={`/user/visit/${selectedRoom?.professor_id}`}
                 className="underline text-blue"
               >
-                {selectedRoom?.professor_name}
+                {user.first_name} {user.last_name}
               </a>
             </span>
           </li>

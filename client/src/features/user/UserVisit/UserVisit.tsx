@@ -56,16 +56,12 @@ const UserVisit: FC = () => {
     errorMessage: null,
   });
 
-  async function addUserRecentVisit(
-    userFName: string,
-    userLName: string
-  ): Promise<void> {
+  async function addUserRecentVisit(): Promise<void> {
     try {
       await axios.post(
         `${HOST}/user/recent-visits`,
         {
           visitee_id: id,
-          visitee_name: `${userFName} ${userLName}`,
         },
         {
           headers: {
@@ -92,10 +88,7 @@ const UserVisit: FC = () => {
         errorMessage: null,
       });
 
-      addUserRecentVisit(
-        resp.data.userInfo.first_name,
-        resp.data.userInfo.last_name
-      );
+      addUserRecentVisit();
     } catch (err: any) {
       setUserState({
         userData: {

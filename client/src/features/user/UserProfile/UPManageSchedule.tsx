@@ -8,14 +8,14 @@ import { sections } from "../../../utils/getSchoolSections";
 import * as yup from "yup";
 import { formProfessorSchedSchema } from "../../../utils/getProfSchedValidation";
 import axios from "axios";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppDispatch } from "../../store/hooks";
 import { snackbarOpened } from "../../store/shared/snackbarSlice";
 import dayjs from "dayjs";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { IoMdCheckmark } from "react-icons/io";
-import { selectUserState } from "../redux/userSlice";
+import { allFloorAreas } from "../../../utils/getSchoolMaps";
 
 const HOST = import.meta.env.VITE_API_URL;
 
@@ -87,7 +87,6 @@ const UPManageSchedule: FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const { user } = useAppSelector(selectUserState);
   function handleOpenModal(): void {
     setModal(true);
     getAllProfSchedules(schedule.day);
@@ -155,7 +154,6 @@ const UPManageSchedule: FC = () => {
       const resp = await axios.post(
         `${HOST}/user/professor/schedule`,
         {
-          professorName: `${user.first_name} ${user.last_name}`,
           ...validatedData,
         },
         {
@@ -384,14 +382,23 @@ const UPManageSchedule: FC = () => {
                               </td>
                               <td className="border border-gray p-[0.25rem] w-[10px] ">
                                 <div>
-                                  <input
-                                    placeholder="e.g. 420"
+                                  <select
                                     name="room"
                                     value={scheduleEdit.room}
-                                    type="text"
                                     onChange={handleChangeEditSchedule}
                                     className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                                  />
+                                  >
+                                    {allFloorAreas.map((section) => {
+                                      return (
+                                        <option
+                                          key={section.id}
+                                          value={section.id}
+                                        >
+                                          {section.label}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
                                 </div>
                               </td>
                               <td className="border border-gray p-[0.25rem] w-[10px]">
@@ -648,14 +655,20 @@ const UPManageSchedule: FC = () => {
                         </td>
                         <td className="border border-gray p-[0.25rem] w-[10px]">
                           <div>
-                            <input
-                              placeholder="e.g. 420"
+                            <select
                               name="room"
                               value={schedule.room}
-                              type="text"
                               onChange={handleChangeSchedule}
                               className="w-[5rem] border border-gray-300 rounded px-1 focus:outline-none focus:ring focus:ring-red-half"
-                            />
+                            >
+                              {allFloorAreas.map((section) => {
+                                return (
+                                  <option key={section.id} value={section.id}>
+                                    {section.label}
+                                  </option>
+                                );
+                              })}
+                            </select>
                           </div>
                         </td>
                         <td className="border border-gray p-[0.25rem] w-[10px]">

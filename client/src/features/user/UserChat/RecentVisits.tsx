@@ -9,8 +9,9 @@ import ClickOutside from "../../../shared/components/OutsideClick";
 const HOST = import.meta.env.VITE_API_URL;
 
 interface RecentVisit {
-  visitee_name: string;
-  visitee_id: string;
+  first_name: string;
+  last_name: string;
+  _id: string;
 }
 
 interface RecentVisitsState {
@@ -31,7 +32,7 @@ const RecentVisits = () => {
   useEffect(() => {
     const getAllRecentVisits = async () => {
       try {
-        const resp = await axios.get<{ visits: RecentVisit[] }>(
+        const resp = await axios.get<{ visiteesInfo: RecentVisit[] }>(
           `${HOST}/user/recent-visits`,
           {
             headers: {
@@ -39,11 +40,10 @@ const RecentVisits = () => {
             },
           }
         );
-
         setRecentVisitsState({
           loading: false,
           error: null,
-          recentVisits: resp.data.visits,
+          recentVisits: resp.data.visiteesInfo,
         });
       } catch (err: any) {
         console.log(err);
@@ -115,14 +115,15 @@ const RecentVisits = () => {
                           {recentVisitsState.recentVisits.map((recentVisit) => {
                             return (
                               <li
-                                key={recentVisit.visitee_id}
+                                key={recentVisit._id}
                                 className="text-sm max-lg:text-xs"
                               >
                                 <a
-                                  href={`/user/visit/${recentVisit.visitee_id}`}
+                                  href={`/user/visit/${recentVisit._id}`}
                                   className="text-red hover:underline"
                                 >
-                                  {recentVisit.visitee_name}
+                                  {recentVisit.first_name}{" "}
+                                  {recentVisit.last_name}
                                 </a>
                               </li>
                             );
