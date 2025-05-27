@@ -157,7 +157,7 @@ const UserChat: FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -50 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className=" bg-white p-[1rem] mr-[1rem] rounded-lg border-1 relative max-lg:px-[0.5rem]"
+                    className=" bg-white p-[1rem] rounded-lg border-1 relative max-lg:px-[0.5rem]"
                     key="box"
                   >
                     <span>
