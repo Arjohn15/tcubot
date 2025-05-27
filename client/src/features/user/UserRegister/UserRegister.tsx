@@ -8,12 +8,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider } from "react-hook-form";
 import { formRegisterSchema } from "../../../utils/getRegisterValidation";
 import axios from "axios";
+import LoadingCircular from "../../../shared/components/LoadingCircular";
 
 const HOST = import.meta.env.VITE_API_URL;
 
 const UserRegister = () => {
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [registerLoading, setRegisterLoading] = useState(false);
   const navigate = useNavigate();
 
   const methods = useForm({
@@ -27,6 +28,7 @@ const UserRegister = () => {
   });
 
   async function onSubmit(data: any) {
+    setRegisterLoading(true);
     try {
       const res = await axios.post(`${HOST}/register`, data, {
         headers: {
@@ -54,6 +56,8 @@ const UserRegister = () => {
         );
         setErrorMessage(errorMessages);
       }
+    } finally {
+      setRegisterLoading(false);
     }
   }
 
@@ -139,18 +143,22 @@ const UserRegister = () => {
               </div>
 
               <div className="flex flex-col items-center">
-                <Button
-                  variant="contained"
-                  sx={{
-                    color: "white",
-                    textTransform: "none",
-                    padding: "0.75rem 0 0.75rem 0",
-                  }}
-                  fullWidth
-                  type="submit"
-                >
-                  Register
-                </Button>
+                {registerLoading ? (
+                  <LoadingCircular size="1.5rem" />
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{
+                      color: "white",
+                      textTransform: "none",
+                      padding: "0.75rem 0 0.75rem 0",
+                    }}
+                    fullWidth
+                    type="submit"
+                  >
+                    Register
+                  </Button>
+                )}
                 <span className="text-xs text-red mt-[0.5rem]">
                   {errorMessage}
                 </span>

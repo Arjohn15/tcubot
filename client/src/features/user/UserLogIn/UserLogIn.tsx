@@ -6,6 +6,7 @@ import { LuEye } from "react-icons/lu";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import SnackbarAuto from "../../../shared/components/SnackbarAuto";
+import LoadingCircular from "../../../shared/components/LoadingCircular";
 
 const HOST = import.meta.env.VITE_API_URL;
 
@@ -14,12 +15,14 @@ const UserLogIn = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [registered, setRegistered] = useState(false);
+  const [loginLoading, setLogInLoading] = useState(false);
 
   const [serverMessage, setServerMessage] = useState("");
 
   const navigate = useNavigate();
 
   async function handleSubmit(): Promise<void> {
+    setLogInLoading(true);
     try {
       const res = await axios.post(`${HOST}/auth/login/user`, {
         school_assigned_number: schoolNumber,
@@ -28,8 +31,10 @@ const UserLogIn = () => {
 
       localStorage.setItem("token-user", res.data.token);
       navigate("/user/chat");
+      setLogInLoading(false);
     } catch (err: any) {
       setServerMessage(err.response.data.message);
+      setLogInLoading(false);
     }
   }
 
@@ -129,23 +134,27 @@ const UserLogIn = () => {
             {serverMessage && (
               <p className="text-red text-sm pb-[1rem]">{serverMessage}</p>
             )}
-            <Button
-              variant="contained"
-              sx={{
-                color: "white",
-                textTransform: "none",
-                padding: "0.75rem 0 0.75rem 0",
-                marginTop: "1rem",
-                "@media (max-width: 640px)": {
-                  marginTop: "0",
-                },
-              }}
-              fullWidth
-              type="submit"
-              onClick={handleSubmit}
-            >
-              <span className="text-lg max-sm:text-sm">Log In</span>
-            </Button>
+            {loginLoading ? (
+              <LoadingCircular size="1.5rem" />
+            ) : (
+              <Button
+                variant="contained"
+                sx={{
+                  color: "white",
+                  textTransform: "none",
+                  padding: "0.75rem 0 0.75rem 0",
+                  marginTop: "1rem",
+                  "@media (max-width: 640px)": {
+                    marginTop: "0",
+                  },
+                }}
+                fullWidth
+                type="submit"
+                onClick={handleSubmit}
+              >
+                <span className="text-lg max-sm:text-sm">Log In</span>
+              </Button>
+            )}
             <Link to={"/register"} className="block mt-[1rem] max-sm:mt-[0]">
               <span className="font-bold w-max text-red mt-[1rem] block hover:cursor-pointer hover:underline">
                 Register new account
