@@ -84,6 +84,7 @@ const UPManageSchedule: FC = () => {
 
   const [configureID, setConfigureID] = useState<string>("");
   const [editID, setEditID] = useState<string>("");
+  const [isSaveLoading, setIsSaveLoading] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
 
@@ -150,6 +151,8 @@ const UPManageSchedule: FC = () => {
   async function handleSaveSchedule(
     validatedData: ScheduleType
   ): Promise<void> {
+    setIsSaveLoading(true);
+
     try {
       const resp = await axios.post(
         `${HOST}/user/professor/schedule`,
@@ -184,6 +187,8 @@ const UPManageSchedule: FC = () => {
       );
       setSchedulesLoading(false);
       handleCloseModal();
+    } finally {
+      setIsSaveLoading(false);
     }
   }
 
@@ -716,21 +721,29 @@ const UPManageSchedule: FC = () => {
             {newSchedule && (
               <div className="flex justify-center bg-gray-half p-[0.25rem]">
                 <div className="flex gap-x-10">
-                  <button
-                    onClick={() => {
-                      setNewSchedule(false);
-                      setErrorsSchedule({});
-                    }}
-                    className="text-red-half hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                  >
-                    <span>Cancel</span>
-                  </button>
-                  <button
-                    onClick={handleValidateSchedule}
-                    className="text-green-500 hover:cursor-pointer hover:opacity-[0.5] duration-300"
-                  >
-                    <span>Save</span>
-                  </button>
+                  {isSaveLoading ? (
+                    <div>
+                      <LoadingCircular size="1.5rem" />
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          setNewSchedule(false);
+                          setErrorsSchedule({});
+                        }}
+                        className="text-red-half hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                      >
+                        <span>Cancel</span>
+                      </button>
+                      <button
+                        onClick={handleValidateSchedule}
+                        className="text-green-500 hover:cursor-pointer hover:opacity-[0.5] duration-300"
+                      >
+                        <span>Save</span>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             )}

@@ -12,6 +12,7 @@ const users = db.collection("users");
 const messages = db.collection("messages");
 const schedules = db.collection("schedules");
 const recent_visits = db.collection("recent_visits");
+const data_contexts = db.collection("data_contexts");
 
 export const user_data = async (
   req: Request,
@@ -183,14 +184,20 @@ export const userDelete = async (
   const userID = req.params.id;
 
   try {
-    const result = await users.deleteOne({ _id: new ObjectId(`${userID}`) });
+    const isDeletedUser = await users.deleteOne({
+      _id: new ObjectId(`${userID}`),
+    });
 
-    if (result.deletedCount === 0) {
-      resp.status(404).json({ message: "User not found" });
-      return;
+    if (isDeletedUser.deletedCount >= 1) {
+      await schedules.deleteMany({
+        professor_id: userID,
+      });
+      await messages.deleteMany({ user_id: userID });
+      await recent_visits.deleteMany({ visitor_id: userID });
+      await data_contexts.deleteMany({ user_id: userID });
+
+      resp.status(200).json({ message: "User deleted successfully" });
     }
-
-    resp.status(200).json({ message: "User deleted successfully" });
   } catch (err) {
     console.error(err);
     resp
@@ -471,26 +478,50 @@ export const userWeekdaySchedule = async (
   const section = req.query.section;
   const role = req.query.role;
   const userID = req.query.id;
+  const visiteeRole = req.query.visitee_role;
+  const originalUserID = (req as any).user.id;
 
   try {
     let weekDaySchedule;
 
     if (role === "student") {
-      weekDaySchedule = await schedules
-        .find({
-          assigned_section: section,
-          day: Number(weekDay),
-        })
-        .toArray();
+      if (visiteeRole === "professor") {
+        weekDaySchedule = await schedules
+          .find({
+            professor_id: userID,
+            day: Number(weekDay),
+            assigned_section: section,
+          })
+          .toArray();
+      } else if (originalUserID === userID) {
+        weekDaySchedule = await schedules
+          .find({
+            assigned_section: section,
+            day: Number(weekDay),
+          })
+          .toArray();
+      } else {
+        weekDaySchedule = [];
+      }
     }
 
     if (role === "professor") {
-      weekDaySchedule = await schedules
-        .find({
-          professor_id: userID,
-          day: Number(weekDay),
-        })
-        .toArray();
+      if (originalUserID === userID) {
+        weekDaySchedule = await schedules
+          .find({
+            professor_id: originalUserID,
+            day: Number(weekDay),
+          })
+          .toArray();
+      } else {
+        weekDaySchedule = await schedules
+          .find({
+            professor_id: originalUserID,
+            day: Number(weekDay),
+            assigned_section: section,
+          })
+          .toArray();
+      }
     }
 
     resp.status(200).json({ weekDaySchedule });

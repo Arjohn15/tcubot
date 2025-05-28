@@ -1,7 +1,7 @@
 export const sections = [
   { id: "None", name: "None" },
-  { id: "bscs-2a", name: "BSCS-2A" },
-  { id: "bscs-2b", name: "BSCS-2B" },
+  { id: "bscs-a2023", name: "BSCS-A2023" },
+  { id: "bscs-b2023", name: "BSCS-B2023" },
 ];
 
 export const getSchoolSection = (sectionID: string): string => {

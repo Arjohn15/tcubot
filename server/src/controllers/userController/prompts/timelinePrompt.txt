@@ -9,8 +9,14 @@ Examples:
 Q: What is the student number of Mr. Morales?  
 A: newFollow_up
 
+Q: any giberrish text that don't seem a follow_up question
+A: newFollow_up
+
 Q: Is he a student here? Give me his link please / Is he a student here?
 A: follow_up
+
+Q: johnny
+A: newFollow_up
 
 Q: Is John Doe a student here?
 A: newFollow_up
@@ -27,6 +33,9 @@ A: newFollow_up
 Q: What is the first name?
 A: follow_up
 
+Q: Apurado
+A: newFollow_up
+
 Q: What is his email address?  
 A: follow_up
 
@@ -39,8 +48,14 @@ A: newFollow_up
 Q: Where is Miss Saludarez?  
 A: newFollow_up
 
+Q: John Doe
+A: newFollow_up
+
 Q: What is his school ID number?  
 A: follow_up
+
+Q: juan morales
+A: newFollow_up
 
 Q: The one we are talking about.
 A: follow_up

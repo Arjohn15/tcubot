@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { IoMdArrowDropright } from "react-icons/io";
 import { isTimeInRange } from "../../../utils/getTimeRange";
+import { useAppSelector } from "../../store/hooks";
+import { selectUserState } from "../redux/userSlice";
 
 const HOST = import.meta.env.VITE_API_URL;
 
@@ -45,11 +47,15 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
   const { schedule, onChangeScheduleID, onChangeWeekDaySchedule } =
     useSchedule();
 
+  const { user } = useAppSelector(selectUserState);
+
   useEffect(() => {
     async function getWeekDaySchedule(): Promise<void> {
       try {
         const response = await axios.get(
-          `${HOST}/user/schedule-weekday?weekDay=${schedule.weekday}&section=${section}&id=${id}&role=${role}`,
+          `${HOST}/user/schedule-weekday?weekDay=${schedule.weekday}&section=${
+            section ? section : user.section
+          }&id=${id}&role=${user.role}&visitee_role=${role}`,
           {
             headers: {
               Authorization: `Bearer: ${localStorage.getItem("token-user")}`,
@@ -84,7 +90,7 @@ const WeekDaySchedule: FC<{ section: string; role: string }> = ({
       }
     }
     getWeekDaySchedule();
-  }, [schedule.weekday, section, id, role, HOST]);
+  }, [schedule.weekday, section, id, user.role, user.section, HOST, role]);
 
   if (errMessage) {
     return (

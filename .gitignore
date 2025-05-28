@@ -1,5 +1,5 @@
 *.env
-
+*adminHasher.js
 # Logs
 logs
 *.log

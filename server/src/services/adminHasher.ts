@@ -4,10 +4,10 @@ import { db } from "../config/db";
 
 const admins = db.collection("admins");
 
-const username = "adminMIS";
-const password = "tcubotadminMIS2025";
-const first_name = "TCUbot";
-const last_name = "Admin";
+const username = "admintcubot";
+const password = "admintcubot23-xx";
+const first_name = "Jendragan";
+const last_name = "Bancomor";
 
 export async function adminHasher() {
   const hashedPassword = await bcrypt.hash(password, 10);

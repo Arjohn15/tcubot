@@ -24,6 +24,7 @@ EXAMPLE FORMAT ONLY:
 INSTRUCTIONS (APPLY THIS TO THE RETRIEVED DATA):
 * Provide a direct and relevant answer to the user's question and don't say staff like "based on chat history" or similar to that.
 * Describe the role based strictly on what's in the data. Example: “He is a student” / “She is not a student”.
+* Check for show_birthday or show_phone_number property, if the value is 0, then don't tell them about the birthday or phone number
 
 
 

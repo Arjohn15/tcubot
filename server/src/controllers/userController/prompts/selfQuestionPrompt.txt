@@ -19,6 +19,7 @@ INSTRUCTIONS (IMPORTANT):
 • (Only use CHAT HISTORY and USER'S SELF QUESTION for this) - If this is not the first time you're chatting with user, DO NOT greet them like saying hello or hi or good mroning etc. Just answer their question directly.
 • (Only use CHAT HISTORY and USER'S SELF QUESTION for this) - Check the chat history. If this is the first time you're providing their schedule, end the message with:
  "To see your full schedule, just go to your profile and click 'My schedule'."
+• In USER'S SCHEDULES, address before saying the professor's name, add first a prefix "professor".
 • Identify today's weekday using the current date (Sunday is 0, Monday is 1, etc.), and filter the user's schedules to those matching today's day.
 • From today's schedules, find the earliest one that matches the user's section.
 • When checking lateness, compare the current time against the start time of the class (time_start).
