@@ -524,6 +524,10 @@ export const userWeekdaySchedule = async (
       }
     }
 
+    if (role === "personnel") {
+      weekDaySchedule = [];
+    }
+
     resp.status(200).json({ weekDaySchedule });
   } catch (err) {
     resp
