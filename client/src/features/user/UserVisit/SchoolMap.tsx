@@ -84,11 +84,12 @@ const SchoolMap = () => {
   useEffect(() => {
     if (
       currentFloorLevel &&
-      ["1st", "2nd", "3rd", "4th"].includes(currentFloorLevel.floorLevel)
+      ["1st", "2nd", "3rd", "4th"].includes(currentFloorLevel.floorLevel) &&
+      schedule.scheduleID
     ) {
       setFloorLevel(currentFloorLevel.floorLevel as FloorLevelType);
     }
-  }, [currentFloorLevel?.floorLevel]);
+  }, [currentFloorLevel?.floorLevel, schedule.scheduleID]);
 
   return (
     <div className="relative flex flex-col items-center border-2 border-gray-half rounded-lg my-[1rem] p-[1rem]">

@@ -46,16 +46,19 @@ const initialState: UserState = {
   error: null,
 };
 
-export const fetchUser = createAsyncThunk<any[]>("user/fetchUser", async () => {
-  const token = localStorage.getItem("token-user");
+export const fetchUser = createAsyncThunk<UserState["user"]>(
+  "user/fetchUser",
+  async (): Promise<UserState["user"]> => {
+    const token = localStorage.getItem("token-user");
 
-  const res = await axios.get(`${HOST}/user`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data.user;
-});
+    const res = await axios.get<{ user: UserState["user"] }>(`${HOST}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data.user ? res.data.user : initialState.user;
+  }
+);
 
 const userSlice = createSlice({
   name: "user",

@@ -713,6 +713,7 @@ const fourthFloorAreas = [
 ];
 
 export const allFloorAreas = [
+  { id: "od", label: "Outdoor", floorLevel: "1st" },
   ...firstFloorAreas.map(({ width, height, left, top, ...rest }) => {
     return { ...rest };
   }),

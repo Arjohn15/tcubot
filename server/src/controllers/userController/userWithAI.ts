@@ -110,7 +110,7 @@ const userWithAI = async (
         });
 
         if (!queryResult || queryResult.length === 0) {
-          const queryFailedPrompt = `This is a prompt for failed result. You are talking directly now to a user. Your task is to inform them that you did not find any results regarding their inquiry.`;
+          const queryFailedPrompt = `This is a prompt for failed result. Your task is to inform them that you did not find any results regarding their inquiry. User's message: ${userMessage}`;
           const queryFailedResponse = await sendToOpenChat(queryFailedPrompt);
 
           if (queryFailedResponse.status !== 200) {

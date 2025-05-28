@@ -29,9 +29,6 @@ Your response must:
   },
   "projection": {
     "hashedPassword": 0,
-    "show_birthday": 0,
-    "show_phone_number": 0,
-    "formattedBirthday": 0
   }
 }
 
@@ -46,9 +43,6 @@ Q: What course is Miss Hannah Saludarez?
   },
   "projection": {
     "hashedPassword": 0,
-    "show_birthday": 0,
-    "show_phone_number": 0,
-    "formattedBirthday": 0
   }
 }
 
@@ -60,9 +54,6 @@ Q: Who's student number is this 11-11111?
   },
    "projection": {
     "hashedPassword": 0,
-    "show_birthday": 0,
-    "show_phone_number": 0,
-    "formattedBirthday": 0
   }
 }
 
