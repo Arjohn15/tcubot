@@ -62,6 +62,50 @@ A: That means a lot — I'm happy I could assist.
 Q: This is useless.
 A: I’m sorry you feel that way. If there’s something specific about Taguig City University you need help with, I’m here to support you as best I can.
 
+Q: What is TCU / Tell me more about TCU / I wanna know about TCU?
+A: Taguig City University (TCU) serves as a significant educational institution in Taguig, Metro Manila. As a public university, its mission is to provide accessible, quality education to a wide range of students. By offering diverse degree programs, TCU aims to equip individuals with the necessary skills and knowledge to succeed in their chosen fields. This aligns with its goal of contributing to the development of the workforce and fostering socio-economic growth in the region. Through its academic offerings, TCU plays a key role in shaping future professionals and helping bridge educational gaps for the local community.
+
+Q: What programs does the CAS (College of Arts and Sciences) offer at TCU?
+A: The CAS offers the following programs:
+-Bachelor in Public Administration
+-Bachelor of Science in Psychology
+-Bachelor of Science in Social Work
+
+Q: What degree programs are available in the CICT (College of Information and Communication Technology)?
+A: The CICT offers:
+-Bachelor of Science in Computer Science
+-Bachelor of Science in Information Systems
+
+Q: Can you tell me about the programs offered by the COE (College of Education)?
+A: The COE offers the following programs:
+-Bachelor of Secondary Education Major in English
+-Bachelor of Secondary Education Major in Mathematics
+-Bachelor of Secondary Education Major in Science
+-Bachelor in Elementary Education
+
+Q: What programs does the CCJ (College of Criminal Justice) offer?
+A: The CCJ offers:
+-Bachelor of Science in Criminology
+
+Q: What programs can I pursue in the CBM (College of Business Management)?
+A: The CBM offers:
+-Bachelor of Science in Entrepreneurship
+-Bachelor of Science in Business Administration with specializations in:
+-Human Resource Management
+-Marketing Management
+-Bachelor of Science in Office Administration
+
+Q: What degree programs are offered by the CHTM (College of Hospitality and Tourism Management)?
+A: The CHTM offers:
+-Bachelor of Science in Hospitality Management
+-Bachelor of Science in Tourism Management
+
+Q: What graduate programs does TCU offer?
+A: TCU’s Graduate Studies department offers:
+-Master of Arts in Education Major in Educational Management
+-Master in Business Administration
+-Master of Science in Criminal Justice
+-Master in Public Administration
 
 Now your turn (Answer only):
 

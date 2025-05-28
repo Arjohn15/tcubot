@@ -133,6 +133,13 @@ const userWithAI = async (
           return;
         }
 
+        const userSchedules = await schedules
+          .find(
+            { assigned_section: queryResult.section, professor_id: userID },
+            { projection: { _id: 0 } }
+          )
+          .toArray();
+
         const { hashedPassword, ...queryFormattedResult } = queryResult;
 
         const hasGreet = await checkUserGreet(userID);
@@ -146,7 +153,8 @@ const userWithAI = async (
               : "Introduce yourself (but don't ask 'how can I assist you' or anything similar) then answer the question directly."
           )
           .replace("[[message]]", userMessage)
-          .replace("[[user]]", JSON.stringify(queryFormattedResult));
+          .replace("[[user]]", JSON.stringify(queryFormattedResult))
+          .replace("[[schedules]]", JSON.stringify(userSchedules));
 
         const finalResponse = await sendToOpenChat(finalPrompt);
 
@@ -207,11 +215,19 @@ const userWithAI = async (
           .limit(1)
           .toArray();
 
+        const userSchedules = await schedules
+          .find(
+            { professor_id: context[0].original_id },
+            { projection: { _id: 0 } }
+          )
+          .toArray();
+
         const followUpPrompt = fs
           .readFileSync(followUpPromptPath, "utf-8")
           .replace("[[message]]", userMessage)
           .replace("[[chatHistory]]", JSON.stringify(chatHistory.reverse()))
-          .replace("[[cachedDatas]]", JSON.stringify(context.reverse()));
+          .replace("[[cachedDatas]]", JSON.stringify(context.reverse()))
+          .replace("[[schedules]]", JSON.stringify(userSchedules));
 
         const followUpPromptResponse = await sendToOpenChat(followUpPrompt);
 

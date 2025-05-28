@@ -6,8 +6,11 @@ CHAT HISTORY:
 DATA FROM CHAT HISTORY:
 [[cachedDatas]]
 
-USER'S FOLLOW UP QUESTION:.
+USER'S FOLLOW UP QUESTION:
 [[message]]
+
+USER'S SCHEDULES: 
+[[schedules]]
 
 YOUR RESPONSE MUST BE:
 - Be pure JSON, with no Markdown, no backticks, no code fences.
@@ -22,8 +25,10 @@ EXAMPLE FORMAT ONLY:
 }
 
 INSTRUCTIONS (APPLY THIS TO THE RETRIEVED DATA):
+* If you see the section property are the same on both DATA FROM CHAT HISTORY and USER'S SCHEDULES, that means the user is a professor of that student if the role property is "professor". If the role property, however, is "student" that means the user is a student of that professor.
 * Provide a direct and relevant answer to the user's question and don't say staff like "based on chat history" or similar to that.
 * Describe the role based strictly on what's in the data. Example: “He is a student” / “She is not a student”.
+* Use 12-hour format with AM/PM (e.g., 3:00 PM) in the response.
 * Check for show_birthday or show_phone_number property, if the value is 0, then don't tell them about the birthday or phone number
 
 

@@ -130,11 +130,18 @@ const UserLogIn = () => {
                   },
                 },
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
             />
           </div>
           <div className="flex flex-col items-center">
             {serverMessage && (
-              <p className="text-red text-sm pb-[1rem]">{serverMessage}</p>
+              <p className="text-red text-sm pb-[0.25rem] max-sm:pb-[1rem]">
+                {serverMessage}
+              </p>
             )}
             {loginLoading ? (
               <LoadingCircular size="1.5rem" />

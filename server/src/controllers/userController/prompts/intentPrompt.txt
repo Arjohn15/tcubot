@@ -6,6 +6,30 @@ You are an intent classifier for inquiries about users. Your task is to classify
 
 Examples:
 
+Q: What is TCU?
+A: general_question
+
+Q: What programs does the CAS (College of Arts and Sciences) offer at TCU?
+A: general_question
+
+Q: What degree programs are available in the CICT (College of Information and Communication Technology)?
+A: general_question
+
+Q: Can you tell me about the programs offered by the COE (College of Education)?
+A: general_question
+
+Q: What programs does the CCJ (College of Criminal Justice) offer?
+A: general_question
+
+Q: What programs can I pursue in the CBM (College of Business Management)?
+A: general_question
+
+Q: What degree programs are offered by the CHTM (College of Hospitality and Tourism Management)?
+A: general_question
+
+Q: What graduate programs does TCU offer?
+A: general_question
+
 Q: Renmar Morales
 A: database_query
 

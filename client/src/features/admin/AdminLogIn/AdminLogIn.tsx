@@ -105,6 +105,11 @@ const AdminLogIn = () => {
                   },
                 },
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
             />
           </div>
           <div>
