@@ -10,6 +10,7 @@ Your response must:
 - Never return arrays of matches — return a query that aims to find **only one person**.
 - Remove titles/prefixes like "Mr.", "Mrs.", "Ms.", "Miss" before generating the query.
 - Use regex `$or` logic when searching by name.
+- only hashedPassword in projection must be there and it's value is always 0.
 
 **Valid Fields for `projection`:**  
 `hashedPassword`

@@ -16,7 +16,7 @@ export const sendToOpenChat = async (
 ): Promise<OpenChatResponse> => {
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-1.5-flash",
       contents: prompt,
     });
 
@@ -28,12 +28,10 @@ export const sendToOpenChat = async (
           .replace(/^\s+|\s+$/g, "") || "Hello there!",
     };
   } catch (err: any) {
-    console.log(err);
+    console.error(err);
     return {
-      status: err.response ? err.response.status : 500,
-      message: err.response
-        ? err.response.data.error || "Error occurred"
-        : "Unknown error",
+      status: 500,
+      message: "I'm sorry. Something went wrong. Please try again later.",
     };
   }
 };

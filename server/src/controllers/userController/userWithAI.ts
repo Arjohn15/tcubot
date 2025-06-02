@@ -55,10 +55,8 @@ const userWithAI = async (
       "[[message]]",
       userMessage
     );
-
     const referencePromptResponse = await sendToOpenChat(referencePrompt);
 
-    console.log(referencePromptResponse.message);
     if (referencePromptResponse.message === "self") {
       const selfInfoFormatted = await setUserInfo(userID);
       const selfScheduleFormatted = await setUserSchedule(userID);
@@ -84,7 +82,7 @@ const userWithAI = async (
       const selfPromptResponse = await sendToOpenChat(selfPrompt);
 
       if (selfPromptResponse.status !== 200) {
-        throw new Error(selfPromptResponse.message);
+        throw new Error();
       }
 
       const insertedAIMessage = await messages.insertOne({
@@ -94,9 +92,7 @@ const userWithAI = async (
       });
 
       if (!insertedAIMessage.acknowledged) {
-        throw new Error(
-          "An error occured. AI message was not successfully inserted."
-        );
+        throw new Error();
       }
 
       resp.status(200).json({ aiResponse: selfPromptResponse.message });
@@ -134,7 +130,6 @@ const userWithAI = async (
           );
 
           const newPromptResponse = await sendToOpenChat(newPrompt);
-
           if (newPromptResponse.message === "person") {
             const personQueryPromptPath = path.join(
               process.cwd(),
@@ -155,7 +150,7 @@ const userWithAI = async (
             );
 
             if (personQueryPromptResponse.status !== 200) {
-              throw new Error(personQueryPromptResponse.message);
+              throw new Error();
             }
 
             let personResponseParsed = JSON.parse(
@@ -196,7 +191,7 @@ const userWithAI = async (
               const personPromptResponse = await sendToOpenChat(personPrompt);
 
               if (personPromptResponse.status !== 200) {
-                throw new Error(personPromptResponse.message);
+                throw new Error();
               }
 
               const personPromptResponseParsed = JSON.parse(
@@ -210,9 +205,7 @@ const userWithAI = async (
               });
 
               if (!insertedAIMessage.acknowledged) {
-                throw new Error(
-                  "An error occured. AI message was not successfully inserted."
-                );
+                throw new Error();
               }
 
               resp.status(200).json({
@@ -245,7 +238,7 @@ const userWithAI = async (
               );
 
               if (personFailedPromptResponse.status !== 200) {
-                throw new Error(personFailedPromptResponse.message);
+                throw new Error();
               }
 
               const insertedAIMessage = await messages.insertOne({
@@ -255,9 +248,7 @@ const userWithAI = async (
               });
 
               if (!insertedAIMessage.acknowledged) {
-                throw new Error(
-                  "An error occured. AI message was not successfully inserted."
-                );
+                throw new Error();
               }
 
               resp.status(200).json({
@@ -287,7 +278,7 @@ const userWithAI = async (
             );
 
             if (organizationPromptResponse.status !== 200) {
-              throw new Error(organizationPromptResponse.message);
+              throw new Error();
             }
 
             const insertedAIMessage = await messages.insertOne({
@@ -297,9 +288,7 @@ const userWithAI = async (
             });
 
             if (!insertedAIMessage.acknowledged) {
-              throw new Error(
-                "An error occured. AI message was not successfully inserted."
-              );
+              throw new Error();
             }
 
             resp
@@ -335,7 +324,7 @@ const userWithAI = async (
           const randomPromptResponse = await sendToOpenChat(randomPrompt);
 
           if (randomPromptResponse.status !== 200) {
-            throw new Error(randomPromptResponse.message);
+            throw new Error();
           }
 
           const insertedAIMessage = await messages.insertOne({
@@ -345,22 +334,33 @@ const userWithAI = async (
           });
 
           if (!insertedAIMessage.acknowledged) {
-            throw new Error(
-              "An error occured. AI message was not successfully inserted."
-            );
+            throw new Error();
           }
 
           resp.status(200).json({ aiResponse: randomPromptResponse.message });
           return;
         }
         default: {
-          console.log("ok");
+          throw new Error();
         }
       }
     } else {
+      throw new Error();
     }
   } catch (err: any) {
-    console.log(err);
+    console.error(err);
+    const insertedAIMessage = await messages.insertOne({
+      user_id: userID,
+      sender: "ai",
+      message: err.message,
+    });
+
+    if (!insertedAIMessage.acknowledged) {
+      throw new Error();
+    }
+    resp.status(500).json({
+      aiResponse: "I'm sorry. Something went wrong. Please try again later.",
+    });
   }
 };
 

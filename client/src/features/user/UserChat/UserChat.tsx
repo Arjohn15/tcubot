@@ -118,7 +118,7 @@ const UserChat: FC = () => {
         setConvo((prevConvo) => [
           ...prevConvo,
           {
-            message: err.response.data.message,
+            message: err.response.data.aiResponse,
             sender: "ai",
             _id: tempId,
           },
