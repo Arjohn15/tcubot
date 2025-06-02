@@ -71,15 +71,14 @@ async function setUserSchedule(userID: string) {
         .map((item) => {
           const startTime = dayjs(item.time_start, "HH:mm").format("h:mm A");
           const endTime = dayjs(item.time_end, "HH:mm").format("h:mm A");
-          return `
-          ------------------------
-Day                  : ${dayMap[item.day] || "Unknown"}
+          return `Day                  : ${dayMap[item.day] || "Unknown"}
 Time                 : ${startTime} - ${endTime}
 Room                 : ${item.room}
 Subject              : ${item.subject}
 Code                 : ${item.code}
 Section              : ${item.assigned_section.toUpperCase()}
 Professor            : ${item.first_name} ${item.last_name}
+------------------------
 `.trim();
         })
         .join("\n\n");

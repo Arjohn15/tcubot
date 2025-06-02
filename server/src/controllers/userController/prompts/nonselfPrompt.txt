@@ -55,6 +55,7 @@ Q: Give me the list of students under Mr. Cruz.
 
 EXAMPLES OF trail:
 
+Q: faculty member?
 Q: Is he a student here?
 Q: What is the course?
 Q: Is his section BSCS-2A-2023?

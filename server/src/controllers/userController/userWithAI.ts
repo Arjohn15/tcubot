@@ -6,9 +6,11 @@ import { db } from "../../config/db";
 import checkUserGreet from "../../utils/checkUserGreet";
 import setUserInfo from "./utils/setUserInfo";
 import setUserSchedule from "./utils/setUserSchedule";
+import setChatHistory from "./utils/setChatHistory";
 
 const messages = db.collection("messages");
 const users = db.collection("users");
+const subjects = db.collection("subjects");
 
 const currentDate = new Date();
 
@@ -96,6 +98,22 @@ const userWithAI = async (
       }
 
       resp.status(200).json({ aiResponse: selfPromptResponse.message });
+
+      const subjectSelf = `
+TODAY'S DATE:
+${currentDateFormatted}
+
+USER'S SCHEDULE:
+------------------------
+
+${selfScheduleFormatted}
+      `;
+
+      subjects.replaceOne(
+        { user_id: userID },
+        { user_id: userID, subject_content: subjectSelf },
+        { upsert: true }
+      );
     } else if (referencePromptResponse.message === "nonself") {
       const nonselfPromptPath = path.join(
         process.cwd(),
@@ -162,6 +180,7 @@ const userWithAI = async (
               {
                 projection: {
                   ...personResponseParsed.projection,
+                  hashedPassword: 0,
                 },
               }
             );
@@ -185,8 +204,7 @@ const userWithAI = async (
               const personPrompt = readFileSync(personPromptPath, "utf-8")
                 .replace("[[message]]", userMessage)
                 .replace("[[subjectInfo]]", personInfoFormatted)
-                .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreet))
-                .replace("[[subjectID]]", personID);
+                .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreet));
 
               const personPromptResponse = await sendToOpenChat(personPrompt);
 
@@ -217,6 +235,12 @@ const userWithAI = async (
                     ? []
                     : personPromptResponseParsed.userInfos,
               });
+
+              subjects.replaceOne(
+                { user_id: userID },
+                { user_id: userID, subject_content: personInfoFormatted },
+                { upsert: true }
+              );
               return;
             } else {
               const personFailedQueryPromptPath = path.join(
@@ -256,6 +280,12 @@ const userWithAI = async (
                   personFailedPromptResponse.message ||
                   "I'm sorry. Something went wrong. Please try again later",
               });
+
+              subjects.replaceOne(
+                { user_id: userID },
+                { user_id: userID, subject_content: "Not found" },
+                { upsert: true }
+              );
               return;
             }
           } else if (newPromptResponse.message === "organization") {
@@ -266,6 +296,14 @@ const userWithAI = async (
               "userController",
               "prompts",
               "organizationPrompt.txt"
+            );
+            const organizationPromptPlainPath = path.join(
+              process.cwd(),
+              "src",
+              "controllers",
+              "userController",
+              "prompts",
+              "organizationPromptPlain.txt"
             );
 
             const organizationPrompt = readFileSync(
@@ -294,17 +332,75 @@ const userWithAI = async (
             resp
               .status(200)
               .json({ aiResponse: organizationPromptResponse.message });
+
+            const organizationPromptPlain = readFileSync(
+              organizationPromptPlainPath,
+              "utf-8"
+            );
+
+            subjects.replaceOne(
+              { user_id: userID },
+              { user_id: userID, subject_content: organizationPromptPlain },
+              { upsert: true }
+            );
             return;
           } else {
             resp.status(200).json({
               aiResponse:
                 "I'm sorry. Something went wrong. Please try again later.",
             });
+            return;
           }
-          break;
         }
         case "trail": {
-          break;
+          const selfInfoFormatted = await setUserInfo(userID);
+
+          const subjectInfo = await subjects.findOne(
+            { user_id: userID },
+            { projection: { _id: 0, subject_content: 1 } }
+          );
+
+          const chatHistoryFormatted = await setChatHistory(userID, 5);
+
+          const trailPromptPath = path.join(
+            process.cwd(),
+            "src",
+            "controllers",
+            "userController",
+            "prompts",
+            "trailPrompt.txt"
+          );
+
+          const hasAIGreeted = await checkUserGreet(userID);
+
+          const trailPrompt = readFileSync(trailPromptPath, "utf-8")
+            .replace("[[selfInfo]]", selfInfoFormatted)
+            .replace(
+              "[[subjectInfo]]",
+              subjectInfo ? subjectInfo.subject_content : "Not found"
+            )
+            .replace("[[chatHistory]]", chatHistoryFormatted)
+            .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreeted));
+
+          console.log(hasAIGreeted);
+          const trailPromptResponse = await sendToOpenChat(trailPrompt);
+
+          if (trailPromptResponse.status !== 200) {
+            throw new Error();
+          }
+
+          const insertedAIMessage = await messages.insertOne({
+            user_id: userID,
+            sender: "ai",
+            message: trailPromptResponse.message,
+          });
+
+          if (!insertedAIMessage.acknowledged) {
+            throw new Error();
+          }
+
+          resp.status(200).json({ aiResponse: trailPromptResponse.message });
+          return;
         }
         case "random": {
           const randomPromptPath = path.join(

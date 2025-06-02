@@ -28,7 +28,6 @@ async function setUserInfo(userID: string): Promise<string> {
     );
 
     return `
-------------------------
 User ID              : ${userID} (Don't provide this to response directly.)
 First Name           : ${selfInfo?.first_name}
 Last Name            : ${selfInfo?.last_name}

@@ -56,10 +56,6 @@ const UserChat: FC = () => {
       setConvo(resp.data.chatHistory);
     } catch (err: any) {
       setConvo([]);
-      console.error(
-        err.response.data.message ||
-          "Something went wrong. Please try again later."
-      );
     }
   }
 
@@ -132,6 +128,12 @@ const UserChat: FC = () => {
   useEffect(() => {
     getChatHistory();
   }, []);
+
+  useEffect(() => {
+    if (convo.length) {
+      scrollDownConvoOverview(true);
+    }
+  }, [convo.length]);
 
   if (loading) {
     return (
