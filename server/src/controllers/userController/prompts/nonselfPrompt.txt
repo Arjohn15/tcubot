@@ -8,11 +8,11 @@ EXAMPLES OF new:
 
 Q: Can you tell me about the history of TCU?
 Q: I want to confirm if Angelica Cruz is enrolled.
-Q: Who teaches computer science at TCU?
+Q Johannes Jones
 Q: Is student 20-67890 still active?
 Q: What is the mascot of TCU?
 Q: What course is Juan Dela Cruz taking?
-Q: I need the list of teachers this semester.
+Q: John Doe
 Q: Can you pull up the details of student 23-00001?
 Q: What are the admission requirements for freshmen?
 Q: Can you tell me who I was talking to earlier?
@@ -24,7 +24,7 @@ Q: How do I join school organizations?
 Q: Can you check if professor Santos is in today?
 Q: What is TCU known for?
 Q: Can you show me James Reyes’ schedule?
-Q: Who founded TCU?
+Q: Bryant James
 Q: Check the record of student 22-11223.
 Q: What's the vision and mission of TCU?
 Q: Is Maria enrolled in 4th year education?

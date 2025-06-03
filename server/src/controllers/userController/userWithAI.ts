@@ -382,7 +382,6 @@ ${selfScheduleFormatted}
             .replace("[[chatHistory]]", chatHistoryFormatted)
             .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreeted));
 
-          console.log(hasAIGreeted);
           const trailPromptResponse = await sendToOpenChat(trailPrompt);
 
           if (trailPromptResponse.status !== 200) {
@@ -412,10 +411,11 @@ ${selfScheduleFormatted}
             "randomPrompt.txt"
           );
 
-          const randomPrompt = readFileSync(randomPromptPath, "utf-8").replace(
-            "[[message]]",
-            userMessage
-          );
+          const chatHistoryFormatted = await setChatHistory(userID, 5);
+
+          const randomPrompt = readFileSync(randomPromptPath, "utf-8")
+            .replace("[[message]]", userMessage)
+            .replace("[[chatHistory]]", chatHistoryFormatted);
 
           const randomPromptResponse = await sendToOpenChat(randomPrompt);
 

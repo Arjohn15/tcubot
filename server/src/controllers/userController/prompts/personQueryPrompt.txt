@@ -9,7 +9,7 @@ Your response must:
 - **Do not** add any explanations, comments, or MongoDB commands (like `db.users.find()`).
 - Never return arrays of matches — return a query that aims to find **only one person**.
 - Remove titles/prefixes like "Mr.", "Mrs.", "Ms.", "Miss" before generating the query.
-- Use regex `$or` logic when searching by name.
+- Do not use regex `$regex` logic when searching by name.
 - Never create a query to fetch all documents like this: '{"query": {}}'.
 
 **Examples**:

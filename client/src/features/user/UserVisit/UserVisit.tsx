@@ -87,8 +87,6 @@ const UserVisit: FC = () => {
         loading: false,
         errorMessage: null,
       });
-
-      addUserRecentVisit();
     } catch (err: any) {
       setUserState({
         userData: {
@@ -113,6 +111,7 @@ const UserVisit: FC = () => {
 
   useEffect(() => {
     getUser();
+    addUserRecentVisit();
   }, []);
 
   if (userState.loading) {

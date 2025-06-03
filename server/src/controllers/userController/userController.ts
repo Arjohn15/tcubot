@@ -581,6 +581,7 @@ export const addRecentUserVisit = async (
       const recentVisitInsert = await recent_visits.insertOne({
         visitor_id: userID,
         visitee_id: visitee_id,
+        lastUpdatedAt: new Date(),
       });
 
       if (!recentVisitInsert.acknowledged || !recentVisitInsert.insertedId) {
@@ -591,6 +592,24 @@ export const addRecentUserVisit = async (
 
       resp.status(200).json({
         message: "Recent visit information is successfully inserted.",
+      });
+    } else {
+      const recentVisitUpdate = await recent_visits.updateOne(
+        {
+          visitor_id: userID,
+          visitee_id: visitee_id,
+        },
+        { $set: { lastUpdatedAt: new Date() } }
+      );
+
+      if (!recentVisitUpdate.acknowledged || !recentVisitUpdate.modifiedCount) {
+        throw new Error(
+          "Recent visit information is not successfully inserted."
+        );
+      }
+
+      resp.status(200).json({
+        message: "Recent visit information is successfully updated.",
       });
     }
   } catch (err: any) {
@@ -609,23 +628,26 @@ export const getRecentUserVisits = async (
   try {
     const visits = await recent_visits
       .find({ visitor_id: userID }, { projection: { _id: 0, visitee_id: 1 } })
+      .sort({ lastUpdatedAt: -1 })
       .toArray();
 
-    const visiteesInfo = await users
-      .find(
-        {
-          _id: {
-            $in: visits.map((visit) => new ObjectId(`${visit.visitee_id}`)),
-          },
-        },
-        {
-          projection: {
-            first_name: 1,
-            last_name: 1,
-          },
+    const visiteesInfo = await Promise.all(
+      visits.map(async (visit) => {
+        const visiteeInfo = await users.findOne(
+          { _id: new ObjectId(`${visit.visitee_id}`) },
+          {
+            projection: {
+              first_name: 1,
+              last_name: 1,
+            },
+          }
+        );
+
+        if (visiteeInfo) {
+          return visiteeInfo;
         }
-      )
-      .toArray();
+      })
+    );
 
     resp.status(200).json({ visiteesInfo });
   } catch (err: any) {

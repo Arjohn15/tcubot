@@ -108,10 +108,7 @@ const RecentVisits = () => {
                             {recentVisitsState.error}
                           </p>
                         )}
-                        <ul
-                          role="list"
-                          className="ml-[1rem] flex flex-col gap-y-2 list-disc"
-                        >
+                        <ul className="flex flex-col gap-y-2">
                           {recentVisitsState.recentVisits.map((recentVisit) => {
                             return (
                               <li
