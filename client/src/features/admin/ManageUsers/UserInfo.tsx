@@ -379,7 +379,7 @@ const UserInfo: FC<{ user: RegistrantType; onCloseModal: () => void }> = ({
           onCloseModal={handleCloseModal}
           onOpenModal={handleOpenModal}
           boxContent={
-            <div className="bg-white w-[25vw] rounded-lg p-[1rem]">
+            <div className="bg-white w-[25vw] rounded-lg p-[1rem] max-sm:w-[90vw]">
               <div className="py-[0.25rem]">
                 <p className="text-center pb-[1rem]">
                   Do you want to delete this user?
