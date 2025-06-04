@@ -55,14 +55,31 @@ Q: Give me the list of students under Mr. Cruz.
 
 EXAMPLES OF trail:
 
-Q: faculty member?
+Q: yes
+Q: today
+Q: last i guess
+Q: hmm i think the latter one
+Q: no
+Q: yup
+Q: that's right
 Q: Is he a student here?
+Q: maybe
+Q: I’m not sure yet
+Q: let’s go with that
+Q: probably not
+Q: just checking
 Q: What is the course?
 Q: Is his section BSCS-2A-2023?
+Q: faculty member?
 Q: What is the first name?
 Q: What is his email address?
 Q: Can you give me his course and section?
 Q: What is his school ID number?
+Q: kind of
+Q: still deciding
+Q: not exactly
+Q: that makes sense
+Q: alright then
 Q: The one we are talking about.
 Q: The person I just mentioned.
 Q: The student/professor I just mentioned.

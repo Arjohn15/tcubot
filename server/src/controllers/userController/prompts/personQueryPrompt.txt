@@ -9,8 +9,8 @@ Your response must:
 - **Do not** add any explanations, comments, or MongoDB commands (like `db.users.find()`).
 - Never return arrays of matches — return a query that aims to find **only one person**.
 - Remove titles/prefixes like "Mr.", "Mrs.", "Ms.", "Miss" before generating the query.
-- Do not use regex `$regex` logic when searching by name.
-- Never create a query to fetch all documents like this: '{"query": {}}'.
+- Do not use regex `$or` logic when searching by name. Use only `$and`.
+- Do not create a query like this '{"query": {}}' when user's message is not queryable. Instead, create this query: {"query": {"noResultTCUbotxxx":"********"}}.
 
 **Examples**:
 
@@ -18,7 +18,7 @@ Your response must:
 
 {
   "query": {
-    "$or": [
+    "$and": [
       { "first_name": { "$regex": "Doe", "$options": "i" } },
       { "last_name": { "$regex": "Doe", "$options": "i" } }
     ]
@@ -29,7 +29,7 @@ Q: What course is Miss Hannah Saludarez?
 
 {
   "query": {
-    "$or": [
+    "$and": [
       { "first_name": { "$regex": "Hannah", "$options": "i" } },
       { "last_name": { "$regex": "Saludarez", "$options": "i" } }
     ]

@@ -11,7 +11,6 @@ import setChatHistory from "./utils/setChatHistory";
 const messages = db.collection("messages");
 const users = db.collection("users");
 const subjects = db.collection("subjects");
-
 const currentDate = new Date();
 
 const currentDateFormatted = currentDate.toLocaleString("en-US", {
@@ -379,6 +378,7 @@ ${selfScheduleFormatted}
               "[[subjectInfo]]",
               subjectInfo ? subjectInfo.subject_content : "Not found"
             )
+            .replace("[[currentDate]]", currentDateFormatted)
             .replace("[[chatHistory]]", chatHistoryFormatted)
             .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreeted));
 
@@ -448,7 +448,7 @@ ${selfScheduleFormatted}
     const insertedAIMessage = await messages.insertOne({
       user_id: userID,
       sender: "ai",
-      message: err.message,
+      message: "I'm sorry. Something went wrong. Please try again later.",
     });
 
     if (!insertedAIMessage.acknowledged) {
