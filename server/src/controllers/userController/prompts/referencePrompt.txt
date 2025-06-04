@@ -11,6 +11,9 @@ self
 Q: Can you tell me about the history of TCU?
 nonself
 
+Q: Can I have my information?
+self
+
 Q: I want to confirm if Angelica Cruz is enrolled.
 nonself
 

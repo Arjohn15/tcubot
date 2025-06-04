@@ -7,7 +7,7 @@ const checkUserGreet = async (userID: string): Promise<boolean> => {
 
   try {
     const userMessages = await messages
-      .find({ user_id: `${userID}` }, { projection: { message: 1 } })
+      .find({ user_id: userID }, { projection: { message: 1 } })
       .toArray();
 
     const hasGreeting = userMessages.length >= 2;

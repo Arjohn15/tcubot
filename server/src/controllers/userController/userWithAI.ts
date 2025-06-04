@@ -189,7 +189,7 @@ ${selfScheduleFormatted}
 
               const personInfoFormatted = await setUserInfo(personID);
 
-              const hasAIGreet = await checkUserGreet(personID);
+              const hasAIGreet = await checkUserGreet(userID);
 
               const personPromptPath = path.join(
                 process.cwd(),
@@ -305,11 +305,14 @@ ${selfScheduleFormatted}
               "organizationPromptPlain.txt"
             );
 
+            const hasAIGreet = await checkUserGreet(userID);
+
             const organizationPrompt = readFileSync(
               organizationPromptPath,
               "utf-8"
-            ).replace("[[message]]", userMessage);
-
+            )
+              .replace("[[message]]", userMessage)
+              .replace("[[hasAIGreeted]]", JSON.stringify(hasAIGreet));
             const organizationPromptResponse = await sendToOpenChat(
               organizationPrompt
             );

@@ -625,7 +625,7 @@ export const getRecentUserVisits = async (
 ): Promise<void> => {
   const userID = (req as any).user.id;
 
-  // recent_visits.deleteMany({ visitor_id: userID });
+  messages.deleteMany({ user_id: userID });
 
   try {
     const visits = await recent_visits
