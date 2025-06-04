@@ -625,8 +625,6 @@ export const getRecentUserVisits = async (
 ): Promise<void> => {
   const userID = (req as any).user.id;
 
-  messages.deleteMany({ user_id: userID });
-
   try {
     const visits = await recent_visits
       .find({ visitor_id: userID }, { projection: { _id: 0, visitee_id: 1 } })
