@@ -7,7 +7,9 @@ import RecentVisitsContent from "./RecentVisitsContent";
 
 const RecentVisits = () => {
   const [isRecentVisits, setIsRecentVisits] = useState<boolean>(false);
-
+  function handleCloseRecentVisits(): void {
+    setIsRecentVisits(false);
+  }
   {
     return (
       <>
@@ -37,7 +39,11 @@ const RecentVisits = () => {
                 </motion.div>
               </button>
               <AnimatePresence>
-                {isRecentVisits ? <RecentVisitsContent /> : null}
+                {isRecentVisits ? (
+                  <RecentVisitsContent
+                    onCloseRecentVisits={handleCloseRecentVisits}
+                  />
+                ) : null}
               </AnimatePresence>
             </ClickOutside>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import LoadingCircular from "../../../shared/components/LoadingCircular";
 import { motion } from "motion/react";
 import axios from "axios";
@@ -16,7 +16,9 @@ interface RecentVisitsState {
   recentVisits: RecentVisit[];
 }
 
-const RecentVisitsContent = () => {
+const RecentVisitsContent: FC<{ onCloseRecentVisits: () => void }> = ({
+  onCloseRecentVisits,
+}) => {
   const [recentVisitsState, setRecentVisitsState] = useState<RecentVisitsState>(
     {
       loading: true,
@@ -82,6 +84,7 @@ const RecentVisitsContent = () => {
                   <a
                     href={`/user/visit/${recentVisit._id}`}
                     className="text-red hover:underline"
+                    onClick={() => onCloseRecentVisits()}
                   >
                     {recentVisit.first_name} {recentVisit.last_name}
                   </a>
